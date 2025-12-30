@@ -1,2 +1,0 @@
-createLog("Login attempt email=".$email, "INFO");
-[2025-12-30 08:56:30][INFO] Login attempt email=
