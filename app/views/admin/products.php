@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="description" content="" >
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <!--Meta Responsive tag-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!--Bootstrap CSS-->
+    <link rel="stylesheet" href="/php-duhoc/public/assets/css/bootstrap.min.css">
+    <!--Custom style.css-->
+    <link rel="stylesheet" href="/php-duhoc/public/assets/css/quicksand.css">
+    <link rel="stylesheet" href="/php-duhoc/public/assets/css/style.css">
+    <!--Font Awesome-->
+    <link rel="stylesheet" href="/php-duhoc/public/assets/css/fontawesome-all.min.css">
+    <link rel="stylesheet" href="/php-duhoc/public/assets/css/fontawesome.css">
+    <!--Chartist CSS-->
+    <link rel="stylesheet" href="/php-duhoc/public/assets/css/chartist.min.css">
+    <!--Datatable-->
+    <link rel="stylesheet" href="/php-duhoc/public/assets/css/dataTables.bootstrap4.min.css">
+    <!--Bootstrap Calendar-->
+    <link rel="stylesheet" href="/php-duhoc/public/assets/js/calendar/bootstrap_calendar.css">
+
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <title>Sleek Admin</title>
+  </head>
+  <body>
+    
+    <!--Page Wrapper-->
+
+    <div class="container-fluid">
+
+        <!--Header-->
+       <?php include 'header.php'; ?>
+        <!--Header-->
+
+        <!--Main Content-->
+
+        <div class="row main-content">
+            <!--Sidebar left-->
+<?php include 'sidebar.php'; ?>
+            <!--Sidebar left-->
+
+            <!--Content right-->
+            <div class="col-sm-9 col-xs-12 content pt-3 pl-0">
+                <h5 class="mb-0" ><strong>Products</strong></h5>
+                <span class="text-secondary">Ecommerce <i class="fa fa-angle-right"></i> products</span>
+                
+                <div class="mt-4 mb-4 p-3 bg-white border shadow-sm lh-sm">
+                    <!--Product Listing-->
+                    <div class="product-list">
+                        
+                        <div class="row border-bottom mb-4">
+                            <div class="col-sm-8 pt-2"><h6 class="mb-4 bc-header">Product listing</h6></div>
+                            <div class="col-sm-4 text-right pb-3">
+                                <button class="btn btn-round btn-theme"><i class="fa fa-plus"></i> Add product</button>
+                            </div>
+                        </div>
+                        
+                        <div class="table-responsive product-list">
+                            
+                            <table class="table table-bordered table-striped mt-3" id="productList">
+                                <thead>
+                                    <tr>
+                                        <th width="6%">Image</th>
+                                        <th>Product name</th>
+                                        <th>Amount</th>
+                                        <th>Stock</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="align-middle"><img src="/php-duhoc/public/assets/img/prod10.png" width="80px"  alt=""></td>
+                                        <td class="align-middle">
+                                            <h6><strong>Silver Watch</strong></h6>
+                                            <p>Lorem ipsum dolor sit consec te imperdiet iaculis ipsum..</p>
+                                        </td>
+                                        <td class="align-middle">$200</td>
+                                        <td class="align-middle"><span class="text-danger">Out of Stock</span></td>
+                                        <td class="align-middle text-center">
+                                            <button class="btn btn-link text-theme p-1"><i class="fa fa-pencil"></i></button>
+                                            <button class="btn btn-link text-danger p-1"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="align-middle"><img src="/php-duhoc/public/assets/img/prod6.png" width="80px"  alt=""></td>
+                                        <td class="align-middle">
+                                            <h6><strong>Red Heels</strong></h6>
+                                            <p>Lorem ipsum dolor sit consec te imperdiet iaculis ipsum..</p>
+                                        </td>
+                                        <td class="align-middle">$150</td>
+                                        <td class="align-middle"><span class="text-success">In Stock</span></td>
+                                        <td class="align-middle text-center">
+                                            <button class="btn btn-link text-theme p-1"><i class="fa fa-pencil"></i></button>
+                                            <button class="btn btn-link text-danger p-1"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="align-middle"><img src="/php-duhoc/public/assets/img/prod3.png" width="80px"  alt=""></td>
+                                        <td class="align-middle">
+                                            <h6><strong>Blue Ladies Shoes</strong></h6>
+                                            <p>Lorem ipsum dolor sit consec te imperdiet iaculis ipsum..</p>
+                                        </td>
+                                        <td class="align-middle">$250</td>
+                                        <td class="align-middle"><span class="text-warning">Low Stock</span></td>
+                                        <td class="align-middle text-center">
+                                            <button class="btn btn-link text-theme p-1"><i class="fa fa-pencil"></i></button>
+                                            <button class="btn btn-link text-danger p-1"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="align-middle"><img src="/php-duhoc/public/assets/img/prod11.png" width="80px"  alt=""></td>
+                                        <td class="align-middle">
+                                            <h6><strong>Yellow Shirt</strong></h6>
+                                            <p>Lorem ipsum dolor sit consec te imperdiet iaculis ipsum..</p>
+                                        </td>
+                                        <td class="align-middle">$250</td>
+                                        <td class="align-middle"><span class="text-warning">Low Stock</span></td>
+                                        <td class="align-middle text-center">
+                                            <button class="btn btn-link text-theme p-1"><i class="fa fa-pencil"></i></button>
+                                            <button class="btn btn-link text-danger p-1"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="align-middle"><img src="/php-duhoc/public/assets/img/prod12.png" width="80px"  alt=""></td>
+                                        <td class="align-middle">
+                                            <h6><strong>Red Office Shirt</strong></h6>
+                                            <p>Lorem ipsum dolor sit consec te imperdiet iaculis ipsum..</p>
+                                        </td>
+                                        <td class="align-middle">$450</td>
+                                        <td class="align-middle"><span class="text-success">In Stock</span></td>
+                                        <td class="align-middle text-center">
+                                            <button class="btn btn-link text-theme p-1"><i class="fa fa-pencil"></i></button>
+                                            <button class="btn btn-link text-danger p-1"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="align-middle"><img src="/php-duhoc/public/assets/img/prod14.png" width="80px"  alt=""></td>
+                                        <td class="align-middle">
+                                            <h6><strong>Knickers</strong></h6>
+                                            <p>Lorem ipsum dolor sit consec te imperdiet iaculis ipsum..</p>
+                                        </td>
+                                        <td class="align-middle">$550</td>
+                                        <td class="align-middle"><span class="text-success">In Stock</span></td>
+                                        <td class="align-middle text-center">
+                                            <button class="btn btn-link text-theme p-1"><i class="fa fa-pencil"></i></button>
+                                            <button class="btn btn-link text-danger p-1"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="align-middle"><img src="/php-duhoc/public/assets/img/prod15.png" width="80px"  alt=""></td>
+                                        <td class="align-middle">
+                                            <h6><strong>Hand Bag</strong></h6>
+                                            <p>Lorem ipsum dolor sit consec te imperdiet iaculis ipsum..</p>
+                                        </td>
+                                        <td class="align-middle">$450</td>
+                                        <td class="align-middle"><span class="text-danger">Out of Stock</span></td>
+                                        <td class="align-middle text-center">
+                                            <button class="btn btn-link text-theme p-1"><i class="fa fa-pencil"></i></button>
+                                            <button class="btn btn-link text-danger p-1"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="align-middle"><img src="/php-duhoc/public/assets/img/prod16.png" width="80px"  alt=""></td>
+                                        <td class="align-middle">
+                                            <h6><strong>Courier Bag</strong></h6>
+                                            <p>Lorem ipsum dolor sit consec te imperdiet iaculis ipsum..</p>
+                                        </td>
+                                        <td class="align-middle">$450</td>
+                                        <td class="align-middle"><span class="text-success">In Stock</span></td>
+                                        <td class="align-middle text-center">
+                                            <button class="btn btn-link text-theme p-1"><i class="fa fa-pencil"></i></button>
+                                            <button class="btn btn-link text-danger p-1"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="align-middle"><img src="/php-duhoc/public/assets/img/prod7.png" width="80px"  alt=""></td>
+                                        <td class="align-middle">
+                                            <h6><strong>Gold Watch</strong></h6>
+                                            <p>Lorem ipsum dolor sit consec te imperdiet iaculis ipsum..</p>
+                                        </td>
+                                        <td class="align-middle">$450</td>
+                                        <td class="align-middle"><span class="text-success">In Stock</span></td>
+                                        <td class="align-middle text-center">
+                                            <button class="btn btn-link text-theme p-1"><i class="fa fa-pencil"></i></button>
+                                            <button class="btn btn-link text-danger p-1"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!--/Product Listing-->
+                </div>
+
+                <!--Footer-->
+                <div class="row mt-5 mb-4 footer">
+                    <div class="col-sm-8">
+                        <span>&copy; All rights reserved 2019 designed by <a class="text-info" href="#">A-Fusion</a></span>
+                    </div>
+                    <div class="col-sm-4 text-right">
+                        <a href="#" class="ml-2">Contact Us</a>
+                        <a href="#" class="ml-2">Support</a>
+                    </div>
+                </div>
+                <!--Footer-->
+
+            </div>
+        </div>
+
+        <!--Main Content-->
+
+    </div>
+
+    <!--Page Wrapper-->
+
+    <!-- Page JavaScript Files-->
+    <script src="/php-duhoc/public/assets/js/jquery.min.js"></script>
+    <script src="/php-duhoc/public/assets/js/jquery-1.12.4.min.js"></script>
+    <!--Popper JS-->
+    <script src="/php-duhoc/public/assets/js/popper.min.js"></script>
+    <!--Bootstrap-->
+    <script src="/php-duhoc/public/assets/js/bootstrap.min.js"></script>
+    <!--Sweet alert JS-->
+    <script src="/php-duhoc/public/assets/js/sweetalert.js"></script>
+    <!--Progressbar JS-->
+    <script src="/php-duhoc/public/assets/js/progressbar.min.js"></script>
+    <!--Datatable-->
+    <script src="/php-duhoc/public/assets/js/jquery.dataTables.min.js"></script>
+    <script src="/php-duhoc/public/assets/js/dataTables.bootstrap4.min.js"></script>
+    <!--Bootstrap Calendar JS-->
+    <script src="/php-duhoc/public/assets/js/calendar/bootstrap_calendar.js"></script>
+    <script src="/php-duhoc/public/assets/js/calendar/demo.js"></script>
+    <!--Bootstrap Calendar-->
+
+    <!--Custom Js Script-->
+    <script src="/php-duhoc/public/assets/js/custom.js"></script>
+    <!--Custom Js Script-->
+    <script>
+        $("#productList").DataTable();
+    </script>
+  </body>
+</html>
