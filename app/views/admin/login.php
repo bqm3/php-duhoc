@@ -8,7 +8,7 @@
           <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
         <?php endif; ?>
 
-        <form method="post" action="/admin/login">
+        <form method="post" action="<?= $base ?>/admin/login">
           <input type="hidden" name="_csrf" value="<?= htmlspecialchars($csrf) ?>">
           <div class="mb-3">
             <label class="form-label">Email</label>

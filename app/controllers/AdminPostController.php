@@ -27,8 +27,8 @@ class AdminPostController {
     $pdo = Db::pdo();
     $stmt = $pdo->prepare("INSERT INTO posts(title,content,status) VALUES(?,?,?)");
     $stmt->execute([$title, $content, $status]);
-
-    header("Location: /admin/posts");
+    $posts = $GLOBALS['base'] !== '' ? $GLOBALS['base'] . '/admin/posts' : '/admin/posts';
+    header("Location: " . $posts);
     exit;
   }
 
@@ -54,8 +54,8 @@ class AdminPostController {
     $pdo = Db::pdo();
     $stmt = $pdo->prepare("UPDATE posts SET title=?, content=?, status=? WHERE id=?");
     $stmt->execute([$title, $content, $status, $id]);
-
-    header("Location: /admin/posts");
+    $posts = $GLOBALS['base'] !== '' ? $GLOBALS['base'] . '/admin/posts' : '/admin/posts';
+    header("Location: " . $posts);
     exit;
   }
 

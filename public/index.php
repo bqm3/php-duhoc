@@ -10,9 +10,9 @@ require __DIR__ . "/../app/core/Auth.php";
 require __DIR__ . "/../app/core/Csrf.php";
 require __DIR__ . "/../app/core/Response.php";
 
-require __DIR__ . "/../app/controllers/HomeController.php";
-require __DIR__ . "/../app/controllers/AdminAuthController.php";
-require __DIR__ . "/../app/controllers/AdminPostController.php";
+// require __DIR__ . "/../app/controllers/HomeController.php";
+// require __DIR__ . "/../app/controllers/AdminAuthController.php";
+// require __DIR__ . "/../app/controllers/AdminPostController.php";
 
 $uri = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 $method = $_SERVER["REQUEST_METHOD"];
@@ -26,7 +26,11 @@ if ($base !== '' && $base !== '/') {
 }
 $uri = $uri === '' ? '/' : $uri;
 
+// expose base to controllers via $GLOBALS so redirects can honor subdirectory installs
+$GLOBALS['base'] = $base;
+
 function view(string $layout, string $view, array $data = []) {
+  $data['base'] = $GLOBALS['base'] ?? '';
   extract($data);
   $viewFile = __DIR__ . "/../app/views/$view.php";
   $layoutFile = __DIR__ . "/../app/views/layouts/$layout.php";
@@ -41,37 +45,9 @@ function notFound() {
 }
 
 /** ROUTES **/
-if ($uri === "/" && $method === "GET") {
-  (new HomeController())->index();
-}
-
-if ($uri === "/admin/login" && $method === "GET") {
-  (new AdminAuthController())->showLogin();
-}
-if ($uri === "/admin/login" && $method === "POST") {
-  (new AdminAuthController())->login();
-}
-if ($uri === "/admin/logout" && $method === "POST") {
-  (new AdminAuthController())->logout();
-}
-
-if ($uri === "/admin/posts" && $method === "GET") {
-  (new AdminPostController())->index();
-}
-if ($uri === "/admin/posts/create" && $method === "GET") {
-  (new AdminPostController())->create();
-}
-if ($uri === "/admin/posts/store" && $method === "POST") {
-  (new AdminPostController())->store();
-}
-if (preg_match('#^/admin/posts/edit/(\d+)$#', $uri, $m) && $method === "GET") {
-  (new AdminPostController())->edit((int)$m[1]);
-}
-if (preg_match('#^/admin/posts/update/(\d+)$#', $uri, $m) && $method === "POST") {
-  (new AdminPostController())->update((int)$m[1]);
-}
-if (preg_match('#^/admin/posts/delete/(\d+)$#', $uri, $m) && $method === "POST") {
-  (new AdminPostController())->delete((int)$m[1]);
+// Load route definitions from app/routes/*.php
+foreach (glob(__DIR__ . "/../app/routes/*.php") as $routeFile) {
+  require $routeFile;
 }
 
 notFound();

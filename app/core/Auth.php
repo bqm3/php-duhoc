@@ -10,7 +10,8 @@ class Auth {
 
   public static function requireAdmin(): void {
     if (!self::checkAdmin()) {
-      header("Location: /admin/login");
+      $login = $GLOBALS['base'] !== '' ? $GLOBALS['base'] . '/admin/login' : '/admin/login';
+      header("Location: " . $login);
       exit;
     }
   }

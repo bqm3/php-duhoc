@@ -5,7 +5,7 @@ return [
     "port" => 3306,
     "name" => "dulich",
     "user" => "root",
-    "pass" => "",
+    "pass" => "1234567890",
     "charset" => "utf8mb4"
   ],
   "app" => [
