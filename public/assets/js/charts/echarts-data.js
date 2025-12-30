@@ -189,9 +189,9 @@ $(function() {
 
                 
         var weatherIcons = {
-            'Sunny': '././assets/img/weather/sunny_128.png',
-            'Cloudy': '././assets/img/weather/cloudy_128.png',
-            'Showers': '././assets/img/weather/showers_128.png',
+            'Sunny': '././php-duhoc/public/assets/img/weather/sunny_128.png',
+            'Cloudy': '././php-duhoc/public/assets/img/weather/cloudy_128.png',
+            'Showers': '././php-duhoc/public/assets/img/weather/showers_128.png',
         };
 
         var seriesLabel = {

@@ -15,6 +15,11 @@ if ($uri === '/admin' && $method === 'GET') {
     $assetPrefix = $base . '/assets';
     $html = preg_replace('#(href|src)=("|\')(?:/[^\/]*/)?assets/#i', '$1=$2' . $assetPrefix . '/', $html);
 
+    // ensure absolute /admin/ links include base when installed in a subdirectory
+    if ($base !== '') {
+      $html = preg_replace('#(href|src)=("|\')/admin/#i', '$1=$2' . $base . '/admin/', $html);
+    }
+
     // rewrite relative html links to /admin/<page>.html
     $html = preg_replace('#href=("|\')(?!/|https?://)([^"\']+?\.html)("|\')#i', 'href=$1' . ($base ?? '') . '/admin/$2$3', $html);
 
@@ -53,6 +58,11 @@ if ($method === 'GET' && strpos($uri, '/admin/') === 0) {
       $base = $GLOBALS['base'] ?? '';
       $assetPrefix = $base . '/assets';
       $html = preg_replace('#(href|src)=("|\')(?:/[^\/]*/)?assets/#i', '$1=$2' . $assetPrefix . '/', $html);
+
+      // ensure absolute /admin/ links include base when installed in a subdirectory
+      if ($base !== '') {
+        $html = preg_replace('#(href|src)=("|\')/admin/#i', '$1=$2' . $base . '/admin/', $html);
+      }
 
       // rewrite relative html links to /admin/<page>.html
       $html = preg_replace('#href=("|\')(?!/|https?://)([^"\']+?\.html)("|\')#i', 'href=$1' . ($base ?? '') . '/admin/$2$3', $html);
