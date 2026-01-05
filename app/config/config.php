@@ -1,15 +1,23 @@
 <?php
+// app/config/config.php
+
 return [
-  "db" => [
-    "host" => "127.0.0.1",
-    "port" => 3306,
-    "name" => "dulich",
-    "user" => "root",
-    "pass" => "1234567890",
-    "charset" => "utf8mb4"
-  ],
-  "app" => [
-    "base_url" => "",
-    "session_name" => "PHP_DU_HOC"
-  ]
+    'app' => [
+        'name' => 'PHP Du Hoc',
+        'session_name' => 'PHP_DU_HOC',
+        'timezone' => 'Asia/Ho_Chi_Minh'
+    ],
+    
+    'database' => [
+        'host' => 'localhost',
+        'port' => 3306,
+        'database' => 'duhoc',
+        'username' => 'root',
+        'password' => ''
+    ],
+    
+    'security' => [
+        'csrf_token_name' => '_csrf',
+        'password_min_length' => 6
+    ]
 ];

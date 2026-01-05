@@ -1,3 +1,4 @@
+<!-- app/routes/admin_dashboard.php  -->
 <?php
 // Admin dashboard (serve static admin index HTML/PHP)
 require_once __DIR__ . '/../utils/createLog.php';

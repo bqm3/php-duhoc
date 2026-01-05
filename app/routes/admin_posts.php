@@ -1,20 +1,32 @@
 <?php
-// Admin posts routes
-if ($uri === "/admin/posts" && $method === "GET") {
-  (new AdminPostController())->index();
+// app/routes/admin_posts.php
+
+// List posts
+if ($uri === '/admin/posts' && $method === 'GET') {
+    AdminPostController::index();
 }
-if ($uri === "/admin/posts/create" && $method === "GET") {
-  (new AdminPostController())->create();
+
+// Create form
+if ($uri === '/admin/posts/create' && $method === 'GET') {
+    AdminPostController::create();
 }
-if ($uri === "/admin/posts/store" && $method === "POST") {
-  (new AdminPostController())->store();
+
+// Store post
+if ($uri === '/admin/posts' && $method === 'POST') {
+    AdminPostController::store();
 }
-if (preg_match('#^/admin/posts/edit/(\d+)$#', $uri, $m) && $method === "GET") {
-  (new AdminPostController())->edit((int)$m[1]);
+
+// Edit form
+if (preg_match('#^/admin/posts/(\d+)/edit$#', $uri, $matches) && $method === 'GET') {
+    AdminPostController::edit((int)$matches[1]);
 }
-if (preg_match('#^/admin/posts/update/(\d+)$#', $uri, $m) && $method === "POST") {
-  (new AdminPostController())->update((int)$m[1]);
+
+// Update post
+if (preg_match('#^/admin/posts/(\d+)$#', $uri, $matches) && $method === 'POST') {
+    AdminPostController::update((int)$matches[1]);
 }
-if (preg_match('#^/admin/posts/delete/(\d+)$#', $uri, $m) && $method === "POST") {
-  (new AdminPostController())->delete((int)$m[1]);
+
+// Delete post
+if (preg_match('#^/admin/posts/(\d+)/delete$#', $uri, $matches) && $method === 'POST') {
+    AdminPostController::delete((int)$matches[1]);
 }

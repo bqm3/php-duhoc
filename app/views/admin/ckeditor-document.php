@@ -1,3 +1,4 @@
+<!-- views/admin/ckeditor-document.php  -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -47,7 +48,7 @@
 
         <div class="row main-content">
             <!--Sidebar left-->
-<?php include 'sidebar.php'; ?>
+        <?php include 'sidebar.php'; ?>
             <!--Sidebar left-->
 
             <!--Content right-->

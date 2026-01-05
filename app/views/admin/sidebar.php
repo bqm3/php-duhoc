@@ -68,6 +68,11 @@
                                     <li class="child"><a href="/admin/ckeditor-inline.html" class="ml-4"><i class="fa fa-angle-right mr-2"></i> Ckeditor inline</a></li>
                                     <li class="child"><a href="/admin/ckeditor-document.html" class="ml-4"><i class="fa fa-angle-right mr-2"></i> Ckeditor document</a></li>
                                     <li class="child"><a href="/admin/summernote.html" class="ml-4"><i class="fa fa-angle-right mr-2"></i> Summernote editor</a></li>
+                                    <li>
+    <a href="<?= $base ?>/admin/posts">
+        <i class="fa fa-file-text"></i> Posts
+    </a>
+</li>
                                 </ul>
                             </li>
                             <li class="parent">
