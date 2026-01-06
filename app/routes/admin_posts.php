@@ -32,3 +32,9 @@ if (preg_match('#^/admin/posts/(\d+)$#', $uri, $matches) && $method === 'POST') 
 if (preg_match('#^/admin/posts/(\d+)/delete$#', $uri, $matches) && $method === 'POST') {
     AdminPostController::delete((int)$matches[1]);
 }
+
+// Upload image (CKEditor)
+if ($uri === '/admin/posts/upload-image' && $method === 'POST') {
+    AdminPostController::uploadImage();
+    exit;
+}

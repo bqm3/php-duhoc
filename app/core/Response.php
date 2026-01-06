@@ -16,8 +16,11 @@ class Response {
     }
     
     public static function notFound() {
-        http_response_code(404);
-        echo "404 Not Found";
+        // http_response_code(404);
+        // echo "404 Not Found";
+        // exit;
+        $layoutFile = __DIR__ ."/../views/admin/error-404.html";
+        include $layoutFile;
         exit;
     }
 }

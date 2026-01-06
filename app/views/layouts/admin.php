@@ -8,12 +8,25 @@ window.__csrf = "<?= htmlspecialchars($csrf ?? '') ?>";
 document.addEventListener('click', function(e){
   var a = e.target.closest && e.target.closest('a');
   if(!a) return;
+  
+  // Lấy text và chuẩn hóa
   var txt = (a.textContent || '').trim().toLowerCase();
-  if(txt === 'logout' || a.querySelector('.fa-power-off')){
+  
+  // Kiểm tra điều kiện:
+  // 1. Text là 'logout' hoặc 'đăng xuất'
+  // 2. Hoặc chứa icon .fa-power-off
+  // 3. Hoặc href chứa '/logout'
+  if(txt === 'logout' || txt === 'đăng xuất' || a.querySelector('.fa-power-off') || a.getAttribute('href').indexOf('logout') !== -1){
     e.preventDefault();
-    if(!confirm('Logout?')) return;
+    if(!confirm('Bạn có chắc chắn muốn đăng xuất?')) return;
+    
     var form = document.getElementById('admin-logout-form');
-    if(form){form.querySelector('input[name=_csrf]').value = window.__csrf || ''; form.submit();}
+    if(form){
+        form.querySelector('input[name=_csrf]').value = window.__csrf || ''; 
+        form.submit();
+    } else {
+        console.error('Logout form not found');
+    }
   }
 });
 </script>

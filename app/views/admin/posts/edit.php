@@ -117,48 +117,154 @@
     <script src="<?= $base ?>/assets/js/bootstrap.min.js"></script>
     
     <script>
+    // Define the adapter class
+    class MyUploadAdapter {
+        constructor( loader ) {
+            this.loader = loader;
+        }
+
+        upload() {
+            return this.loader.file
+                .then( file => new Promise( ( resolve, reject ) => {
+                    this._initRequest();
+                    this._initListeners( resolve, reject, file );
+                    this._sendRequest( file );
+                } ) );
+        }
+
+        abort() {
+            if ( this.xhr ) {
+                this.xhr.abort();
+            }
+        }
+
+        _initRequest() {
+            const xhr = this.xhr = new XMLHttpRequest();
+            xhr.open( 'POST', '<?= $base ?>/admin/posts/upload-image', true );
+            xhr.responseType = 'json';
+        }
+
+        _initListeners( resolve, reject, file ) {
+            const xhr = this.xhr;
+            const loader = this.loader;
+            const genericErrorText = `Couldn't upload file: ${ file.name }.`;
+
+            xhr.addEventListener( 'error', () => reject( genericErrorText ) );
+            xhr.addEventListener( 'abort', () => reject() );
+            xhr.addEventListener( 'load', () => {
+                const response = xhr.response;
+                if ( !response || response.error ) {
+                    return reject( response && response.error ? response.error.message : genericErrorText );
+                }
+                resolve( {
+                    default: response.url
+                } );
+            } );
+
+            if ( xhr.upload ) {
+                xhr.upload.addEventListener( 'progress', evt => {
+                    if ( evt.lengthComputable ) {
+                        loader.uploadTotal = evt.total;
+                        loader.uploaded = evt.loaded;
+                    }
+                } );
+            }
+        }
+
+        _sendRequest( file ) {
+            const data = new FormData();
+            data.append( 'upload', file );
+            data.append( '_csrf', '<?= $csrf ?>' );
+            this.xhr.send( data );
+        }
+    }
+
+    // Define the plugin function
+    function MyCustomUploadAdapterPlugin( editor ) {
+        console.log('MyCustomUploadAdapterPlugin loaded');
+        editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
+            return new MyUploadAdapter( loader );
+        };
+    }
+
     let editor;
     
+    // Initialize Editor
     DecoupledEditor
-        .create(document.querySelector('#document_editor'))
+        .create(document.querySelector('#document_editor'), {
+            extraPlugins: [ MyCustomUploadAdapterPlugin ],
+            toolbar: {
+                items: [
+                    'heading',
+                    '|',
+                    'fontSize',
+                    'fontFamily',
+                    '|',
+                    'bold',
+                    'italic',
+                    'underline',
+                    'strikethrough',
+                    'highlight',
+                    '|',
+                    'alignment',
+                    '|',
+                    'numberedList',
+                    'bulletedList',
+                    '|',
+                    'indent',
+                    'outdent',
+                    '|',
+                    'link',
+                    'blockQuote',
+                    'imageUpload',
+                    'insertTable',
+                    'mediaEmbed',
+                    '|',
+                    'undo',
+                    'redo'
+                ]
+            }
+        })
         .then(newEditor => {
             editor = newEditor;
             const toolbarContainer = document.querySelector('#toolbar-container');
             toolbarContainer.appendChild(editor.ui.view.toolbar.element);
+            console.log('Editor initialized successfully');
         })
         .catch(error => {
-            console.error(error);
+            console.error('Editor initialization failed:', error);
         });
     
     // Auto-generate slug from title if slug is empty
-    document.getElementById('title').addEventListener('input', function() {
-        const slugInput = document.getElementById('slug');
-        const currentSlug = slugInput.getAttribute('data-original') || '<?= htmlspecialchars($post['slug']) ?>';
+    document.getElementById('title').addEventListener('keyup', function() {
+        var title = this.value;
+        var slug = title.toLowerCase();
         
-        if (!slugInput.value || slugInput.value === currentSlug) {
-            slugInput.value = generateSlug(this.value);
-        }
+        // Đổi ký tự có dấu thành không dấu
+        slug = slug.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/g, 'a');
+        slug = slug.replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/g, 'e');
+        slug = slug.replace(/i|í|ì|ỉ|ĩ|ị/g, 'i');
+        slug = slug.replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/g, 'o');
+        slug = slug.replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/g, 'u');
+        slug = slug.replace(/ý|ỳ|ỷ|ỹ|ỵ/g, 'y');
+        slug = slug.replace(/đ/g, 'd');
+        
+        // Xóa ký tự đặc biệt
+        slug = slug.replace(/[^a-z0-9 -]/g, '') 
+                   .replace(/\s+/g, '-') 
+                   .replace(/-+/g, '-');
+        
+        document.getElementById('slug').value = slug;
     });
-    
-    function generateSlug(text) {
-        return text
-            .toLowerCase()
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '')
-            .replace(/đ/g, 'd')
-            .replace(/Đ/g, 'd')
-            .replace(/[^a-z0-9\s-]/g, '')
-            .replace(/\s+/g, '-')
-            .replace(/-+/g, '-')
-            .replace(/^-+|-+$/g, '');
-    }
     
     // Submit form
     document.getElementById('editPostForm').addEventListener('submit', function(e) {
         e.preventDefault();
         
         // Get editor content and put it in hidden textarea
-        document.getElementById('content').value = editor.getData();
+        if (editor) {
+            document.getElementById('content').value = editor.getData();
+        }
         
         // Submit form
         this.submit();

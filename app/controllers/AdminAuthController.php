@@ -2,12 +2,12 @@
 require_once __DIR__ . '/../utils/createLog.php';
 class AdminAuthController {
   public function showLogin() {
-    view("admin", "admin/login", ["csrf" => Csrf::token()]);
+    view("auth", "admin/login", ["csrf" => Csrf::token()]);
   }
 
   public function login() {
     if (!Csrf::verify($_POST["_csrf"] ?? "")) {
-      view("admin", "admin/login", ["error" => "CSRF invalid", "csrf" => Csrf::token()]);
+      view("auth", "admin/login", ["error" => "CSRF invalid", "csrf" => Csrf::token()]);
     }
 
     $email = trim($_POST["email"] ?? "");
@@ -19,12 +19,12 @@ class AdminAuthController {
     $user = $stmt->fetch();
 
     if (!$user || !password_verify($password, $user["password_hash"])) {
-      view("admin", "admin/login", ["error" => "Sai email hoặc mật khẩu", "csrf" => Csrf::token()]);
+      view("auth", "admin/login", ["error" => "Sai email hoặc mật khẩu", "csrf" => Csrf::token()]);
     }
 
     // require admin role to access admin area
     if (($user["role"] ?? "") !== "admin") {
-      view("admin", "admin/login", ["error" => "Tài khoản này không có quyền truy cập trang quản trị", "csrf" => Csrf::token()]);
+      view("auth", "admin/login", ["error" => "Tài khoản này không có quyền truy cập trang quản trị", "csrf" => Csrf::token()]);
     }
 
     Auth::login($user);

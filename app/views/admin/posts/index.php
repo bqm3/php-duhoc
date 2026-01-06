@@ -24,7 +24,7 @@
                         <h5 class="mb-0"><strong>Posts Management</strong></h5>
                         <span class="text-secondary">Dashboard <i class="fa fa-angle-right"></i> Posts</span>
                     </div>
-                    <a href="/admin/posts/create.html" class="btn btn-primary">
+                    <a href="<?= $base ?>/admin/posts/create" class="btn btn-primary">
                         <i class="fa fa-plus"></i> Create New Post
                     </a>
                 </div>
@@ -34,7 +34,7 @@
                         <div class="mt-1 mb-3 p-3 button-container bg-white border shadow-sm">
                             <?php if (empty($posts)): ?>
                                 <div class="alert alert-info">
-                                    No posts found. <a href="/admin/posts/create.html">Create your first post</a>
+                                    No posts found. <a href="<?= $base ?>/admin/posts/create">Create your first post</a>
                                 </div>
                             <?php else: ?>
                                 <div class="table-responsive">
@@ -44,6 +44,7 @@
                                                 <th>ID</th>
                                                 <th>Title</th>
                                                 <th>Slug</th>
+                                                <th>Người tạo</th>
                                                 <th>Category</th>
                                                 <th>Views</th>
                                                 <th>Shares</th>
@@ -60,6 +61,9 @@
                                                     </td>
                                                     <td>
                                                         <code><?= htmlspecialchars($post['slug']) ?></code>
+                                                    </td>
+                                                    <td>
+                                                        <span class="text-primary"><?= htmlspecialchars($post['creator_name'] ?? 'Ẩn danh') ?></span>
                                                     </td>
                                                     <td>
                                                         <?= $post['category_name'] ? htmlspecialchars($post['category_name']) : '<em class="text-muted">No category</em>' ?>

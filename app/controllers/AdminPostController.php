@@ -8,10 +8,23 @@ class AdminPostController {
         Auth::requireAdmin();
         
         $db = Db::getInstance()->pdo();
+
+        // Lazy migration: Ensure user_id column exists
+        try {
+            $stmt = $db->prepare("SHOW COLUMNS FROM posts LIKE 'user_id'");
+            $stmt->execute();
+            if (!$stmt->fetch()) {
+                $db->exec("ALTER TABLE posts ADD COLUMN user_id INT NULL AFTER id");
+            }
+        } catch (Exception $e) {
+            // Ignore if error, or log it
+        }
+
         $stmt = $db->prepare("
-            SELECT p.*, c.name as category_name 
+            SELECT p.*, c.name as category_name, u.full_name as creator_name
             FROM posts p 
             LEFT JOIN categories c ON p.category_id = c.id 
+            LEFT JOIN users u ON p.user_id = u.id
             ORDER BY p.created_at DESC
         ");
         $stmt->execute();
@@ -44,6 +57,9 @@ class AdminPostController {
         $category_id = (int)($_POST['category_id'] ?? 0);
         $content = $_POST['content'] ?? '';
         
+        $user = Auth::user();
+        $user_id = $user ? $user['id'] : null;
+        
         if (empty($title)) {
             Response::json(['error' => 'Title is required'], 400);
         }
@@ -58,11 +74,11 @@ class AdminPostController {
         }
         
         $stmt = $db->prepare("
-            INSERT INTO posts (slug, title, category_id, content) 
-            VALUES (?, ?, ?, ?)
+            INSERT INTO posts (slug, title, category_id, content, user_id) 
+            VALUES (?, ?, ?, ?, ?)
         ");
         
-        if ($stmt->execute([$slug, $title, $category_id, $content])) {
+        if ($stmt->execute([$slug, $title, $category_id, $content, $user_id])) {
             Response::redirect('/admin/posts');
         } else {
             Response::json(['error' => 'Failed to create post'], 500);
@@ -196,5 +212,72 @@ class AdminPostController {
         ];
         
         return strtr($str, $vietnameseTones);
+    }
+
+    // Upload image for CKEditor
+    public static function uploadImage() {
+        Auth::requireAdmin();
+        
+        if (!Csrf::verify($_POST['_csrf'] ?? '')) {
+             Response::json(['error' => ['message' => 'Invalid CSRF token']], 403);
+        }
+        
+        if (!isset($_FILES['upload'])) {
+             Response::json(['error' => ['message' => 'No file uploaded.']], 400);
+        }
+
+        if ($_FILES['upload']['error'] !== UPLOAD_ERR_OK) {
+             $msg = 'Upload failed.';
+             switch ($_FILES['upload']['error']) {
+                 case UPLOAD_ERR_INI_SIZE:
+                 case UPLOAD_ERR_FORM_SIZE:
+                     $msg = 'File is too large (exceeds server limits).';
+                     break;
+                 case UPLOAD_ERR_PARTIAL:
+                     $msg = 'File was only partially uploaded.';
+                     break;
+                 case UPLOAD_ERR_NO_FILE:
+                     $msg = 'No file was uploaded.';
+                     break;
+                 case UPLOAD_ERR_NO_TMP_DIR:
+                     $msg = 'Missing a temporary folder.';
+                     break;
+                 case UPLOAD_ERR_CANT_WRITE:
+                     $msg = 'Failed to write file to disk.';
+                     break;
+                 case UPLOAD_ERR_EXTENSION:
+                     $msg = 'File upload stopped by extension.';
+                     break;
+             }
+             Response::json(['error' => ['message' => $msg]], 400);
+        }
+
+        $file = $_FILES['upload'];
+        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        
+        if (!in_array($ext, $allowed)) {
+             Response::json(['error' => ['message' => 'Invalid file type. Only JPG, PNG, GIF, WEBP allowed.']], 400);
+        }
+
+        $filename = 'post_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
+        $uploadDir = __DIR__ . '/../../public/assets/uploads';
+        
+        if (!is_dir($uploadDir)) {
+            if (!mkdir($uploadDir, 0755, true)) {
+                Response::json(['error' => ['message' => 'Failed to create upload directory.']], 500);
+            }
+        }
+        
+        $destPath = $uploadDir . '/' . $filename;
+        
+        if (move_uploaded_file($file['tmp_name'], $destPath)) {
+            $base = $GLOBALS['base'] ?? '';
+            // Fix double slashes if base is empty
+            $url = ($base ? $base : '') . '/assets/uploads/' . $filename;
+            Response::json(['url' => $url]);
+        } else {
+             Response::json(['error' => ['message' => 'Failed to move uploaded file. Check permissions.']], 500);
+        }
     }
 }

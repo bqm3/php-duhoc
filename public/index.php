@@ -35,6 +35,11 @@ $GLOBALS['base'] = $base;
 
 function view(string $layout, string $view, array $data = []) {
   $data['base'] = $GLOBALS['base'] ?? '';
+  // Tự động thêm CSRF token vào mọi view nếu chưa có
+  if (!isset($data['csrf'])) {
+      $data['csrf'] = Csrf::token();
+  }
+  
   extract($data);
   $viewFile = __DIR__ . "/../app/views/$view.php";
   $layoutFile = __DIR__ . "/../app/views/layouts/$layout.php";
@@ -43,9 +48,8 @@ function view(string $layout, string $view, array $data = []) {
 }
 
 function notFound() {
-  http_response_code(404);
-  echo "404 Not Found";
-  exit;
+  $layoutFile = __DIR__ . "/../app/views/admin/error-404.html";
+  include $layoutFile;
 }
 
 /** ROUTES **/

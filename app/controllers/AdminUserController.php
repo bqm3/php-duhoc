@@ -10,7 +10,7 @@ class AdminUserController {
         $db = Db::getInstance()->pdo();
         // Lấy tất cả user chưa bị xóa mềm (nếu có logic xóa mềm) hoặc tất cả
         // Ở đây dùng role != '' để lấy hết, sắp xếp admin lên đầu
-        $stmt = $db->prepare("SELECT * FROM users WHERE is_deleted = 0 ORDER BY role ASC, created_at DESC");
+        $stmt = $db->prepare("SELECT * FROM users WHERE is_deleted = 0 ORDER BY id ASC");
         $stmt->execute();
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         

@@ -78,7 +78,7 @@
                                             </td>
                                             <td><?= !empty($user['birth_date']) ? date('d/m/Y', strtotime($user['birth_date'])) : '-' ?>
                                             </td>
-                                            <td><?= date('d/m/Y', strtotime($user['created_at'])) ?></td>
+                                            <td><?= date('d/m/Y H:i', strtotime($user['created_at'])) ?></td>
                                             <td> <a href="<?= $base ?>/admin/users/<?= $user['id'] ?>/edit"
                                                     class="btn btn-sm btn-warning" title="Sửa">
                                                     <i class="fa fa-edit"></i>
