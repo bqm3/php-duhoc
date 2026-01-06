@@ -53,6 +53,7 @@ CREATE TABLE `posts` (
   `slug` varchar(255) NOT NULL,
   `title` varchar(255) NOT NULL,
   `category_id` int DEFAULT NULL,
+  `featured_image` VARCHAR(500) NULL,
   `content` longtext,
   `count_view` int DEFAULT '0',
   `count_share` int DEFAULT '0',

@@ -1,11 +1,18 @@
 <?php
 // app/routes/admin_posts.php
 
+// Upload image (CKEditor)
+if ($uri === '/admin/posts/upload-image' && $method === 'POST') {
+    AdminPostController::uploadImage();
+    exit;
+}
+
 // List posts
 if ($uri === '/admin/posts' && $method === 'GET') {
     AdminPostController::index();
     exit;
 }
+
 
 // Create form
 if ($uri === '/admin/posts/create' && $method === 'GET') {
@@ -33,8 +40,6 @@ if (preg_match('#^/admin/posts/(\d+)/delete$#', $uri, $matches) && $method === '
     AdminPostController::delete((int)$matches[1]);
 }
 
-// Upload image (CKEditor)
-if ($uri === '/admin/posts/upload-image' && $method === 'POST') {
-    AdminPostController::uploadImage();
-    exit;
-}
+
+
+

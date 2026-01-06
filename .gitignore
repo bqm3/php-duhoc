@@ -1,1 +1,4 @@
 app/logs
+
+app/config/config.php
+public/assets/uploads
