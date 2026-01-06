@@ -115,7 +115,8 @@
     <script src="<?= $base ?>/assets/js/jquery.min.js"></script>
     <script src="<?= $base ?>/assets/js/popper.min.js"></script>
     <script src="<?= $base ?>/assets/js/bootstrap.min.js"></script>
-    
+    <script src="<?= $base ?>/assets/js/custom.js"></script>
+    '
     <script>
     // Define the adapter class
     class MyUploadAdapter {
