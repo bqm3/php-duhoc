@@ -24,8 +24,7 @@ class Db {
             'mysql:host=%s;port=%d;dbname=%s;charset=utf8mb4',
             $dbCfg['host'] ?? 'localhost',
             $dbCfg['port'] ?? 3306,
-            $dbCfg['database'] ?? '',
-            'utf8mb4'
+            $dbCfg['database'] ?? ''
         );
         
         $options = [
@@ -50,13 +49,16 @@ class Db {
         if (self::$instance === null) {
             self::$instance = new self();
         }
-        return self::$instance->pdo;
+        return self::$instance; // Trả về instance của Db, không phải $pdo
     }
     
-    // Prevent cloning of the instance
+    // Thêm method pdo() để lấy PDO object
+    public function pdo() {
+        return $this->pdo;
+    }
+    
     private function __clone() {}
     
-    // Prevent unserializing of the instance
     public function __wakeup() {
         throw new Exception("Cannot unserialize singleton");
     }

@@ -7,7 +7,7 @@ class AdminPostController {
     public static function index() {
         Auth::requireAdmin();
         
-        $db = Db::getInstance();
+        $db = Db::getInstance()->pdo();
         $stmt = $db->prepare("
             SELECT p.*, c.name as category_name 
             FROM posts p 
@@ -24,7 +24,7 @@ class AdminPostController {
     public static function create() {
         Auth::requireAdmin();
         
-        $db = Db::getInstance();
+        $db = Db::getInstance()->pdo();
         $stmt = $db->query("SELECT * FROM categories ORDER BY name");
         $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
@@ -48,7 +48,7 @@ class AdminPostController {
             Response::json(['error' => 'Title is required'], 400);
         }
         
-        $db = Db::getInstance();
+        $db = Db::getInstance()->pdo();
         
         // Check if slug exists
         $stmt = $db->prepare("SELECT id FROM posts WHERE slug = ?");
@@ -73,7 +73,7 @@ class AdminPostController {
     public static function edit($id) {
         Auth::requireAdmin();
         
-        $db = Db::getInstance();
+        $db = Db::getInstance()->pdo();
         
         // Get post
         $stmt = $db->prepare("SELECT * FROM posts WHERE id = ?");
@@ -109,7 +109,7 @@ class AdminPostController {
             Response::json(['error' => 'Title is required'], 400);
         }
         
-        $db = Db::getInstance();
+        $db = Db::getInstance()->pdo();
         
         // Check if slug exists (exclude current post)
         $stmt = $db->prepare("SELECT id FROM posts WHERE slug = ? AND id != ?");
@@ -136,7 +136,7 @@ class AdminPostController {
         Auth::requireAdmin();
         Csrf::verify($_POST['_csrf'] ?? '');
         
-        $db = Db::getInstance();
+        $db = Db::getInstance()->pdo();
         $stmt = $db->prepare("DELETE FROM posts WHERE id = ?");
         
         if ($stmt->execute([$id])) {

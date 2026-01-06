@@ -13,7 +13,7 @@ class AdminAuthController {
     $email = trim($_POST["email"] ?? "");
     $password = $_POST["password"] ?? "";
 
-    $pdo = Db::pdo();
+    $pdo = Db::getInstance()->pdo();
     $stmt = $pdo->prepare("SELECT * FROM users WHERE email=? LIMIT 1");
     $stmt->execute([$email]);
     $user = $stmt->fetch();
