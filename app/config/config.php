@@ -11,9 +11,9 @@ return [
     'database' => [
         'host' => 'localhost',
         'port' => 3306,
-        'database' => 'duhoc',
+        'database' => 'dulich',
         'username' => 'root',
-        'password' => ''
+        'password' => '1234567890'
     ],
     
     'security' => [

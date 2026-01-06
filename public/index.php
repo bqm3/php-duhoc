@@ -10,9 +10,13 @@ require __DIR__ . "/../app/core/Auth.php";
 require __DIR__ . "/../app/core/Csrf.php";
 require __DIR__ . "/../app/core/Response.php";
 
-require __DIR__ . "/../app/controllers/HomeController.php";
-require __DIR__ . "/../app/controllers/AdminAuthController.php";
-require __DIR__ . "/../app/controllers/AdminPostController.php";
+// require __DIR__ . "/../app/controllers/HomeController.php";
+// require __DIR__ . "/../app/controllers/AdminAuthController.php";
+// require __DIR__ . "/../app/controllers/AdminPostController.php";
+
+foreach (glob(__DIR__ . "/../app/controllers/*.php") as $controllerFile) {
+  require $controllerFile;
+}
 
 $uri = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 $method = $_SERVER["REQUEST_METHOD"];

@@ -3,14 +3,25 @@ USE dulich;
 
 CREATE TABLE users (
   id INT AUTO_INCREMENT PRIMARY KEY,
+
+  -- Thông tin đăng nhập
   email VARCHAR(190) NOT NULL UNIQUE,
   password_hash VARCHAR(255) NOT NULL,
-  role ENUM('admin','user', 'staff') NOT NULL DEFAULT 'user',
-  is_deleted TINYINT NOT NULL default 0,
+
+  -- Thông tin cá nhân
+  full_name VARCHAR(150) NOT NULL,
+  gender ENUM('male','female','other') DEFAULT 'other',
+  birth_date DATE NULL,
+  phone VARCHAR(20) NULL,
+
+  -- Phân quyền & trạng thái
+  role ENUM('admin','staff') NOT NULL DEFAULT 'staff',
+  is_deleted TINYINT(1) NOT NULL DEFAULT 0,
+
+  -- Audit
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
-
 CREATE TABLE IF NOT EXISTS posts (
     id INT AUTO_INCREMENT PRIMARY KEY,
     slug VARCHAR(255) UNIQUE NOT NULL,
@@ -32,23 +43,24 @@ CREATE TABLE IF NOT EXISTS categories (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 -- Tạo admin mặc định (pass: 123456@)
-INSERT INTO users(email,password_hash,role)
+INSERT INTO users(email, password_hash, full_name, gender, birth_date, phone, role)
 VALUES(
   'staff@local.com',
   '$2b$10$MCx2Zt0JOwm8XaIvp7f2Vek2xvPvTsc3RcKiLB2kCNcO.KTCB6HIu',
+  'Nguyễn Văn A',
+ 'male',
+ '1995-08-20',
+ '0989123456',
   'staff'
 );
 
-INSERT INTO users(email,password_hash,role)
+INSERT INTO users(email, password_hash, full_name, gender, birth_date, phone, role)
 VALUES(
   'admin@local.com',
   '$2b$10$MCx2Zt0JOwm8XaIvp7f2Vek2xvPvTsc3RcKiLB2kCNcO.KTCB6HIu',
-  'admin'
-);
-
-INSERT INTO users(email,password_hash,role)
-VALUES(
-  'admin@local.com',
-  '$2b$10$MCx2Zt0JOwm8XaIvp7f2Vek2xvPvTsc3RcKiLB2kCNcO.KTCB6HIu',
+  'ADMIN',
+ 'male',
+ '1995-08-20',
+ '0989123456',
   'admin'
 );
