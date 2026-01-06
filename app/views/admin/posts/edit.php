@@ -10,8 +10,7 @@
     <link rel="stylesheet" href="<?= $base ?>/assets/css/quicksand.css">
     <link rel="stylesheet" href="<?= $base ?>/assets/css/style.css">
     <link rel="stylesheet" href="<?= $base ?>/assets/css/fontawesome.css">
-    
-    <script src="<?= $base ?>/assets/js/ckeditor5/build-document/ckeditor.js"></script>
+    <link rel="stylesheet" href="<?= $base ?>/assets/js/summernote/summernote-bs4.css">
 </head>
 <body>
     <div class="container-fluid">
@@ -77,13 +76,7 @@
                                 
                                 <div class="form-group">
                                     <label><strong>Content</strong></label>
-                                    <div id="toolbar-container"></div>
-                                    <div class="border" style="background: #f5f5f5; padding: 20px;">
-                                        <div id="document_editor" class="editor bg-white shadow-sm p-5" style="min-height: 400px;">
-                                            <?= $post['content'] ?>
-                                        </div>
-                                    </div>
-                                    <textarea name="content" id="content" style="display: none;"></textarea>
+                                    <textarea name="content" id="summernote" class="form-control"><?= htmlspecialchars($post['content']) ?></textarea>
                                 </div>
                                 
                                 <div class="form-group mt-4">
@@ -115,128 +108,49 @@
     <script src="<?= $base ?>/assets/js/jquery.min.js"></script>
     <script src="<?= $base ?>/assets/js/popper.min.js"></script>
     <script src="<?= $base ?>/assets/js/bootstrap.min.js"></script>
+    <script src="<?= $base ?>/assets/js/summernote/summernote-bs4.js"></script>
     <script src="<?= $base ?>/assets/js/custom.js"></script>
-    '
+    
     <script>
-    // Define the adapter class
-    class MyUploadAdapter {
-        constructor( loader ) {
-            this.loader = loader;
-        }
-
-        upload() {
-            return this.loader.file
-                .then( file => new Promise( ( resolve, reject ) => {
-                    this._initRequest();
-                    this._initListeners( resolve, reject, file );
-                    this._sendRequest( file );
-                } ) );
-        }
-
-        abort() {
-            if ( this.xhr ) {
-                this.xhr.abort();
-            }
-        }
-
-        _initRequest() {
-            const xhr = this.xhr = new XMLHttpRequest();
-            xhr.open( 'POST', '<?= $base ?>/admin/posts/upload-image', true );
-            xhr.responseType = 'json';
-        }
-
-        _initListeners( resolve, reject, file ) {
-            const xhr = this.xhr;
-            const loader = this.loader;
-            const genericErrorText = `Couldn't upload file: ${ file.name }.`;
-
-            xhr.addEventListener( 'error', () => reject( genericErrorText ) );
-            xhr.addEventListener( 'abort', () => reject() );
-            xhr.addEventListener( 'load', () => {
-                const response = xhr.response;
-                if ( !response || response.error ) {
-                    return reject( response && response.error ? response.error.message : genericErrorText );
+    $(document).ready(function() {
+        $('#summernote').summernote({
+            height: 400,
+            callbacks: {
+                onImageUpload: function(files) {
+                    uploadImage(files[0]);
                 }
-                resolve( {
-                    default: response.url
-                } );
-            } );
-
-            if ( xhr.upload ) {
-                xhr.upload.addEventListener( 'progress', evt => {
-                    if ( evt.lengthComputable ) {
-                        loader.uploadTotal = evt.total;
-                        loader.uploaded = evt.loaded;
-                    }
-                } );
             }
-        }
-
-        _sendRequest( file ) {
-            const data = new FormData();
-            data.append( 'upload', file );
-            data.append( '_csrf', '<?= $csrf ?>' );
-            this.xhr.send( data );
-        }
-    }
-
-    // Define the plugin function
-    function MyCustomUploadAdapterPlugin( editor ) {
-        console.log('MyCustomUploadAdapterPlugin loaded');
-        editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
-            return new MyUploadAdapter( loader );
-        };
-    }
-
-    let editor;
-    
-    // Initialize Editor
-    DecoupledEditor
-        .create(document.querySelector('#document_editor'), {
-            extraPlugins: [ MyCustomUploadAdapterPlugin ],
-            toolbar: {
-                items: [
-                    'heading',
-                    '|',
-                    'fontSize',
-                    'fontFamily',
-                    '|',
-                    'bold',
-                    'italic',
-                    'underline',
-                    'strikethrough',
-                    'highlight',
-                    '|',
-                    'alignment',
-                    '|',
-                    'numberedList',
-                    'bulletedList',
-                    '|',
-                    'indent',
-                    'outdent',
-                    '|',
-                    'link',
-                    'blockQuote',
-                    'imageUpload',
-                    'insertTable',
-                    'mediaEmbed',
-                    '|',
-                    'undo',
-                    'redo'
-                ]
-            }
-        })
-        .then(newEditor => {
-            editor = newEditor;
-            const toolbarContainer = document.querySelector('#toolbar-container');
-            toolbarContainer.appendChild(editor.ui.view.toolbar.element);
-            console.log('Editor initialized successfully');
-        })
-        .catch(error => {
-            console.error('Editor initialization failed:', error);
         });
+    });
+
+    function uploadImage(file) {
+        var data = new FormData();
+        data.append("upload", file);
+        data.append("_csrf", "<?= $csrf ?>");
+        $.ajax({
+            url: "<?= $base ?>/admin/posts/upload-image",
+            cache: false,
+            contentType: false,
+            processData: false,
+            data: data,
+            type: "post",
+            success: function(response) {
+                if(response.url) {
+                    $('#summernote').summernote('insertImage', response.url, function ($image) {
+                        $image.css('width', '100%');
+                        $image.attr('data-filename', 'image');
+                    });
+                } else {
+                    console.log(response);
+                }
+            },
+            error: function(data) {
+                console.log(data);
+            }
+        });
+    }
     
-    // Auto-generate slug from title if slug is empty
+    // Auto-generate slug from title
     document.getElementById('title').addEventListener('keyup', function() {
         var title = this.value;
         var slug = title.toLowerCase();
@@ -260,15 +174,10 @@
     
     // Submit form
     document.getElementById('editPostForm').addEventListener('submit', function(e) {
-        e.preventDefault();
+        // e.preventDefault();
         
-        // Get editor content and put it in hidden textarea
-        if (editor) {
-            document.getElementById('content').value = editor.getData();
-        }
-        
-        // Submit form
-        this.submit();
+        // Summernote syncs automatically to textarea
+        // No manual sync needed
     });
     </script>
 </body>
