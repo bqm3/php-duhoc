@@ -74,11 +74,46 @@ $open_pages     = isGroupActive(['email', 'login', 'register', 'lockscreen', 'fo
                 </li>
 
                 <!-- POSTS -->
+                <?php
+                // Fetch categories for sidebar menu
+                $sidebarCategories = [];
+                try {
+                    $sidebarDb = Db::getInstance()->pdo();
+                    $sidebarStmt = $sidebarDb->query("SELECT id, name FROM categories ORDER BY name ASC");
+                    $sidebarCategories = $sidebarStmt->fetchAll(PDO::FETCH_ASSOC);
+                } catch (Exception $e) {
+                    // Ignore error if DB fails
+                }
+                
+                // Check if Posts menu should be open
+                $open_posts = isGroupActive(['/admin/posts']);
+                ?>
                 <li class="parent">
-                    <a href="<?= $base ?>/admin/posts" class="<?= activeClass('/admin/posts') ?>">
+                    <a href="#" onclick="toggle_menu('posts_menu'); return false" class="">
                         <i class="fa fa-file-text mr-3"></i>
-                        <span class="none"> Quản lý bài viết </span>
+                        <span class="none"> Quản lý bài viết <i class="fa fa-angle-down pull-right align-bottom"></i></span>
                     </a>
+                    <ul class="children" id="posts_menu" style="display: <?= $open_posts ? 'block' : 'none' ?>;">
+                        <li class="child">
+                            <a href="<?= $base ?>/admin/posts" class="ml-4 <?= ($uri == $base.'/admin/posts' && empty($_GET['category_id'])) ? 'text-primary font-weight-bold' : '' ?>">
+                                <i class="fa fa-angle-right mr-2"></i> Tất cả bài viết
+                            </a>
+                        </li>
+                        <?php foreach ($sidebarCategories as $cat): ?>
+                            <li class="child">
+                                <a href="<?= $base ?>/admin/posts?category_id=<?= $cat['id'] ?>" 
+                                   class="ml-4 <?= (isset($_GET['category_id']) && $_GET['category_id'] == $cat['id']) ? 'text-primary font-weight-bold' : '' ?>">
+                                    <i class="fa fa-angle-right mr-2"></i> <?= htmlspecialchars($cat['name']) ?>
+                                </a>
+                            </li>
+                        <?php endforeach; ?>
+                        
+                        <li class="child" style="border-top: 1px dashed #eee; margin-top: 5px; padding-top: 5px;">
+                             <a href="<?= $base ?>/admin/posts/create<?= isset($_GET['category_id']) ? '?category_id='.$_GET['category_id'] : '' ?>" class="ml-4 text-success">
+                                <i class="fa fa-plus mr-2"></i> Viết bài mới
+                            </a>
+                        </li>
+                    </ul>
                 </li>
 
                 <!-- CATEGORIES -->
@@ -321,9 +356,13 @@ $open_pages     = isGroupActive(['email', 'login', 'register', 'lockscreen', 'fo
         else if (currentUrl.indexOf('email') > -1 || currentUrl.indexOf('profile') > -1 || currentUrl.indexOf('gallery') > -1 || currentUrl.indexOf('pricing') > -1) {
             localStorage.setItem('lastTab', 'pages');
         }
-        // Nhóm các trang độc lập (Users, Posts, Categories) -> Xóa trạng thái để đóng hết
+        // Posts (New logic to keep menu open)
+        else if (currentUrl.indexOf('/admin/posts') > -1) {
+            localStorage.setItem('lastTab', 'posts_menu');
+        }
+        // Nhóm các trang độc lập (Users, Categories) -> Xóa trạng thái để đóng hết
         else if (currentUrl.indexOf('/admin/users') > -1 || 
-                 currentUrl.indexOf('/admin/posts') > -1 || 
+                 // currentUrl.indexOf('/admin/posts') > -1 ||  <-- Removed
                  currentUrl.indexOf('/admin/categories') > -1) {
             
             localStorage.removeItem('lastTab');

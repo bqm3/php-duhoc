@@ -25,20 +25,27 @@ class AdminPostController
         // Pagination & Search Logic
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
         $keyword = isset($_GET['keyword']) ? trim($_GET['keyword']) : '';
+        $categoryId = isset($_GET['category_id']) ? (int)$_GET['category_id'] : 0;
+        
         $limit = 10;
         $offset = ($page - 1) * $limit;
 
         // Build query conditions
-        $whereClause = "";
+        $whereClause = "WHERE 1=1";
         $params = [];
         
         if (!empty($keyword)) {
-            $whereClause = "WHERE p.title LIKE ? OR p.slug LIKE ? OR c.name LIKE ? OR u.full_name LIKE ?";
+            $whereClause .= " AND (p.title LIKE ? OR p.slug LIKE ? OR c.name LIKE ? OR u.full_name LIKE ?)";
             $searchTerm = "%$keyword%";
             $params[] = $searchTerm;
             $params[] = $searchTerm;
             $params[] = $searchTerm;
             $params[] = $searchTerm;
+        }
+        
+        if ($categoryId > 0) {
+            $whereClause .= " AND p.category_id = ?";
+            $params[] = $categoryId;
         }
 
         // Count total records
@@ -74,7 +81,8 @@ class AdminPostController
             'posts' => $posts,
             'total_pages' => $totalPages,
             'current_page' => $page,
-            'keyword' => $keyword
+            'keyword' => $keyword,
+            'current_category_id' => $categoryId
         ]);
     }
 
@@ -82,6 +90,8 @@ class AdminPostController
     public static function create()
     {
         Auth::requireAdmin();
+
+        $selectedCategoryId = isset($_GET['category_id']) ? (int)$_GET['category_id'] : 0;
 
         $db = Db::getInstance()->pdo();
         $stmt = $db->query("SELECT * FROM categories ORDER BY name");
@@ -93,6 +103,7 @@ class AdminPostController
         view('admin', 'admin/posts/create', [
             'categories' => $categories,
             'countries' => $countries,
+            'selected_category_id' => $selectedCategoryId,
             'csrf' => Csrf::token()
         ]);
     }

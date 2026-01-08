@@ -21,11 +21,11 @@
             <div class="col-sm-9 col-xs-12 content pt-3 pl-0">
                 <div class="mb-3 d-flex justify-content-between align-items-center">
                     <div>
-                        <h5 class="mb-0"><strong>Posts Management</strong></h5>
+                        <h5 class="mb-0"><strong>Quản lý Bài viết</strong></h5>
                         <span class="text-secondary">Dashboard <i class="fa fa-angle-right"></i> Posts</span>
                     </div>
-                    <a href="<?= $base ?>/admin/posts/create" class="btn btn-primary">
-                        <i class="fa fa-plus"></i> Create New Post
+                    <a href="<?= $base ?>/admin/posts/create<?= !empty($current_category_id) ? '?category_id='.$current_category_id : '' ?> " class="btn btn-primary">
+                        <i class="fa fa-plus"></i> Thêm bài viết mới
                     </a>
                 </div>
                 
@@ -33,8 +33,11 @@
                     <div class="col-sm-12">
                         <!-- Search Form -->
                         <form method="GET" action="" class="mb-3">
+                            <?php if(!empty($current_category_id)): ?>
+                                <input type="hidden" name="category_id" value="<?= $current_category_id ?>">
+                            <?php endif; ?>
                             <div class="input-group" style="max-width: 400px;">
-                                <input type="text" name="keyword" class="form-control" placeholder="Search title, category, user..." value="<?= htmlspecialchars($keyword ?? '') ?>">
+                                <input type="text" name="keyword" class="form-control" placeholder="Tìm kiếm tên, slug..." value="<?= htmlspecialchars($keyword ?? '') ?>">
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-secondary" type="submit"><i class="fa fa-search"></i></button>
                                 </div>
@@ -44,7 +47,7 @@
                         <div class="mt-1 mb-3 p-3 button-container bg-white border shadow-sm">
                             <?php if (empty($posts)): ?>
                                 <div class="alert alert-info">
-                                    No posts found. <a href="<?= $base ?>/admin/posts/create">Create your first post</a>
+                                    Không tìm thấy bài viết nào. <a href="<?= $base ?>/admin/posts/create<?= !empty($current_category_id) ? '?category_id='.$current_category_id : '' ?>">Tạo bài viết đầu tiên của bạn</a>
                                 </div>
                             <?php else: ?>
                                 <div class="table-responsive">
@@ -110,16 +113,21 @@
                                 <?php if (isset($total_pages) && $total_pages > 1): ?>
                                 <nav aria-label="Page navigation" class="mt-3">
                                     <ul class="pagination justify-content-end">
+                                        <?php 
+                                            $catParam = !empty($current_category_id) ? '&category_id='.$current_category_id : '';
+                                            $kwParam = !empty($keyword) ? '&keyword='.htmlspecialchars($keyword) : '';
+                                            $baseParams = $catParam . $kwParam;
+                                        ?>
                                         <li class="page-item <?= ($current_page <= 1) ? 'disabled' : '' ?>">
-                                            <a class="page-link" href="?page=<?= $current_page - 1 ?>&keyword=<?= htmlspecialchars($keyword ?? '') ?>" tabindex="-1">Previous</a>
+                                            <a class="page-link" href="?page=<?= $current_page - 1 ?><?= $baseParams ?>" tabindex="-1">Previous</a>
                                         </li>
                                         <?php for ($i = 1; $i <= $total_pages; $i++): ?>
                                         <li class="page-item <?= ($i == $current_page) ? 'active' : '' ?>">
-                                            <a class="page-link" href="?page=<?= $i ?>&keyword=<?= htmlspecialchars($keyword ?? '') ?>"><?= $i ?></a>
+                                            <a class="page-link" href="?page=<?= $i ?><?= $baseParams ?>"><?= $i ?></a>
                                         </li>
                                         <?php endfor; ?>
                                         <li class="page-item <?= ($current_page >= $total_pages) ? 'disabled' : '' ?>">
-                                            <a class="page-link" href="?page=<?= $current_page + 1 ?>&keyword=<?= htmlspecialchars($keyword ?? '') ?>">Next</a>
+                                            <a class="page-link" href="?page=<?= $current_page + 1 ?><?= $baseParams ?>">Next</a>
                                         </li>
                                     </ul>
                                 </nav>

@@ -52,7 +52,9 @@
                                     <select class="form-control" id="category_id" name="category_id">
                                         <option value="">-- Select Category --</option>
                                         <?php foreach ($categories as $cat): ?>
-                                            <option value="<?= $cat['id'] ?>"><?= htmlspecialchars($cat['name']) ?></option>
+                                            <option value="<?= $cat['id'] ?>" <?= (isset($selected_category_id) && $selected_category_id == $cat['id']) ? 'selected' : '' ?>>
+                                                <?= htmlspecialchars($cat['name']) ?>
+                                            </option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
