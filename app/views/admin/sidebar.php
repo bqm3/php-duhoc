@@ -24,6 +24,8 @@ function activeClass($targetPath) {
     if (strpos($targetPath, '/admin/consultations') !== false && strpos($currentPath, '/consultations') !== false) return 'text-primary font-weight-bold';
     if (strpos($targetPath, '/admin/continents') !== false && strpos($currentPath, '/continents') !== false) return 'text-primary font-weight-bold';
     if (strpos($targetPath, '/admin/countries') !== false && strpos($currentPath, '/countries') !== false) return 'text-primary font-weight-bold';
+    if (strpos($targetPath, '/admin/cities') !== false && strpos($currentPath, '/cities') !== false) return 'text-primary font-weight-bold';
+    if (strpos($targetPath, '/admin/education-levels') !== false && strpos($currentPath, '/education-levels') !== false) return 'text-primary font-weight-bold';
     
     
     return '';
