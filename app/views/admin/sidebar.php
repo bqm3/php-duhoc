@@ -120,7 +120,7 @@ $open_pages     = isGroupActive(['email', 'login', 'register', 'lockscreen', 'fo
                 <li class="parent">
                     <a href="<?= $base ?>/admin/categories" class="<?= activeClass('/admin/categories') ?>">
                         <i class="fa fa-tags mr-3"></i>
-                        <span class="none"> Categories </span>
+                        <span class="none"> Quản lý danh mục </span>
                     </a>
                 </li>
 
@@ -133,6 +133,18 @@ $open_pages     = isGroupActive(['email', 'login', 'register', 'lockscreen', 'fo
                     <ul class="children" id="locations" style="display: none;">
                         <li class="child"><a href="<?= $base ?>/admin/continents" class="ml-4 <?= activeClass('/admin/continents') ?>"><i class="fa fa-angle-right mr-2"></i> Châu Lục</a></li>
                         <li class="child"><a href="<?= $base ?>/admin/countries" class="ml-4 <?= activeClass('/admin/countries') ?>"><i class="fa fa-angle-right mr-2"></i> Quốc Gia</a></li>
+                        <li class="child"><a href="<?= $base ?>/admin/cities" class="ml-4 <?= activeClass('/admin/cities') ?>"><i class="fa fa-angle-right mr-2"></i> Thành Phố</a></li>
+                    </ul>
+                </li>
+
+                <!-- EDUCATION -->
+                <li class="parent">
+                    <a href="#" onclick="toggle_menu('education'); return false" class="">
+                        <i class="fa fa-graduation-cap mr-3"></i>
+                        <span class="none"> Quản lý Đào tạo <i class="fa fa-angle-down pull-right align-bottom"></i></span>
+                    </a>
+                    <ul class="children" id="education" style="display: none;">
+                        <li class="child"><a href="<?= $base ?>/admin/education-levels" class="ml-4 <?= activeClass('/admin/education-levels') ?>"><i class="fa fa-angle-right mr-2"></i> Bậc Học</a></li>
                     </ul>
                 </li>
 

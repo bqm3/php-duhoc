@@ -98,6 +98,20 @@
         $(document).ready(function() {
             $('#summernote').summernote({height: 200});
         });
+
+        document.querySelector('input[name="name"]').addEventListener('keyup', function() {
+            var title = this.value;
+            var slug = title.toLowerCase();
+            slug = slug.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/g, 'a');
+            slug = slug.replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/g, 'e');
+            slug = slug.replace(/i|í|ì|ỉ|ĩ|ị/g, 'i');
+            slug = slug.replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/g, 'o');
+            slug = slug.replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/g, 'u');
+            slug = slug.replace(/ý|ỳ|ỷ|ỹ|ỵ/g, 'y');
+            slug = slug.replace(/đ/g, 'd');
+            slug = slug.replace(/[^a-z0-9 -]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-');
+            document.querySelector('input[name="slug"]').value = slug;
+        });
     </script>
 </body>
 </html>

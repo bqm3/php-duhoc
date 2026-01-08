@@ -1,6 +1,6 @@
 <?php
 
-class AdminContinentController {
+class AdminCityController {
 
     public static function index() {
         Auth::requireAdmin();
@@ -14,24 +14,32 @@ class AdminContinentController {
         $whereClause = "WHERE 1=1";
         $params = [];
         if (!empty($keyword)) {
-            $whereClause .= " AND (name LIKE ? OR slug LIKE ?)";
+            $whereClause .= " AND (ci.name LIKE ? OR ci.slug LIKE ?)";
             $params[] = "%$keyword%";
             $params[] = "%$keyword%";
         }
 
         // Count
-        $countStmt = $db->prepare("SELECT COUNT(*) FROM continents $whereClause");
+        $countStmt = $db->prepare("SELECT COUNT(*) FROM cities ci $whereClause");
         $countStmt->execute($params);
         $totalRecords = $countStmt->fetchColumn();
         $totalPages = ceil($totalRecords / $limit);
 
         // Fetch
-        $stmt = $db->prepare("SELECT * FROM continents $whereClause ORDER BY display_order ASC, name ASC LIMIT $limit OFFSET $offset");
+        $sql = "
+            SELECT ci.*, c.name as country_name 
+            FROM cities ci 
+            LEFT JOIN countries c ON ci.country_id = c.id 
+            $whereClause 
+            ORDER BY ci.name ASC 
+            LIMIT $limit OFFSET $offset
+        ";
+        $stmt = $db->prepare($sql);
         $stmt->execute($params);
-        $continents = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $cities = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        view('admin', 'admin/continents/index', [
-            'continents' => $continents,
+        view('admin', 'admin/cities/index', [
+            'cities' => $cities,
             'total_pages' => $totalPages,
             'current_page' => $page,
             'keyword' => $keyword
@@ -40,7 +48,14 @@ class AdminContinentController {
 
     public static function create() {
         Auth::requireAdmin();
-        view('admin', 'admin/continents/create', ['csrf' => Csrf::token()]);
+        $db = Db::getInstance()->pdo();
+        // Get countries for dropdown
+        $countries = $db->query("SELECT id, name FROM countries ORDER BY name")->fetchAll();
+        
+        view('admin', 'admin/cities/create', [
+            'countries' => $countries,
+            'csrf' => Csrf::token()
+        ]);
     }
 
     public static function store() {
@@ -51,50 +66,41 @@ class AdminContinentController {
         $slug = trim($_POST['slug'] ?? '');
         if (empty($slug)) $slug = self::generateSlug($name);
         
-        $description = $_POST['description'] ?? '';
-        $display_order = (int)($_POST['display_order'] ?? 0);
+        $country_id = !empty($_POST['country_id']) ? (int)$_POST['country_id'] : null;
 
-        if (empty($name)) {
-            Response::json(['error' => 'Tên châu lục không được để trống'], 400);
-        }
-
-        // Upload Image
-        $image_url = null;
-        try {
-            if (isset($_FILES['image']) && $_FILES['image']['size'] > 0) {
-                $image_url = self::saveUploadedImage($_FILES['image'], 'continent_');
-            }
-        } catch (Exception $e) {
-            Response::json(['error' => $e->getMessage()], 400);
-        }
+        if (empty($name)) Response::json(['error' => 'Name is required'], 400);
 
         $db = Db::getInstance()->pdo();
         
         // Check slug
-        $stmt = $db->prepare("SELECT id FROM continents WHERE slug = ?");
+        $stmt = $db->prepare("SELECT id FROM cities WHERE slug = ?");
         $stmt->execute([$slug]);
         if ($stmt->fetch()) $slug .= '-' . time();
 
-        $stmt = $db->prepare("INSERT INTO continents (name, slug, description, image_url, display_order, created_at) VALUES (?, ?, ?, ?, ?, NOW())");
+        $stmt = $db->prepare("INSERT INTO cities (country_id, name, slug, created_at) VALUES (?, ?, ?, NOW())");
         
-        if ($stmt->execute([$name, $slug, $description, $image_url, $display_order])) {
-            Response::redirect('/admin/continents');
+        if ($stmt->execute([$country_id, $name, $slug])) {
+            Response::redirect('/admin/cities');
         } else {
-            Response::json(['error' => 'Failed to create continent'], 500);
+            Response::json(['error' => 'Failed to create'], 500);
         }
     }
 
     public static function edit($id) {
         Auth::requireAdmin();
         $db = Db::getInstance()->pdo();
-        $stmt = $db->prepare("SELECT * FROM continents WHERE id = ?");
-        $stmt->execute([$id]);
-        $continent = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        $city = $db->prepare("SELECT * FROM cities WHERE id = ?");
+        $city->execute([$id]);
+        $city = $city->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$city) Response::notFound();
 
-        if (!$continent) Response::notFound();
+        $countries = $db->query("SELECT id, name FROM countries ORDER BY name")->fetchAll();
 
-        view('admin', 'admin/continents/edit', [
-            'continent' => $continent,
+        view('admin', 'admin/cities/edit', [
+            'city' => $city,
+            'countries' => $countries,
             'csrf' => Csrf::token()
         ]);
     }
@@ -107,35 +113,21 @@ class AdminContinentController {
         $slug = trim($_POST['slug'] ?? '');
         if (empty($slug)) $slug = self::generateSlug($name);
         
-        $description = $_POST['description'] ?? '';
-        $display_order = (int)($_POST['display_order'] ?? 0);
+        $country_id = !empty($_POST['country_id']) ? (int)$_POST['country_id'] : null;
 
         $db = Db::getInstance()->pdo();
-        $stmt = $db->prepare("SELECT image_url FROM continents WHERE id = ?");
-        $stmt->execute([$id]);
-        $old = $stmt->fetch();
-
-        // Upload new Image
-        $image_url = $old['image_url'];
-        try {
-            if (isset($_FILES['image']) && $_FILES['image']['size'] > 0) {
-                $image_url = self::saveUploadedImage($_FILES['image'], 'continent_');
-            }
-        } catch (Exception $e) {
-            Response::json(['error' => $e->getMessage()], 400);
-        }
-
+        
         // Check slug
-        $stmt = $db->prepare("SELECT id FROM continents WHERE slug = ? AND id != ?");
+        $stmt = $db->prepare("SELECT id FROM cities WHERE slug = ? AND id != ?");
         $stmt->execute([$slug, $id]);
         if ($stmt->fetch()) $slug .= '-' . time();
 
-        $stmt = $db->prepare("UPDATE continents SET name=?, slug=?, description=?, image_url=?, display_order=?, updated_at=NOW() WHERE id=?");
+        $stmt = $db->prepare("UPDATE cities SET country_id=?, name=?, slug=?, updated_at=NOW() WHERE id=?");
         
-        if ($stmt->execute([$name, $slug, $description, $image_url, $display_order, $id])) {
-            Response::redirect('/admin/continents');
+        if ($stmt->execute([$country_id, $name, $slug, $id])) {
+            Response::redirect('/admin/cities');
         } else {
-            Response::json(['error' => 'Failed to update continent'], 500);
+            Response::json(['error' => 'Failed to update'], 500);
         }
     }
 
@@ -144,14 +136,7 @@ class AdminContinentController {
         Csrf::verify($_POST['_csrf'] ?? '');
         $db = Db::getInstance()->pdo();
         
-        // Check dependencies
-        $check = $db->prepare("SELECT COUNT(*) FROM countries WHERE continent_id = ?");
-        $check->execute([$id]);
-        if ($check->fetchColumn() > 0) {
-            Response::json(['error' => 'Không thể xóa: Có quốc gia thuộc châu lục này.'], 400);
-        }
-
-        $stmt = $db->prepare("DELETE FROM continents WHERE id = ?");
+        $stmt = $db->prepare("DELETE FROM cities WHERE id = ?");
         if ($stmt->execute([$id])) {
             Response::json(['success' => true]);
         } else {
@@ -159,7 +144,6 @@ class AdminContinentController {
         }
     }
 
-    // --- Helpers ---
     private static function generateSlug($text) {
         $text = self::removeVietnameseTones($text);
         $text = strtolower($text);
@@ -198,18 +182,5 @@ class AdminContinentController {
             'Đ' => 'D'
         ];
         return strtr($str, $vietnameseTones);
-    }
-
-    private static function saveUploadedImage($file, $prefix) {
-        $uploadDir = __DIR__ . '/../../public/assets/uploads/locations';
-        if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
-
-        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        $filename = $prefix . time() . '_' . rand(1000,9999) . '.' . $ext;
-        
-        if (move_uploaded_file($file['tmp_name'], $uploadDir . '/' . $filename)) {
-            return '/assets/uploads/locations/' . $filename;
-        }
-        throw new Exception("Upload failed");
     }
 }
