@@ -38,9 +38,19 @@
 
                 <div class="row mt-3">
                     <div class="col-sm-12">
+                        <!-- Search Form -->
+                        <form method="GET" action="" class="mb-3">
+                            <div class="input-group" style="max-width: 400px;">
+                                <input type="text" name="keyword" class="form-control" placeholder="Tìm kiếm tên, email, sđt..." value="<?= htmlspecialchars($keyword ?? '') ?>">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="submit"><i class="fa fa-search"></i></button>
+                                </div>
+                            </div>
+                        </form>
+
                         <div class="mt-1 mb-3 p-3 button-container bg-white border shadow-sm">
                             <?php if (empty($users)): ?>
-                            <div class="alert alert-info">Chưa có người dùng nào.</div>
+                            <div class="alert alert-info">Không tìm thấy người dùng nào.</div>
                             <?php else: ?>
                             <div class="table-responsive">
                                 <table class="table table-striped table-hover">
@@ -71,10 +81,10 @@
                                             </td>
                                             <td>
                                                 <?php 
-                                                                                                if ($user['gender'] == 'male') echo 'Nam';
-                                                                                                elseif ($user['gender'] == 'female') echo 'Nữ';
-                                                                                                else echo 'Khác';
-                                                                                                ?>
+                                                if ($user['gender'] == 'male') echo 'Nam';
+                                                elseif ($user['gender'] == 'female') echo 'Nữ';
+                                                else echo 'Khác';
+                                                ?>
                                             </td>
                                             <td><?= !empty($user['birth_date']) ? date('d/m/Y', strtotime($user['birth_date'])) : '-' ?>
                                             </td>
@@ -94,6 +104,31 @@
                                     </tbody>
                                 </table>
                             </div>
+
+                            <!-- Pagination -->
+                            <?php if (isset($total_pages) && $total_pages > 1): ?>
+                            <nav aria-label="Page navigation" class="mt-3">
+                                <ul class="pagination justify-content-end">
+                                    <!-- Previous -->
+                                    <li class="page-item <?= ($current_page <= 1) ? 'disabled' : '' ?>">
+                                        <a class="page-link" href="?page=<?= $current_page - 1 ?>&keyword=<?= htmlspecialchars($keyword ?? '') ?>" tabindex="-1">Trước</a>
+                                    </li>
+                                    
+                                    <!-- Numbers -->
+                                    <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                                    <li class="page-item <?= ($i == $current_page) ? 'active' : '' ?>">
+                                        <a class="page-link" href="?page=<?= $i ?>&keyword=<?= htmlspecialchars($keyword ?? '') ?>"><?= $i ?></a>
+                                    </li>
+                                    <?php endfor; ?>
+                                    
+                                    <!-- Next -->
+                                    <li class="page-item <?= ($current_page >= $total_pages) ? 'disabled' : '' ?>">
+                                        <a class="page-link" href="?page=<?= $current_page + 1 ?>&keyword=<?= htmlspecialchars($keyword ?? '') ?>">Sau</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                            <?php endif; ?>
+
                             <?php endif; ?>
                         </div>
                     </div>

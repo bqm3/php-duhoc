@@ -58,16 +58,6 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="country_id"><strong>Country</strong></label>
-                                    <select class="form-control" id="country_id" name="country_id">
-                                        <option value="">-- Select Country (Optional) --</option>
-                                        <?php foreach ($countries as $country): ?>
-                                            <option value="<?= $country['id'] ?>"><?= htmlspecialchars($country['name']) ?></option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </div>
-
-                                <div class="form-group">
                                     <label for="featured_image"><strong>Ảnh chính</strong></label>
                                     <input type="file" class="form-control" id="featured_image" name="featured_image" accept="image/*">
                                     <small class="form-text text-muted">Ảnh đại diện hiển thị ngoài danh sách/chi tiết bài viết.</small>

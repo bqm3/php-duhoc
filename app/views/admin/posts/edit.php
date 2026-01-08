@@ -61,6 +61,18 @@
                                 </div>
 
                                 <div class="form-group">
+                                    <label for="country_id"><strong>Country</strong></label>
+                                    <select class="form-control" id="country_id" name="country_id">
+                                        <option value="">-- Select Country (Optional) --</option>
+                                        <?php foreach ($countries as $country): ?>
+                                            <option value="<?= $country['id'] ?>" <?= ($post['country_id'] ?? '') == $country['id'] ? 'selected' : '' ?>>
+                                                <?= htmlspecialchars($country['name']) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
                                     <label for="featured_image"><strong>Ảnh chính</strong></label>
 
                                     <?php if (!empty($post['featured_image'])): ?>
@@ -110,6 +122,11 @@
   </small> -->
                                 </div>
 
+
+                                <div class="form-group">
+                                    <label><strong>Summary</strong></label>
+                                    <textarea name="summary" id="summernote_summary" class="form-control"><?= htmlspecialchars($post['summary'] ?? '') ?></textarea>
+                                </div>
 
                                 <div class="form-group">
                                     <label><strong>Content</strong></label>
@@ -168,14 +185,31 @@
                 height: 400,
                 callbacks: {
                     onImageUpload: function(files) {
-                        uploadImage(files[0]);
+                        uploadImage(files[0], '#summernote');
+                    }
+                }
+            });
+
+            $('#summernote_summary').summernote({
+                height: 150,
+                // toolbar: [
+                //     ['style', ['bold', 'italic', 'underline', 'clear']],
+                //     ['font', ['strikethrough', 'superscript', 'subscript']],
+                //     ['fontsize', ['fontsize']],
+                //     ['color', ['color']],
+                //     ['para', ['ul', 'ol', 'paragraph']],
+                //     ['height', ['height']]
+                // ],
+                callbacks: {
+                    onImageUpload: function(files) {
+                        uploadImage(files[0], '#summernote_summary');
                     }
                 }
             });
         });
 
        
-            function uploadImage(file) {
+            function uploadImage(file, editorId) {
                 var data = new FormData();
                 data.append("upload", file);
                 data.append("_csrf", "<?= $csrf ?>");
@@ -198,7 +232,7 @@
                             // QUAN TRỌNG: project chạy subfolder => phải cộng $base
                             const fullUrl = "<?= $base ?>" + response.url;
 
-                            $('#summernote').summernote('insertImage', fullUrl, function($image) {
+                            $(editorId).summernote('insertImage', fullUrl, function($image) {
                                 $image.css('width', '100%');
                             });
                         } else {

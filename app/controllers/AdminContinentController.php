@@ -1,0 +1,182 @@
+<?php
+
+class AdminContinentController {
+
+    public static function index() {
+        Auth::requireAdmin();
+        $db = Db::getInstance()->pdo();
+
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $keyword = isset($_GET['keyword']) ? trim($_GET['keyword']) : '';
+        $limit = 10;
+        $offset = ($page - 1) * $limit;
+
+        $whereClause = "WHERE 1=1";
+        $params = [];
+        if (!empty($keyword)) {
+            $whereClause .= " AND (name LIKE ? OR slug LIKE ?)";
+            $params[] = "%$keyword%";
+            $params[] = "%$keyword%";
+        }
+
+        // Count
+        $countStmt = $db->prepare("SELECT COUNT(*) FROM continents $whereClause");
+        $countStmt->execute($params);
+        $totalRecords = $countStmt->fetchColumn();
+        $totalPages = ceil($totalRecords / $limit);
+
+        // Fetch
+        $stmt = $db->prepare("SELECT * FROM continents $whereClause ORDER BY display_order ASC, name ASC LIMIT $limit OFFSET $offset");
+        $stmt->execute($params);
+        $continents = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        view('admin', 'admin/continents/index', [
+            'continents' => $continents,
+            'total_pages' => $totalPages,
+            'current_page' => $page,
+            'keyword' => $keyword
+        ]);
+    }
+
+    public static function create() {
+        Auth::requireAdmin();
+        view('admin', 'admin/continents/create', ['csrf' => Csrf::token()]);
+    }
+
+    public static function store() {
+        Auth::requireAdmin();
+        Csrf::verify($_POST['_csrf'] ?? '');
+
+        $name = trim($_POST['name'] ?? '');
+        $slug = trim($_POST['slug'] ?? '');
+        if (empty($slug)) $slug = self::generateSlug($name);
+        
+        $description = $_POST['description'] ?? '';
+        $display_order = (int)($_POST['display_order'] ?? 0);
+
+        if (empty($name)) {
+            Response::json(['error' => 'Tên châu lục không được để trống'], 400);
+        }
+
+        // Upload Image
+        $image_url = null;
+        try {
+            if (isset($_FILES['image']) && $_FILES['image']['size'] > 0) {
+                $image_url = self::saveUploadedImage($_FILES['image'], 'continent_');
+            }
+        } catch (Exception $e) {
+            Response::json(['error' => $e->getMessage()], 400);
+        }
+
+        $db = Db::getInstance()->pdo();
+        
+        // Check slug
+        $stmt = $db->prepare("SELECT id FROM continents WHERE slug = ?");
+        $stmt->execute([$slug]);
+        if ($stmt->fetch()) $slug .= '-' . time();
+
+        $stmt = $db->prepare("INSERT INTO continents (name, slug, description, image_url, display_order, created_at) VALUES (?, ?, ?, ?, ?, NOW())");
+        
+        if ($stmt->execute([$name, $slug, $description, $image_url, $display_order])) {
+            Response::redirect('/admin/continents');
+        } else {
+            Response::json(['error' => 'Failed to create continent'], 500);
+        }
+    }
+
+    public static function edit($id) {
+        Auth::requireAdmin();
+        $db = Db::getInstance()->pdo();
+        $stmt = $db->prepare("SELECT * FROM continents WHERE id = ?");
+        $stmt->execute([$id]);
+        $continent = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$continent) Response::notFound();
+
+        view('admin', 'admin/continents/edit', [
+            'continent' => $continent,
+            'csrf' => Csrf::token()
+        ]);
+    }
+
+    public static function update($id) {
+        Auth::requireAdmin();
+        Csrf::verify($_POST['_csrf'] ?? '');
+
+        $name = trim($_POST['name'] ?? '');
+        $slug = trim($_POST['slug'] ?? '');
+        if (empty($slug)) $slug = self::generateSlug($name);
+        
+        $description = $_POST['description'] ?? '';
+        $display_order = (int)($_POST['display_order'] ?? 0);
+
+        $db = Db::getInstance()->pdo();
+        $stmt = $db->prepare("SELECT image_url FROM continents WHERE id = ?");
+        $stmt->execute([$id]);
+        $old = $stmt->fetch();
+
+        // Upload new Image
+        $image_url = $old['image_url'];
+        try {
+            if (isset($_FILES['image']) && $_FILES['image']['size'] > 0) {
+                $image_url = self::saveUploadedImage($_FILES['image'], 'continent_');
+            }
+        } catch (Exception $e) {
+            Response::json(['error' => $e->getMessage()], 400);
+        }
+
+        // Check slug
+        $stmt = $db->prepare("SELECT id FROM continents WHERE slug = ? AND id != ?");
+        $stmt->execute([$slug, $id]);
+        if ($stmt->fetch()) $slug .= '-' . time();
+
+        $stmt = $db->prepare("UPDATE continents SET name=?, slug=?, description=?, image_url=?, display_order=?, updated_at=NOW() WHERE id=?");
+        
+        if ($stmt->execute([$name, $slug, $description, $image_url, $display_order, $id])) {
+            Response::redirect('/admin/continents');
+        } else {
+            Response::json(['error' => 'Failed to update continent'], 500);
+        }
+    }
+
+    public static function delete($id) {
+        Auth::requireAdmin();
+        Csrf::verify($_POST['_csrf'] ?? '');
+        $db = Db::getInstance()->pdo();
+        
+        // Check dependencies
+        $check = $db->prepare("SELECT COUNT(*) FROM countries WHERE continent_id = ?");
+        $check->execute([$id]);
+        if ($check->fetchColumn() > 0) {
+            Response::json(['error' => 'Không thể xóa: Có quốc gia thuộc châu lục này.'], 400);
+        }
+
+        $stmt = $db->prepare("DELETE FROM continents WHERE id = ?");
+        if ($stmt->execute([$id])) {
+            Response::json(['success' => true]);
+        } else {
+            Response::json(['error' => 'Failed'], 500);
+        }
+    }
+
+    // --- Helpers ---
+    private static function generateSlug($text) {
+        // Simple slug generation (copy from PostController logic if needed for full unicode support)
+        $text = strtolower(trim($text));
+        $text = preg_replace('/[^a-z0-9-]/', '-', $text);
+        return preg_replace('/-+/', '-', $text);
+    }
+
+    private static function saveUploadedImage($file, $prefix) {
+        $uploadDir = __DIR__ . '/../../public/assets/uploads/locations';
+        if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+
+        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $filename = $prefix . time() . '_' . rand(1000,9999) . '.' . $ext;
+        
+        if (move_uploaded_file($file['tmp_name'], $uploadDir . '/' . $filename)) {
+            return '/assets/uploads/locations/' . $filename;
+        }
+        throw new Exception("Upload failed");
+    }
+}

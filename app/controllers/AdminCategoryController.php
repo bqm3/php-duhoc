@@ -8,18 +8,52 @@ class AdminCategoryController {
         Auth::requireAdmin();
         
         $db = Db::getInstance()->pdo();
-        // Lấy danh sách category kèm theo số lượng bài viết trong mỗi category
-        $stmt = $db->prepare("
+        
+        // Pagination & Search Logic
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $keyword = isset($_GET['keyword']) ? trim($_GET['keyword']) : '';
+        $limit = 10;
+        $offset = ($page - 1) * $limit;
+        
+        // Conditions
+        $whereClause = "";
+        $params = [];
+        if (!empty($keyword)) {
+            $whereClause = "WHERE c.name LIKE ? OR c.slug LIKE ?";
+            $searchTerm = "%$keyword%";
+            $params[] = $searchTerm;
+            $params[] = $searchTerm;
+        }
+        
+        // Count total
+        $countStmt = $db->prepare("SELECT COUNT(*) FROM categories c $whereClause");
+        $countStmt->execute($params);
+        $totalRecords = $countStmt->fetchColumn();
+        $totalPages = ceil($totalRecords / $limit);
+        
+        // Fetch categories with post count
+        // Note: Using subquery or GROUP BY with LIMIT/OFFSET can be tricky but simple logic usually works fine
+        // Using LEFT JOIN + GROUP BY with LIMIT applied to the result set
+        $sql = "
             SELECT c.*, COUNT(p.id) as post_count 
             FROM categories c 
             LEFT JOIN posts p ON c.id = p.category_id 
+            $whereClause
             GROUP BY c.id 
             ORDER BY c.created_at DESC
-        ");
-        $stmt->execute();
+            LIMIT $limit OFFSET $offset
+        ";
+        
+        $stmt = $db->prepare($sql);
+        $stmt->execute($params);
         $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
-        view('admin', 'admin/categories/index', ['categories' => $categories]);
+        view('admin', 'admin/categories/index', [
+            'categories' => $categories,
+            'total_pages' => $totalPages,
+            'current_page' => $page,
+            'keyword' => $keyword
+        ]);
     }
     
     // Show create form

@@ -19,20 +19,63 @@ class AdminPostController
                 $db->exec("ALTER TABLE posts ADD COLUMN user_id INT NULL AFTER id");
             }
         } catch (Exception $e) {
-            // Ignore if error, or log it
+            // Ignore
         }
 
-        $stmt = $db->prepare("
-            SELECT p.*, c.name as category_name, u.full_name as creator_name
+        // Pagination & Search Logic
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $keyword = isset($_GET['keyword']) ? trim($_GET['keyword']) : '';
+        $limit = 10;
+        $offset = ($page - 1) * $limit;
+
+        // Build query conditions
+        $whereClause = "";
+        $params = [];
+        
+        if (!empty($keyword)) {
+            $whereClause = "WHERE p.title LIKE ? OR p.slug LIKE ? OR c.name LIKE ? OR u.full_name LIKE ?";
+            $searchTerm = "%$keyword%";
+            $params[] = $searchTerm;
+            $params[] = $searchTerm;
+            $params[] = $searchTerm;
+            $params[] = $searchTerm;
+        }
+
+        // Count total records
+        $countSql = "
+            SELECT COUNT(*) 
             FROM posts p 
             LEFT JOIN categories c ON p.category_id = c.id 
             LEFT JOIN users u ON p.user_id = u.id
+            $whereClause
+        ";
+        $countStmt = $db->prepare($countSql);
+        $countStmt->execute($params);
+        $totalRecords = $countStmt->fetchColumn();
+        $totalPages = ceil($totalRecords / $limit);
+
+        // Fetch records
+        $sql = "
+            SELECT p.*, c.name as category_name, u.full_name as creator_name, ctry.name as country_name
+            FROM posts p 
+            LEFT JOIN categories c ON p.category_id = c.id 
+            LEFT JOIN users u ON p.user_id = u.id
+            LEFT JOIN countries ctry ON p.country_id = ctry.id
+            $whereClause
             ORDER BY p.created_at DESC
-        ");
-        $stmt->execute();
+            LIMIT $limit OFFSET $offset
+        ";
+        
+        $stmt = $db->prepare($sql);
+        $stmt->execute($params);
         $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        view('admin', 'admin/posts/index', ['posts' => $posts]);
+        view('admin', 'admin/posts/index', [
+            'posts' => $posts,
+            'total_pages' => $totalPages,
+            'current_page' => $page,
+            'keyword' => $keyword
+        ]);
     }
 
     // Show create form
@@ -44,8 +87,12 @@ class AdminPostController
         $stmt = $db->query("SELECT * FROM categories ORDER BY name");
         $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+        $stmt = $db->query("SELECT * FROM countries ORDER BY name");
+        $countries = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
         view('admin', 'admin/posts/create', [
             'categories' => $categories,
+            'countries' => $countries,
             'csrf' => Csrf::token()
         ]);
     }
@@ -57,8 +104,10 @@ class AdminPostController
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $title = trim($_POST['title'] ?? '');
+        $summary = $_POST['summary'] ?? '';
         $slug = self::generateSlug($_POST['slug'] ?? $title);
-        $category_id = (int)($_POST['category_id'] ?? 0);
+        $category_id = !empty($_POST['category_id']) ? (int)$_POST['category_id'] : null;
+        $country_id = !empty($_POST['country_id']) ? (int)$_POST['country_id'] : null;
         $content = $_POST['content'] ?? '';
 
         $user = Auth::user();
@@ -88,11 +137,11 @@ class AdminPostController
         }
 
         $stmt = $db->prepare("
-            INSERT INTO posts (slug, title, category_id, content, user_id, featured_image) 
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO posts (slug, title, summary, category_id, country_id, content, user_id, featured_image) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ");
 
-        if ($stmt->execute([$slug, $title, $category_id, $content, $user_id, $featured_image])) {
+        if ($stmt->execute([$slug, $title, $summary, $category_id, $country_id, $content, $user_id, $featured_image])) {
             Response::redirect('/admin/posts');
         } else {
             Response::json(['error' => 'Failed to create post'], 500);
@@ -119,9 +168,13 @@ class AdminPostController
         $stmt = $db->query("SELECT * FROM categories ORDER BY name");
         $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+        $stmt = $db->query("SELECT * FROM countries ORDER BY name");
+        $countries = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
         view('admin', 'admin/posts/edit', [
             'post' => $post,
             'categories' => $categories,
+            'countries' => $countries,
             'csrf' => Csrf::token()
         ]);
     }
@@ -137,8 +190,10 @@ class AdminPostController
         }
 
         $title = trim($_POST['title'] ?? '');
+        $summary = $_POST['summary'] ?? '';
         $slug = self::generateSlug($_POST['slug'] ?? $title);
-        $category_id = (int)($_POST['category_id'] ?? 0);
+        $category_id = !empty($_POST['category_id']) ? (int)$_POST['category_id'] : null;
+        $country_id = !empty($_POST['country_id']) ? (int)$_POST['country_id'] : null;
         $content = $_POST['content'] ?? '';
 
         // ADMIN chỉnh tay view/share
@@ -191,11 +246,11 @@ class AdminPostController
 
         $stmt = $db->prepare("
             UPDATE posts 
-            SET slug = ?, title = ?, category_id = ?, content = ?, featured_image = ?, count_view = ?, count_share = ?
+            SET slug = ?, title = ?, summary = ?, category_id = ?, country_id = ?, content = ?, featured_image = ?, count_view = ?, count_share = ?
             WHERE id = ?
         ");
 
-        if ($stmt->execute([$slug, $title, $category_id, $content, $newFeatured, $count_view, $count_share, $id])) {
+        if ($stmt->execute([$slug, $title, $summary, $category_id, $country_id, $content, $newFeatured, $count_view, $count_share, $id])) {
             Response::redirect('/admin/posts');
         } else {
             Response::json(['error' => 'Failed to update post'], 500);
@@ -252,7 +307,7 @@ class AdminPostController
             $post['count_view'] = (int)$post['count_view'] + 1;
         }
 
-        view('client', 'posts/show', [
+        view('main', 'client/posts/show', [
             'post' => $post,
             'csrf' => Csrf::token()
         ]);

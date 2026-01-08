@@ -21,6 +21,10 @@ function activeClass($targetPath) {
     if (strpos($targetPath, '/admin/users') !== false && strpos($currentPath, '/users') !== false) return 'text-primary font-weight-bold';
     if (strpos($targetPath, '/admin/posts') !== false && strpos($currentPath, '/posts') !== false) return 'text-primary font-weight-bold';
     if (strpos($targetPath, '/admin/categories') !== false && strpos($currentPath, '/categories') !== false) return 'text-primary font-weight-bold';
+    if (strpos($targetPath, '/admin/consultations') !== false && strpos($currentPath, '/consultations') !== false) return 'text-primary font-weight-bold';
+    if (strpos($targetPath, '/admin/continents') !== false && strpos($currentPath, '/continents') !== false) return 'text-primary font-weight-bold';
+    if (strpos($targetPath, '/admin/countries') !== false && strpos($currentPath, '/countries') !== false) return 'text-primary font-weight-bold';
+    
     
     return '';
 }
@@ -65,7 +69,7 @@ $open_pages     = isGroupActive(['email', 'login', 'register', 'lockscreen', 'fo
                 <li class="parent">
                     <a href="<?= $base ?>/admin/users" class="<?= activeClass('/admin/users') ?>">
                         <i class="fa fa-users mr-3"></i>
-                        <span class="none"> Staff / Users </span>
+                        <span class="none"> Quản lý người dùng </span>
                     </a>
                 </li>
 
@@ -73,7 +77,7 @@ $open_pages     = isGroupActive(['email', 'login', 'register', 'lockscreen', 'fo
                 <li class="parent">
                     <a href="<?= $base ?>/admin/posts" class="<?= activeClass('/admin/posts') ?>">
                         <i class="fa fa-file-text mr-3"></i>
-                        <span class="none"> Posts </span>
+                        <span class="none"> Quản lý bài viết </span>
                     </a>
                 </li>
 
@@ -85,8 +89,28 @@ $open_pages     = isGroupActive(['email', 'login', 'register', 'lockscreen', 'fo
                     </a>
                 </li>
 
-                <!-- DASHBOARD -->
+                <!-- LOCATIONS -->
                 <li class="parent">
+                    <a href="#" onclick="toggle_menu('locations'); return false" class="">
+                        <i class="fa fa-globe mr-3"></i>
+                        <span class="none"> Quản lý Địa điểm <i class="fa fa-angle-down pull-right align-bottom"></i></span>
+                    </a>
+                    <ul class="children" id="locations" style="display: none;">
+                        <li class="child"><a href="<?= $base ?>/admin/continents" class="ml-4 <?= activeClass('/admin/continents') ?>"><i class="fa fa-angle-right mr-2"></i> Châu Lục</a></li>
+                        <li class="child"><a href="<?= $base ?>/admin/countries" class="ml-4 <?= activeClass('/admin/countries') ?>"><i class="fa fa-angle-right mr-2"></i> Quốc Gia</a></li>
+                    </ul>
+                </li>
+
+                <!-- CONSULTATIONS -->
+                <li class="parent">
+                    <a href="<?= $base ?>/admin/consultations" class="<?= activeClass('/admin/consultations') ?>">
+                        <i class="fa fa-commenting mr-3"></i>
+                        <span class="none"> Danh sách tư vấn </span>
+                    </a>
+                </li>
+
+                <!-- DASHBOARD -->
+                <!-- <li class="parent">
                     <a href="#" onclick="toggle_menu('dashboard'); return false" class="">
                         <i class="fa fa-dashboard mr-3"> </i>
                         <span class="none">Dashboard <i class="fa fa-angle-down pull-right align-bottom"></i></span>
@@ -103,10 +127,10 @@ $open_pages     = isGroupActive(['email', 'login', 'register', 'lockscreen', 'fo
                     <a href="<?= $base ?>/admin/widgets.html" class="<?= activeClass('/admin/widgets.html') ?>"><i class="fa fa-puzzle-piece mr-3"></i>
                         <span class="none">Widget </span>
                     </a>
-                </li>
+                </li> -->
 
                 <!-- UI ELEMENTS -->
-                <li class="parent">
+                <!-- <li class="parent">
                     <a href="#" onclick="toggle_menu('ul_element'); return false" class="">
                         <i class="fa fa-puzzle-piece mr-3"></i>
                         <span class="none">UI Elements <i class="fa fa-angle-down pull-right align-bottom"></i></span>
@@ -126,10 +150,10 @@ $open_pages     = isGroupActive(['email', 'login', 'register', 'lockscreen', 'fo
                         <li class="child"><a href="<?= $base ?>/admin/tooltip-popover.html" class="ml-4 <?= activeClass('/admin/tooltip-popover.html') ?>"><i class="fa fa-angle-right mr-2"></i> Tooltip and Popovers</a></li>
                         <li class="child"><a href="<?= $base ?>/admin/typography.html" class="ml-4 <?= activeClass('/admin/typography.html') ?>"><i class="fa fa-angle-right mr-2"></i> Typography</a></li>
                     </ul>
-                </li>
+                </li> -->
 
                 <!-- FORM ELEMENTS -->
-                <li class="parent">
+                <!-- <li class="parent">
                     <a href="#" onclick="toggle_menu('form_element'); return false" class="">
                         <i class="fa fa-pencil-square mr-3"></i>
                         <span class="none">Form Elements <i class="fa fa-angle-down pull-right align-bottom"></i></span>
@@ -140,10 +164,10 @@ $open_pages     = isGroupActive(['email', 'login', 'register', 'lockscreen', 'fo
                         <li class="child"><a href="<?= $base ?>/admin/form-validation.html" class="ml-4 <?= activeClass('/admin/form-validation.html') ?>"><i class="fa fa-angle-right mr-2"></i> Validation</a></li>
                         <li class="child"><a href="<?= $base ?>/admin/form-wizard.html" class="ml-4 <?= activeClass('/admin/form-wizard.html') ?>"><i class="fa fa-angle-right mr-2"></i> Form Wizard</a></li>
                     </ul>
-                </li>
+                </li> -->
 
                 <!-- TEXT EDITORS -->
-                <li class="parent">
+                <!-- <li class="parent">
                     <a href="#" onclick="toggle_menu('editors'); return false" class="">
                         <i class="fa fa-pencil-square-o mr-3"></i>
                         <span class="none">Text Editors <i class="fa fa-angle-down pull-right align-bottom"></i></span>
@@ -154,10 +178,10 @@ $open_pages     = isGroupActive(['email', 'login', 'register', 'lockscreen', 'fo
                         <li class="child"><a href="<?= $base ?>/admin/ckeditor-document.html" class="ml-4 <?= activeClass('/admin/ckeditor-document.html') ?>"><i class="fa fa-angle-right mr-2"></i> Ckeditor document</a></li>
                         <li class="child"><a href="<?= $base ?>/admin/summernote.html" class="ml-4 <?= activeClass('/admin/summernote.html') ?>"><i class="fa fa-angle-right mr-2"></i> Summernote editor</a></li>
                     </ul>
-                </li>
+                </li> -->
 
                 <!-- TABLES -->
-                <li class="parent">
+                <!-- <li class="parent">
                     <a href="#" onclick="toggle_menu('tables'); return false" class="">
                         <i class="fa fa-pencil-square mr-3"></i>
                         <span class="none">Tables <i class="fa fa-angle-down pull-right align-bottom"></i></span>
@@ -167,10 +191,10 @@ $open_pages     = isGroupActive(['email', 'login', 'register', 'lockscreen', 'fo
                         <li class="child"><a href="<?= $base ?>/admin/datatable.html" class="ml-4 <?= activeClass('/admin/datatable.html') ?>"><i class="fa fa-angle-right mr-2"></i> Datatables</a></li>
                         <li class="child"><a href="<?= $base ?>/admin/jsgrid-table.html" class="ml-4 <?= activeClass('/admin/jsgrid-table.html') ?>"><i class="fa fa-angle-right mr-2"></i> JSGrid Tables</a></li>
                     </ul>
-                </li>
+                </li> -->
 
                 <!-- CHARTS -->
-                <li class="parent">
+                <!-- <li class="parent">
                     <a href="#" onclick="toggle_menu('charts'); return false" class="">
                         <i class="fa fa-pie-chart mr-3"></i>
                         <span class="none">Charts <i class="fa fa-angle-down pull-right align-bottom"></i></span>
@@ -191,10 +215,10 @@ $open_pages     = isGroupActive(['email', 'login', 'register', 'lockscreen', 'fo
                         <i class="fa fa-toggle-on mr-3"></i>
                         <span class="none">Icons</span>
                     </a>
-                </li>
+                </li> -->
 
                 <!-- ECOMMERCE -->
-                <li class="parent">
+                <!-- <li class="parent">
                     <a href="#" onclick="toggle_menu('ecommerce'); return false" class="">
                         <i class="fa fa-shopping-cart mr-3"></i>
                         <span class="none">Ecommerce <i class="fa fa-angle-down pull-right align-bottom"></i></span>
@@ -205,10 +229,10 @@ $open_pages     = isGroupActive(['email', 'login', 'register', 'lockscreen', 'fo
                         <li class="child"><a href="<?= $base ?>/admin/orders.html" class="ml-4 <?= activeClass('/admin/orders.html') ?>"><i class="fa fa-angle-right mr-2"></i> OrderList</a></li>
                         <li class="child"><a href="<?= $base ?>/admin/invoice.html" class="ml-4 <?= activeClass('/admin/invoice.html') ?>"><i class="fa fa-angle-right mr-2"></i> Invoice</a></li>
                     </ul>
-                </li>
+                </li> -->
 
                 <!-- MAPS -->
-                <li class="parent">
+                <!-- <li class="parent">
                     <a href="#" onclick="toggle_menu('maps'); return false" class="">
                         <i class="fa fa-map mr-3"></i>
                         <span class="none">Maps <i class="fa fa-angle-down pull-right align-bottom"></i></span>
@@ -217,10 +241,10 @@ $open_pages     = isGroupActive(['email', 'login', 'register', 'lockscreen', 'fo
                         <li class="child"><a href="<?= $base ?>/admin/jvector-maps.html" class="ml-4 <?= activeClass('/admin/jvector-maps.html') ?>"><i class="fa fa-angle-right mr-2"></i> Jvector Maps</a></li>
                         <li class="child"><a href="<?= $base ?>/admin/google-maps.html" class="ml-4 <?= activeClass('/admin/google-maps.html') ?>"><i class="fa fa-angle-right mr-2"></i> Google Maps</a></li>
                     </ul>
-                </li>
+                </li> -->
 
                 <!-- PAGES -->
-                <li class="parent">
+                <!-- <li class="parent">
                     <a href="#" onclick="toggle_menu('pages'); return false" class="">
                         <i class="fa fa-file mr-3"></i>
                         <span class="none">Pages <i class="fa fa-angle-down pull-right align-bottom"></i></span>
@@ -242,14 +266,14 @@ $open_pages     = isGroupActive(['email', 'login', 'register', 'lockscreen', 'fo
                         <li class="child"><a href="<?= $base ?>/admin/error-500.html" class="ml-4 <?= activeClass('/admin/error-500.html') ?>"><i class="fa fa-angle-right mr-2"></i> Error 500</a></li>
                         <li class="child"><a href="<?= $base ?>/admin/error-504.html" class="ml-4 <?= activeClass('/admin/error-504.html') ?>"><i class="fa fa-angle-right mr-2"></i> Error 504</a></li>
                     </ul>
-                </li>
+                </li> -->
 
-                <li class="parent">
+                <!-- <li class="parent">
                     <a href="<?= $base ?>/admin/fullcalendar.html" class="<?= activeClass('/admin/fullcalendar.html') ?>">
                         <i class="fa fa-calendar-o mr-3"> </i>
                         <span class="none">Full Calendar </span>
                     </a>
-                </li>
+                </li> -->
             </ul>
         </div>
         <!--Sidebar Naigation Menu-->

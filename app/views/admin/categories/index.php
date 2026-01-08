@@ -38,6 +38,16 @@
             
             <div class="row mt-3">
                 <div class="col-sm-12">
+                    <!-- Search Form -->
+                    <form method="GET" action="" class="mb-3">
+                        <div class="input-group" style="max-width: 400px;">
+                            <input type="text" name="keyword" class="form-control" placeholder="Tìm tên danh mục, slug..." value="<?= htmlspecialchars($keyword ?? '') ?>">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="submit"><i class="fa fa-search"></i></button>
+                            </div>
+                        </div>
+                    </form>
+
                     <div class="mt-1 mb-3 p-3 button-container bg-white border shadow-sm">
                         <?php if (empty($categories)): ?>
                             <div class="alert alert-info">Chưa có danh mục nào.</div>
@@ -80,6 +90,26 @@
                                     </tbody>
                                 </table>
                             </div>
+
+                            <!-- Pagination -->
+                            <?php if (isset($total_pages) && $total_pages > 1): ?>
+                            <nav aria-label="Page navigation" class="mt-3">
+                                <ul class="pagination justify-content-end">
+                                    <li class="page-item <?= ($current_page <= 1) ? 'disabled' : '' ?>">
+                                        <a class="page-link" href="?page=<?= $current_page - 1 ?>&keyword=<?= htmlspecialchars($keyword ?? '') ?>" tabindex="-1">Trước</a>
+                                    </li>
+                                    <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                                    <li class="page-item <?= ($i == $current_page) ? 'active' : '' ?>">
+                                        <a class="page-link" href="?page=<?= $i ?>&keyword=<?= htmlspecialchars($keyword ?? '') ?>"><?= $i ?></a>
+                                    </li>
+                                    <?php endfor; ?>
+                                    <li class="page-item <?= ($current_page >= $total_pages) ? 'disabled' : '' ?>">
+                                        <a class="page-link" href="?page=<?= $current_page + 1 ?>&keyword=<?= htmlspecialchars($keyword ?? '') ?>">Sau</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                            <?php endif; ?>
+
                         <?php endif; ?>
                     </div>
                 </div>

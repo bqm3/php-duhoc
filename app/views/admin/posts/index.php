@@ -31,6 +31,16 @@
                 
                 <div class="row mt-3">
                     <div class="col-sm-12">
+                        <!-- Search Form -->
+                        <form method="GET" action="" class="mb-3">
+                            <div class="input-group" style="max-width: 400px;">
+                                <input type="text" name="keyword" class="form-control" placeholder="Search title, category, user..." value="<?= htmlspecialchars($keyword ?? '') ?>">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="submit"><i class="fa fa-search"></i></button>
+                                </div>
+                            </div>
+                        </form>
+
                         <div class="mt-1 mb-3 p-3 button-container bg-white border shadow-sm">
                             <?php if (empty($posts)): ?>
                                 <div class="alert alert-info">
@@ -46,6 +56,7 @@
                                                 <th>Slug</th>
                                                 <th>Người tạo</th>
                                                 <th>Category</th>
+                                                <th>Country</th>
                                                 <th>Views</th>
                                                 <th>Shares</th>
                                                 <th>Created</th>
@@ -67,6 +78,9 @@
                                                     </td>
                                                     <td>
                                                         <?= $post['category_name'] ? htmlspecialchars($post['category_name']) : '<em class="text-muted">No category</em>' ?>
+                                                    </td>
+                                                    <td>
+                                                        <?= $post['country_name'] ? htmlspecialchars($post['country_name']) : '<em class="text-muted">-</em>' ?>
                                                     </td>
                                                     <td>
                                                         <span class="badge badge-info"><?= $post['count_view'] ?></span>
@@ -91,6 +105,26 @@
                                         </tbody>
                                     </table>
                                 </div>
+
+                                <!-- Pagination -->
+                                <?php if (isset($total_pages) && $total_pages > 1): ?>
+                                <nav aria-label="Page navigation" class="mt-3">
+                                    <ul class="pagination justify-content-end">
+                                        <li class="page-item <?= ($current_page <= 1) ? 'disabled' : '' ?>">
+                                            <a class="page-link" href="?page=<?= $current_page - 1 ?>&keyword=<?= htmlspecialchars($keyword ?? '') ?>" tabindex="-1">Previous</a>
+                                        </li>
+                                        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                                        <li class="page-item <?= ($i == $current_page) ? 'active' : '' ?>">
+                                            <a class="page-link" href="?page=<?= $i ?>&keyword=<?= htmlspecialchars($keyword ?? '') ?>"><?= $i ?></a>
+                                        </li>
+                                        <?php endfor; ?>
+                                        <li class="page-item <?= ($current_page >= $total_pages) ? 'disabled' : '' ?>">
+                                            <a class="page-link" href="?page=<?= $current_page + 1 ?>&keyword=<?= htmlspecialchars($keyword ?? '') ?>">Next</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                                <?php endif; ?>
+
                             <?php endif; ?>
                         </div>
                     </div>
