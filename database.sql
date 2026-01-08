@@ -42,6 +42,35 @@ INSERT INTO `categories` VALUES (3,'Du học','du-hoc','2026-01-07 07:40:15'),(4
 UNLOCK TABLES;
 
 --
+-- Table structure for table `cities`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `cities` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `country_id` int DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `slug` varchar(255) NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_slug` (`slug`),
+  KEY `idx_category` (`country_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `cities`
+--
+
+LOCK TABLES `cities` WRITE;
+/*!40000 ALTER TABLE `cities` DISABLE KEYS */;
+INSERT INTO `cities` VALUES (1,1,'thái bình','thai-binh','2026-01-08 12:16:58','2026-01-08 12:17:48'),(2,1,'thái bình','thai-binh-1767874676','2026-01-08 12:17:56','2026-01-08 12:17:56');
+/*!40000 ALTER TABLE `cities` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `consultations`
 --
 
@@ -134,8 +163,35 @@ CREATE TABLE `countries` (
 
 LOCK TABLES `countries` WRITE;
 /*!40000 ALTER TABLE `countries` DISABLE KEYS */;
-INSERT INTO `countries` VALUES (1,1,'Việt Nam','viet-nam','VN','Du học tại Việt Nam',NULL,NULL,1,1,'2026-01-07 10:13:09','2026-01-07 10:13:09'),(2,1,'Nhật Bản','nhat-ban','JP','Du học Nhật Bản',NULL,NULL,2,1,'2026-01-07 10:13:09','2026-01-07 10:13:09'),(3,1,'Hàn Quốc','han-quoc','KR','Du học Hàn Quốc',NULL,NULL,3,1,'2026-01-07 10:13:09','2026-01-07 10:13:09'),(4,1,'Singapore','singapore','SG','Du học Singapore',NULL,NULL,4,1,'2026-01-07 10:13:09','2026-01-07 10:13:09'),(5,1,'Trung Quốc','trung-quoc','CN','Du học Trung Quốc',NULL,NULL,5,0,'2026-01-07 10:13:09','2026-01-07 10:13:09'),(6,2,'Anh','anh','UK','Du học Anh Quốc',NULL,NULL,1,1,'2026-01-07 10:13:14','2026-01-07 10:13:14'),(7,2,'Đức','duc','DE','Du học Đức',NULL,NULL,2,1,'2026-01-07 10:13:14','2026-01-07 10:13:14'),(8,2,'Pháp','phap','FR','Du học Pháp',NULL,NULL,3,1,'2026-01-07 10:13:14','2026-01-07 10:13:14'),(9,2,'Hà Lan','ha-lan','NL','Du học Hà Lan',NULL,NULL,4,0,'2026-01-07 10:13:14','2026-01-07 10:13:14'),(10,2,'Thụy Sĩ','thuy-si','CH','Du học Thụy Sĩ',NULL,NULL,5,0,'2026-01-07 10:13:14','2026-01-07 10:13:14'),(11,3,'Mỹ','my','US','Du học Hoa Kỳ',NULL,NULL,1,1,'2026-01-07 10:13:18','2026-01-07 10:13:18'),(12,3,'Canada','canada','CA','Du học Canada',NULL,NULL,2,1,'2026-01-07 10:13:18','2026-01-07 10:13:18'),(13,4,'Úc','uc','AU','Du học Úc',NULL,NULL,1,1,'2026-01-07 10:13:21','2026-01-07 10:13:21'),(14,4,'New Zealand','new-zealand','NZ','Du học New Zealand',NULL,NULL,2,1,'2026-01-07 10:13:21','2026-01-07 10:13:21');
+INSERT INTO `countries` VALUES (1,1,'Việt Nam','viet-nam','VN','Du học tại Việt Nam','/assets/uploads/locations/flag_1767875280_8358.png',NULL,1,1,'2026-01-07 10:13:09','2026-01-08 12:28:00'),(2,1,'Nhật Bản','nhat-ban','JP','Du học Nhật Bản',NULL,NULL,2,1,'2026-01-07 10:13:09','2026-01-07 10:13:09'),(3,1,'Hàn Quốc','han-quoc','KR','Du học Hàn Quốc',NULL,NULL,3,1,'2026-01-07 10:13:09','2026-01-07 10:13:09'),(4,1,'Singapore','singapore','SG','Du học Singapore',NULL,NULL,4,1,'2026-01-07 10:13:09','2026-01-07 10:13:09'),(5,1,'Trung Quốc','trung-quoc','CN','Du học Trung Quốc',NULL,NULL,5,0,'2026-01-07 10:13:09','2026-01-07 10:13:09'),(6,2,'Anh','anh','UK','Du học Anh Quốc','/assets/uploads/locations/flag_1767875258_4367.png',NULL,1,1,'2026-01-07 10:13:14','2026-01-08 12:27:38'),(7,2,'Đức','duc','DE','Du học Đức',NULL,NULL,2,1,'2026-01-07 10:13:14','2026-01-07 10:13:14'),(8,2,'Pháp','phap','FR','Du học Pháp',NULL,NULL,3,1,'2026-01-07 10:13:14','2026-01-07 10:13:14'),(9,2,'Hà Lan','ha-lan','NL','Du học Hà Lan',NULL,NULL,4,0,'2026-01-07 10:13:14','2026-01-07 10:13:14'),(10,2,'Thụy Sĩ','thuy-si','CH','Du học Thụy Sĩ',NULL,NULL,5,0,'2026-01-07 10:13:14','2026-01-07 10:13:14'),(11,3,'Mỹ','my','US','Du học Hoa Kỳ',NULL,NULL,1,1,'2026-01-07 10:13:18','2026-01-07 10:13:18'),(12,3,'Canada','canada','CA','Du học Canada',NULL,NULL,2,1,'2026-01-07 10:13:18','2026-01-07 10:13:18'),(13,4,'Úc','uc','AU','Du học Úc',NULL,NULL,1,1,'2026-01-07 10:13:21','2026-01-07 10:13:21'),(14,4,'New Zealand','new-zealand','NZ','Du học New Zealand',NULL,NULL,2,1,'2026-01-07 10:13:21','2026-01-07 10:13:21');
 /*!40000 ALTER TABLE `countries` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `education_levels`
+--
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `education_levels` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `slug` varchar(255) NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_slug` (`slug`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `education_levels`
+--
+
+LOCK TABLES `education_levels` WRITE;
+/*!40000 ALTER TABLE `education_levels` DISABLE KEYS */;
+INSERT INTO `education_levels` VALUES (1,'Đại học','dai-hoc','2026-01-08 12:22:52','2026-01-08 12:22:52');
+/*!40000 ALTER TABLE `education_levels` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -225,4 +281,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-01-08 18:28:38
+-- Dump completed on 2026-01-08 19:31:35
