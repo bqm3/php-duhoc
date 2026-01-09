@@ -28,7 +28,7 @@ class AdminAuthController {
     }
 
     Auth::login($user);
-    $dashboard = $GLOBALS['base'] !== '' ? $GLOBALS['base'] . '/admin' : '/admin';
+    $dashboard = $GLOBALS['base'] !== '' ? $GLOBALS['base'] . '/admin/users' : '/admin/users';
     header("Location: " . $dashboard);
     exit;
   }
