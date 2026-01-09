@@ -40,7 +40,7 @@ class AdminCategoryController {
             LEFT JOIN posts p ON c.id = p.category_id 
             $whereClause
             GROUP BY c.id 
-            ORDER BY c.created_at DESC
+            ORDER BY c.display_order ASC, c.created_at DESC
             LIMIT $limit OFFSET $offset
         ";
         
@@ -72,6 +72,7 @@ class AdminCategoryController {
         
         $name = trim($_POST['name'] ?? '');
         $slug = trim($_POST['slug'] ?? '');
+        $display_order = (int)($_POST['display_order'] ?? 0);
         
         // Nếu slug trống, tự tạo từ name
         if (empty($slug) && !empty($name)) {
@@ -97,9 +98,9 @@ class AdminCategoryController {
              $slug = $slug . '-' . time();
         }
         
-        $stmt = $db->prepare("INSERT INTO categories (name, slug, created_at) VALUES (?, ?, NOW())");
+        $stmt = $db->prepare("INSERT INTO categories (name, slug, display_order, created_at) VALUES (?, ?, ?, NOW())");
         
-        if ($stmt->execute([$name, $slug])) {
+        if ($stmt->execute([$name, $slug, $display_order])) {
             Response::redirect('/admin/categories');
         } else {
              view('admin', 'admin/categories/create', [
@@ -136,6 +137,7 @@ class AdminCategoryController {
         
         $name = trim($_POST['name'] ?? '');
         $slug = trim($_POST['slug'] ?? '');
+        $display_order = (int)($_POST['display_order'] ?? 0);
         
         if (empty($slug) && !empty($name)) {
             $slug = self::generateSlug($name);
@@ -155,9 +157,9 @@ class AdminCategoryController {
              $slug = $slug . '-' . time();
         }
         
-        $stmt = $db->prepare("UPDATE categories SET name=?, slug=? WHERE id=?");
+        $stmt = $db->prepare("UPDATE categories SET name=?, slug=?, display_order=? WHERE id=?");
         
-        if ($stmt->execute([$name, $slug, $id])) {
+        if ($stmt->execute([$name, $slug, $display_order, $id])) {
             Response::redirect('/admin/categories');
         } else {
             Response::json(['error' => 'Failed to update category'], 500);

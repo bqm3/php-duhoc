@@ -73,6 +73,23 @@
                                 </div>
 
                                 <div class="form-group">
+                                    <label for="school_id"><strong>School</strong></label>
+                                    <select class="form-control" id="school_id" name="school_id">
+                                        <option value="">-- Select School (Optional) --</option>
+                                        <?php foreach ($schools as $school): ?>
+                                            <option value="<?= $school['id'] ?>" <?= ($post['school_id'] ?? '') == $school['id'] ? 'selected' : '' ?>>
+                                                <?= htmlspecialchars($school['name']) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+
+                                <div class="form-check mb-3">
+                                    <input type="checkbox" class="form-check-input" id="is_popular" name="is_popular" value="1" <?= !empty($post['is_popular']) ? 'checked' : '' ?>>
+                                    <label class="form-check-label font-weight-bold" for="is_popular">Đánh dấu là bài viết Nổi bật</label>
+                                </div>
+
+                                <div class="form-group">
                                     <label for="featured_image"><strong>Ảnh chính</strong></label>
 
                                     <?php if (!empty($post['featured_image'])): ?>

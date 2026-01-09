@@ -59,6 +59,7 @@
                                             <th>ID</th>
                                             <th>Tên danh mục</th>
                                             <th>Slug</th>
+                                            <th>Thứ tự</th>
                                             <th>Số bài viết</th>
                                             <th>Ngày tạo</th>
                                             <th>Thao tác</th>
@@ -70,6 +71,7 @@
                                                 <td><?= $cat['id'] ?></td>
                                                 <td><strong><?= htmlspecialchars($cat['name']) ?></strong></td>
                                                 <td><code><?= htmlspecialchars($cat['slug']) ?></code></td>
+                                                <td><?= $cat['display_order'] ?></td>
                                                 <td>
                                                     <span class="badge badge-secondary"><?= $cat['post_count'] ?></span>
                                                 </td>

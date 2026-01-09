@@ -44,9 +44,13 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label>Slug (Đường dẫn tĩnh)</label>
-                                    <input type="text" name="slug" id="slug" class="form-control"
-                                        value="<?= htmlspecialchars($category['slug']) ?>">
+                                    <label>Slug</label>
+                                    <input type="text" class="form-control" name="slug" value="<?= htmlspecialchars($category['slug']) ?>">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Thứ tự hiển thị</label>
+                                    <input type="number" class="form-control" name="display_order" value="<?= $category['display_order'] ?>">
                                 </div>
 
                                 <button type="submit" class="btn btn-primary">Cập nhật</button>

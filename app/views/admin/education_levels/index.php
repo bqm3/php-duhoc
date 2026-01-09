@@ -37,6 +37,7 @@
                                             <th>ID</th>
                                             <th>Tên Bậc Học</th>
                                             <th>Slug</th>
+                                            <th>Thứ tự</th>
                                             <th>Ngày tạo</th>
                                             <th>Hành động</th>
                                         </tr>
@@ -50,6 +51,7 @@
                                                 <td><?= $item['id'] ?></td>
                                                 <td><strong><?= htmlspecialchars($item['name']) ?></strong></td>
                                                 <td><?= htmlspecialchars($item['slug']) ?></td>
+                                                <td><?= $item['display_order'] ?></td>
                                                 <td><?= date('d/m/Y', strtotime($item['created_at'])) ?></td>
                                                 <td>
                                                     <a href="<?= $base ?>/admin/education-levels/<?= $item['id'] ?>/edit" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i></a>

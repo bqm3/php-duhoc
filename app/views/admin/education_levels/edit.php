@@ -30,6 +30,11 @@
                                     <input type="text" class="form-control" name="slug" value="<?= htmlspecialchars($level['slug']) ?>">
                                 </div>
 
+                                <div class="form-group">
+                                    <label>Thứ tự hiển thị</label>
+                                    <input type="number" class="form-control" name="display_order" value="<?= $level['display_order'] ?>">
+                                </div>
+
                                 <button type="submit" class="btn btn-primary">Cập nhật</button>
                                 <a href="<?= $base ?>/admin/education-levels" class="btn btn-secondary">Hủy</a>
                             </form>

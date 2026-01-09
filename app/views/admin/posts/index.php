@@ -57,11 +57,9 @@
                                                 <th>ID</th>
                                                 <th>Title</th>
                                                 <th>Slug</th>
-                                                <th>Người tạo</th>
                                                 <th>Category</th>
-                                                <th>Country</th>
+                                                <th>Country / School</th>
                                                 <th>Views</th>
-                                                <th>Shares</th>
                                                 <th>Created</th>
                                                 <th>Actions</th>
                                             </tr>
@@ -72,24 +70,26 @@
                                                     <td><?= $post['id'] ?></td>
                                                     <td>
                                                         <strong><?= htmlspecialchars($post['title']) ?></strong>
+                                                        <?php if(!empty($post['is_popular'])): ?>
+                                                            <i class="fa fa-star text-warning ml-1" title="Popular"></i>
+                                                        <?php endif; ?>
                                                     </td>
                                                     <td>
                                                         <code><?= htmlspecialchars($post['slug']) ?></code>
                                                     </td>
                                                     <td>
-                                                        <span class="text-primary"><?= htmlspecialchars($post['creator_name'] ?? 'Ẩn danh') ?></span>
-                                                    </td>
-                                                    <td>
                                                         <?= $post['category_name'] ? htmlspecialchars($post['category_name']) : '<em class="text-muted">No category</em>' ?>
                                                     </td>
                                                     <td>
-                                                        <?= $post['country_name'] ? htmlspecialchars($post['country_name']) : '<em class="text-muted">-</em>' ?>
+                                                        <?php 
+                                                            $loc = [];
+                                                            if(!empty($post['country_name'])) $loc[] = htmlspecialchars($post['country_name']);
+                                                            if(!empty($post['school_name'])) $loc[] = htmlspecialchars($post['school_name']);
+                                                            echo !empty($loc) ? implode(' / ', $loc) : '<em class="text-muted">-</em>';
+                                                        ?>
                                                     </td>
                                                     <td>
                                                         <span class="badge badge-info"><?= $post['count_view'] ?></span>
-                                                    </td>
-                                                    <td>
-                                                        <span class="badge badge-success"><?= $post['count_share'] ?></span>
                                                     </td>
                                                     <td><?= date('d/m/Y', strtotime($post['created_at'])) ?></td>
                                                     <td>

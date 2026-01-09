@@ -1,6 +1,6 @@
 <?php
 
-class AdminCityController {
+class AdminSchoolController {
 
     public static function index() {
         Auth::requireAdmin();
@@ -14,32 +14,37 @@ class AdminCityController {
         $whereClause = "WHERE 1=1";
         $params = [];
         if (!empty($keyword)) {
-            $whereClause .= " AND (ci.name LIKE ? OR ci.slug LIKE ?)";
+            $whereClause .= " AND (s.name LIKE ? OR s.slug LIKE ?)";
             $params[] = "%$keyword%";
             $params[] = "%$keyword%";
         }
 
         // Count
-        $countStmt = $db->prepare("SELECT COUNT(*) FROM cities ci $whereClause");
+        $countStmt = $db->prepare("SELECT COUNT(*) FROM schools s $whereClause");
         $countStmt->execute($params);
         $totalRecords = $countStmt->fetchColumn();
         $totalPages = ceil($totalRecords / $limit);
 
         // Fetch
         $sql = "
-            SELECT ci.*, c.name as country_name 
-            FROM cities ci 
-            LEFT JOIN countries c ON ci.country_id = c.id 
+            SELECT s.*, 
+                   c.name as country_name, 
+                   ci.name as city_name, 
+                   el.name as level_name
+            FROM schools s 
+            LEFT JOIN countries c ON s.country_id = c.id 
+            LEFT JOIN cities ci ON s.city_id = ci.id 
+            LEFT JOIN education_levels el ON s.education_level_id = el.id 
             $whereClause 
-            ORDER BY ci.display_order ASC, ci.name ASC 
+            ORDER BY s.created_at DESC 
             LIMIT $limit OFFSET $offset
         ";
         $stmt = $db->prepare($sql);
         $stmt->execute($params);
-        $cities = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $schools = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        view('admin', 'admin/cities/index', [
-            'cities' => $cities,
+        view('admin', 'admin/schools/index', [
+            'schools' => $schools,
             'total_pages' => $totalPages,
             'current_page' => $page,
             'keyword' => $keyword
@@ -49,11 +54,15 @@ class AdminCityController {
     public static function create() {
         Auth::requireAdmin();
         $db = Db::getInstance()->pdo();
-        // Get countries for dropdown
-        $countries = $db->query("SELECT id, name FROM countries ORDER BY name")->fetchAll();
         
-        view('admin', 'admin/cities/create', [
+        $countries = $db->query("SELECT id, name FROM countries ORDER BY name")->fetchAll();
+        $cities = $db->query("SELECT id, name, country_id FROM cities ORDER BY name")->fetchAll();
+        $levels = $db->query("SELECT id, name FROM education_levels ORDER BY name")->fetchAll();
+        
+        view('admin', 'admin/schools/create', [
             'countries' => $countries,
+            'cities' => $cities,
+            'levels' => $levels,
             'csrf' => Csrf::token()
         ]);
     }
@@ -64,24 +73,39 @@ class AdminCityController {
 
         $name = trim($_POST['name'] ?? '');
         $slug = trim($_POST['slug'] ?? '');
-        $display_order = (int)($_POST['display_order'] ?? 0);
         if (empty($slug)) $slug = self::generateSlug($name);
         
         $country_id = !empty($_POST['country_id']) ? (int)$_POST['country_id'] : null;
+        $city_id = !empty($_POST['city_id']) ? (int)$_POST['city_id'] : null;
+        $education_level_id = !empty($_POST['education_level_id']) ? (int)$_POST['education_level_id'] : null;
+        $tuition_fee = $_POST['tuition_fee'] ?? '';
+        $description = $_POST['description'] ?? '';
 
         if (empty($name)) Response::json(['error' => 'Name is required'], 400);
+
+        // Upload Image
+        $image_url = null;
+        try {
+            if (isset($_FILES['image']) && $_FILES['image']['size'] > 0) {
+                $image_url = self::saveUploadedImage($_FILES['image'], 'school_');
+            }
+        } catch (Exception $e) {
+            Response::json(['error' => $e->getMessage()], 400);
+        }
 
         $db = Db::getInstance()->pdo();
         
         // Check slug
-        $stmt = $db->prepare("SELECT id FROM cities WHERE slug = ?");
+        $stmt = $db->prepare("SELECT id FROM schools WHERE slug = ?");
         $stmt->execute([$slug]);
         if ($stmt->fetch()) $slug .= '-' . time();
 
-        $stmt = $db->prepare("INSERT INTO cities (country_id, name, slug, display_order, created_at) VALUES (?, ?, ?, ?, NOW())");
+        $sql = "INSERT INTO schools (name, slug, country_id, city_id, education_level_id, tuition_fee, image_url, description, created_at) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+        $stmt = $db->prepare($sql);
         
-        if ($stmt->execute([$country_id, $name, $slug, $display_order])) {
-            Response::redirect('/admin/cities');
+        if ($stmt->execute([$name, $slug, $country_id, $city_id, $education_level_id, $tuition_fee, $image_url, $description])) {
+            Response::redirect('/admin/schools');
         } else {
             Response::json(['error' => 'Failed to create'], 500);
         }
@@ -91,17 +115,21 @@ class AdminCityController {
         Auth::requireAdmin();
         $db = Db::getInstance()->pdo();
         
-        $city = $db->prepare("SELECT * FROM cities WHERE id = ?");
-        $city->execute([$id]);
-        $city = $city->fetch(PDO::FETCH_ASSOC);
+        $school = $db->prepare("SELECT * FROM schools WHERE id = ?");
+        $school->execute([$id]);
+        $school = $school->fetch(PDO::FETCH_ASSOC);
         
-        if (!$city) Response::notFound();
+        if (!$school) Response::notFound();
 
         $countries = $db->query("SELECT id, name FROM countries ORDER BY name")->fetchAll();
+        $cities = $db->query("SELECT id, name, country_id FROM cities ORDER BY name")->fetchAll();
+        $levels = $db->query("SELECT id, name FROM education_levels ORDER BY name")->fetchAll();
 
-        view('admin', 'admin/cities/edit', [
-            'city' => $city,
+        view('admin', 'admin/schools/edit', [
+            'school' => $school,
             'countries' => $countries,
+            'cities' => $cities,
+            'levels' => $levels,
             'csrf' => Csrf::token()
         ]);
     }
@@ -112,22 +140,40 @@ class AdminCityController {
 
         $name = trim($_POST['name'] ?? '');
         $slug = trim($_POST['slug'] ?? '');
-        $display_order = (int)($_POST['display_order'] ?? 0);
         if (empty($slug)) $slug = self::generateSlug($name);
         
         $country_id = !empty($_POST['country_id']) ? (int)$_POST['country_id'] : null;
+        $city_id = !empty($_POST['city_id']) ? (int)$_POST['city_id'] : null;
+        $education_level_id = !empty($_POST['education_level_id']) ? (int)$_POST['education_level_id'] : null;
+        $tuition_fee = $_POST['tuition_fee'] ?? '';
+        $description = $_POST['description'] ?? '';
 
         $db = Db::getInstance()->pdo();
         
+        // Get old image
+        $stmt = $db->prepare("SELECT image_url FROM schools WHERE id = ?");
+        $stmt->execute([$id]);
+        $old = $stmt->fetch();
+        $image_url = $old['image_url'];
+
+        try {
+            if (isset($_FILES['image']) && $_FILES['image']['size'] > 0) {
+                $image_url = self::saveUploadedImage($_FILES['image'], 'school_');
+            }
+        } catch (Exception $e) {
+            Response::json(['error' => $e->getMessage()], 400);
+        }
+
         // Check slug
-        $stmt = $db->prepare("SELECT id FROM cities WHERE slug = ? AND id != ?");
+        $stmt = $db->prepare("SELECT id FROM schools WHERE slug = ? AND id != ?");
         $stmt->execute([$slug, $id]);
         if ($stmt->fetch()) $slug .= '-' . time();
 
-        $stmt = $db->prepare("UPDATE cities SET country_id=?, name=?, slug=?, display_order=?, updated_at=NOW() WHERE id=?");
+        $sql = "UPDATE schools SET name=?, slug=?, country_id=?, city_id=?, education_level_id=?, tuition_fee=?, image_url=?, description=?, updated_at=NOW() WHERE id=?";
+        $stmt = $db->prepare($sql);
         
-        if ($stmt->execute([$country_id, $name, $slug, $display_order, $id])) {
-            Response::redirect('/admin/cities');
+        if ($stmt->execute([$name, $slug, $country_id, $city_id, $education_level_id, $tuition_fee, $image_url, $description, $id])) {
+            Response::redirect('/admin/schools');
         } else {
             Response::json(['error' => 'Failed to update'], 500);
         }
@@ -138,7 +184,7 @@ class AdminCityController {
         Csrf::verify($_POST['_csrf'] ?? '');
         $db = Db::getInstance()->pdo();
         
-        $stmt = $db->prepare("DELETE FROM cities WHERE id = ?");
+        $stmt = $db->prepare("DELETE FROM schools WHERE id = ?");
         if ($stmt->execute([$id])) {
             Response::json(['success' => true]);
         } else {
@@ -184,5 +230,18 @@ class AdminCityController {
             'Đ' => 'D'
         ];
         return strtr($str, $vietnameseTones);
+    }
+
+    private static function saveUploadedImage($file, $prefix) {
+        $uploadDir = __DIR__ . '/../../public/assets/uploads/schools';
+        if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+
+        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $filename = $prefix . time() . '_' . rand(1000,9999) . '.' . $ext;
+        
+        if (move_uploaded_file($file['tmp_name'], $uploadDir . '/' . $filename)) {
+            return '/assets/uploads/schools/' . $filename;
+        }
+        throw new Exception("Upload failed");
     }
 }

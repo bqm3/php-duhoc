@@ -26,6 +26,7 @@ function activeClass($targetPath) {
     if (strpos($targetPath, '/admin/countries') !== false && strpos($currentPath, '/countries') !== false) return 'text-primary font-weight-bold';
     if (strpos($targetPath, '/admin/cities') !== false && strpos($currentPath, '/cities') !== false) return 'text-primary font-weight-bold';
     if (strpos($targetPath, '/admin/education-levels') !== false && strpos($currentPath, '/education-levels') !== false) return 'text-primary font-weight-bold';
+    if (strpos($targetPath, '/admin/schools') !== false && strpos($currentPath, '/schools') !== false) return 'text-primary font-weight-bold';
     
     
     return '';
@@ -147,6 +148,7 @@ $open_pages     = isGroupActive(['email', 'login', 'register', 'lockscreen', 'fo
                     </a>
                     <ul class="children" id="education" style="display: none;">
                         <li class="child"><a href="<?= $base ?>/admin/education-levels" class="ml-4 <?= activeClass('/admin/education-levels') ?>"><i class="fa fa-angle-right mr-2"></i> Bậc Học</a></li>
+                        <li class="child"><a href="<?= $base ?>/admin/schools" class="ml-4 <?= activeClass('/admin/schools') ?>"><i class="fa fa-angle-right mr-2"></i> Trường Học</a></li>
                     </ul>
                 </li>
 

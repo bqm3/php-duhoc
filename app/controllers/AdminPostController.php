@@ -63,11 +63,12 @@ class AdminPostController
 
         // Fetch records
         $sql = "
-            SELECT p.*, c.name as category_name, u.full_name as creator_name, ctry.name as country_name
+            SELECT p.*, c.name as category_name, u.full_name as creator_name, ctry.name as country_name, s.name as school_name
             FROM posts p 
             LEFT JOIN categories c ON p.category_id = c.id 
             LEFT JOIN users u ON p.user_id = u.id
             LEFT JOIN countries ctry ON p.country_id = ctry.id
+            LEFT JOIN schools s ON p.school_id = s.id
             $whereClause
             ORDER BY p.created_at DESC
             LIMIT $limit OFFSET $offset
@@ -100,9 +101,13 @@ class AdminPostController
         $stmt = $db->query("SELECT * FROM countries ORDER BY name");
         $countries = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+        $stmt = $db->query("SELECT id, name FROM schools ORDER BY name");
+        $schools = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
         view('admin', 'admin/posts/create', [
             'categories' => $categories,
             'countries' => $countries,
+            'schools' => $schools,
             'selected_category_id' => $selectedCategoryId,
             'csrf' => Csrf::token()
         ]);
@@ -119,6 +124,8 @@ class AdminPostController
         $slug = self::generateSlug($_POST['slug'] ?? $title);
         $category_id = !empty($_POST['category_id']) ? (int)$_POST['category_id'] : null;
         $country_id = !empty($_POST['country_id']) ? (int)$_POST['country_id'] : null;
+        $school_id = !empty($_POST['school_id']) ? (int)$_POST['school_id'] : null;
+        $is_popular = isset($_POST['is_popular']) ? 1 : 0;
         $content = $_POST['content'] ?? '';
 
         $user = Auth::user();
@@ -148,11 +155,11 @@ class AdminPostController
         }
 
         $stmt = $db->prepare("
-            INSERT INTO posts (slug, title, summary, category_id, country_id, content, user_id, featured_image) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO posts (slug, title, summary, category_id, country_id, school_id, is_popular, content, user_id, featured_image) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
 
-        if ($stmt->execute([$slug, $title, $summary, $category_id, $country_id, $content, $user_id, $featured_image])) {
+        if ($stmt->execute([$slug, $title, $summary, $category_id, $country_id, $school_id, $is_popular, $content, $user_id, $featured_image])) {
             Response::redirect('/admin/posts');
         } else {
             Response::json(['error' => 'Failed to create post'], 500);
@@ -182,10 +189,14 @@ class AdminPostController
         $stmt = $db->query("SELECT * FROM countries ORDER BY name");
         $countries = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+        $stmt = $db->query("SELECT id, name FROM schools ORDER BY name");
+        $schools = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
         view('admin', 'admin/posts/edit', [
             'post' => $post,
             'categories' => $categories,
             'countries' => $countries,
+            'schools' => $schools,
             'csrf' => Csrf::token()
         ]);
     }
@@ -205,6 +216,8 @@ class AdminPostController
         $slug = self::generateSlug($_POST['slug'] ?? $title);
         $category_id = !empty($_POST['category_id']) ? (int)$_POST['category_id'] : null;
         $country_id = !empty($_POST['country_id']) ? (int)$_POST['country_id'] : null;
+        $school_id = !empty($_POST['school_id']) ? (int)$_POST['school_id'] : null;
+        $is_popular = isset($_POST['is_popular']) ? 1 : 0;
         $content = $_POST['content'] ?? '';
 
         // ADMIN chỉnh tay view/share
@@ -257,11 +270,11 @@ class AdminPostController
 
         $stmt = $db->prepare("
             UPDATE posts 
-            SET slug = ?, title = ?, summary = ?, category_id = ?, country_id = ?, content = ?, featured_image = ?, count_view = ?, count_share = ?
+            SET slug = ?, title = ?, summary = ?, category_id = ?, country_id = ?, school_id = ?, is_popular = ?, content = ?, featured_image = ?, count_view = ?, count_share = ?
             WHERE id = ?
         ");
 
-        if ($stmt->execute([$slug, $title, $summary, $category_id, $country_id, $content, $newFeatured, $count_view, $count_share, $id])) {
+        if ($stmt->execute([$slug, $title, $summary, $category_id, $country_id, $school_id, $is_popular, $content, $newFeatured, $count_view, $count_share, $id])) {
             Response::redirect('/admin/posts');
         } else {
             Response::json(['error' => 'Failed to update post'], 500);
@@ -362,11 +375,17 @@ class AdminPostController
     // Save uploaded image
     private static function saveUploadedImage($file, $prefix)
     {
-        if (!isset($file) || !isset($file['tmp_name'])) {
-            throw new Exception('No file uploaded.');
+        // Check if file array structure is valid
+        if (!isset($file) || !isset($file['error'])) {
+            return null;
         }
 
-        if (($file['error'] ?? UPLOAD_ERR_OK) !== UPLOAD_ERR_OK) {
+        // Check specifically for no file uploaded
+        if ($file['error'] === UPLOAD_ERR_NO_FILE) {
+            return null;
+        }
+
+        if ($file['error'] !== UPLOAD_ERR_OK) {
             $msg = 'Upload failed.';
             switch ($file['error']) {
                 case UPLOAD_ERR_INI_SIZE:
@@ -375,9 +394,6 @@ class AdminPostController
                     break;
                 case UPLOAD_ERR_PARTIAL:
                     $msg = 'File was only partially uploaded.';
-                    break;
-                case UPLOAD_ERR_NO_FILE:
-                    $msg = 'No file was uploaded.';
                     break;
                 case UPLOAD_ERR_NO_TMP_DIR:
                     $msg = 'Missing a temporary folder.';
@@ -392,6 +408,10 @@ class AdminPostController
             throw new Exception($msg);
         }
 
+        if (!isset($file['tmp_name']) || empty($file['tmp_name'])) {
+             return null;
+        }
+
         $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
         if (!in_array($ext, $allowed, true)) {
@@ -403,7 +423,8 @@ class AdminPostController
         // Lưu file vào public/assets/uploads
         $uploadDir = realpath(__DIR__ . '/../../public') . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'uploads';
         if ($uploadDir === false) {
-            throw new Exception('Public directory not found.');
+            // Try to create if realpath fails (dir doesnt exist)
+             $uploadDir = __DIR__ . '/../../public/assets/uploads';
         }
 
         if (!is_dir($uploadDir) && !mkdir($uploadDir, 0755, true)) {

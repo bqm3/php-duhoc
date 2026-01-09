@@ -26,7 +26,7 @@ class AdminEducationLevelController {
         $totalPages = ceil($totalRecords / $limit);
 
         // Fetch
-        $stmt = $db->prepare("SELECT * FROM education_levels $whereClause ORDER BY created_at DESC LIMIT $limit OFFSET $offset");
+        $stmt = $db->prepare("SELECT * FROM education_levels $whereClause ORDER BY display_order ASC, created_at DESC LIMIT $limit OFFSET $offset");
         $stmt->execute($params);
         $levels = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -49,6 +49,7 @@ class AdminEducationLevelController {
 
         $name = trim($_POST['name'] ?? '');
         $slug = trim($_POST['slug'] ?? '');
+        $display_order = (int)($_POST['display_order'] ?? 0);
         if (empty($slug)) $slug = self::generateSlug($name);
 
         if (empty($name)) {
@@ -62,9 +63,9 @@ class AdminEducationLevelController {
         $stmt->execute([$slug]);
         if ($stmt->fetch()) $slug .= '-' . time();
 
-        $stmt = $db->prepare("INSERT INTO education_levels (name, slug, created_at) VALUES (?, ?, NOW())");
+        $stmt = $db->prepare("INSERT INTO education_levels (name, slug, display_order, created_at) VALUES (?, ?, ?, NOW())");
         
-        if ($stmt->execute([$name, $slug])) {
+        if ($stmt->execute([$name, $slug, $display_order])) {
             Response::redirect('/admin/education-levels');
         } else {
             Response::json(['error' => 'Failed to create'], 500);
@@ -92,6 +93,7 @@ class AdminEducationLevelController {
 
         $name = trim($_POST['name'] ?? '');
         $slug = trim($_POST['slug'] ?? '');
+        $display_order = (int)($_POST['display_order'] ?? 0);
         if (empty($slug)) $slug = self::generateSlug($name);
 
         $db = Db::getInstance()->pdo();
@@ -101,9 +103,9 @@ class AdminEducationLevelController {
         $stmt->execute([$slug, $id]);
         if ($stmt->fetch()) $slug .= '-' . time();
 
-        $stmt = $db->prepare("UPDATE education_levels SET name=?, slug=?, updated_at=NOW() WHERE id=?");
+        $stmt = $db->prepare("UPDATE education_levels SET name=?, slug=?, display_order=?, updated_at=NOW() WHERE id=?");
         
-        if ($stmt->execute([$name, $slug, $id])) {
+        if ($stmt->execute([$name, $slug, $display_order, $id])) {
             Response::redirect('/admin/education-levels');
         } else {
             Response::json(['error' => 'Failed to update'], 500);

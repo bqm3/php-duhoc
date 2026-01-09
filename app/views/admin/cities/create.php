@@ -31,13 +31,18 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label>Thuộc Quốc Gia</label>
+                                    <label>Thuộc Danh Mục / Quốc Gia</label>
                                     <select class="form-control" name="country_id">
                                         <option value="">-- Chọn --</option>
                                         <?php foreach($countries as $c): ?>
                                             <option value="<?= $c['id'] ?>"><?= htmlspecialchars($c['name']) ?></option>
                                         <?php endforeach; ?>
                                     </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Thứ tự hiển thị</label>
+                                    <input type="number" class="form-control" name="display_order" value="0">
                                 </div>
 
                                 <button type="submit" class="btn btn-primary">Lưu</button>

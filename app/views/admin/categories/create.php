@@ -41,13 +41,17 @@
                                 <input type="text" name="name" id="name" class="form-control" required value="<?= htmlspecialchars($old['name'] ?? '') ?>" onkeyup="generateSlug()">
                             </div>
                             
-                            <div class="form-group">
-                                <label>Slug (Đường dẫn tĩnh)</label>
-                                <input type="text" name="slug" id="slug" class="form-control" value="<?= htmlspecialchars($old['slug'] ?? '') ?>">
-                                <small class="text-muted">Nếu để trống sẽ tự động tạo từ tên danh mục.</small>
-                            </div>
-                            
-                            <button type="submit" class="btn btn-primary">Tạo danh mục</button>
+                                <div class="form-group">
+                                    <label>Slug (tùy chọn)</label>
+                                    <input type="text" class="form-control" name="slug">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Thứ tự hiển thị</label>
+                                    <input type="number" class="form-control" name="display_order" value="0">
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">Lưu</button>
                             <a href="<?= $base ?>/admin/categories" class="btn btn-secondary">Hủy</a>
                         </form>
                     </div>
