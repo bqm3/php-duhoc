@@ -115,65 +115,65 @@
 </div>
 
 <style>
-/* Notification Styles */
-#notification-list .notification-item {
-    transition: all 0.2s;
-    border-bottom: 1px solid #eee;
-}
-
-#notification-list .notification-item:last-child {
-    border-bottom: none;
-}
-
-#notification-list .notification-item.unread {
-    background-color: #f0f7ff;
-}
-
-#notification-list .notification-item:hover {
-    background-color: #f8f9fa;
-}
-
-#notification-list .dropdown-item {
-    white-space: normal;
-    padding: 12px 15px;
-}
-
-.notify-icon {
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-}
-
-.bg-success-light {
-    background-color: #e8f5e9;
-    color: #28a745;
-}
-
-.text-success {
-    color: #28a745 !important;
-}
-
-.notification-pulse {
-    animation: pulse 2s infinite;
-    border: 4px solid #fff;
-}
-
-@keyframes pulse {
-    0% {
-        box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+    /* Notification Styles */
+    #notification-list .notification-item {
+        transition: all 0.2s;
+        border-bottom: 1px solid #eee;
     }
 
-    70% {
-        box-shadow: 0 0 0 10px rgba(40, 167, 69, 0);
+    #notification-list .notification-item:last-child {
+        border-bottom: none;
     }
 
-    100% {
-        box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+    #notification-list .notification-item.unread {
+        background-color: #f0f7ff;
     }
-}
+
+    #notification-list .notification-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    #notification-list .dropdown-item {
+        white-space: normal;
+        padding: 12px 15px;
+    }
+
+    .notify-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+    }
+
+    .bg-success-light {
+        background-color: #e8f5e9;
+        color: #28a745;
+    }
+
+    .text-success {
+        color: #28a745 !important;
+    }
+
+    .notification-pulse {
+        animation: pulse 2s infinite;
+        border: 4px solid #fff;
+    }
+
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+        }
+
+        70% {
+            box-shadow: 0 0 0 10px rgba(40, 167, 69, 0);
+        }
+
+        100% {
+            box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+        }
+    }
 </style>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -181,23 +181,27 @@
 <script src="/php-duhoc/public/assets/js/firebase-config.js"></script>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    if (typeof firebase === 'undefined') return;
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof firebase === 'undefined') return;
 
-    const db = firebase.database();
-    const notifyList = document.getElementById('notification-list');
-    const badge = document.getElementById('notify-badge');
-    const noNotifyMsg = document.getElementById('no-notify');
-    let unreadKeys = [];
+        const db = firebase.database();
+        const notifyList = document.getElementById('notification-list');
+        const badge = document.getElementById('notify-badge');
+        const noNotifyMsg = document.getElementById('no-notify');
+        let unreadKeys = [];
 
-    function addNotificationToDom(data, timestamp, key, isRead, isPrepend = true) {
-        if (noNotifyMsg) noNotifyMsg.style.display = 'none';
+        function addNotificationToDom(data, timestamp, key, isRead, isPrepend = true) {
+            if (noNotifyMsg) noNotifyMsg.style.display = 'none';
 
-        const dateObj = new Date(timestamp);
-        const timeStr = dateObj.getHours().toString().padStart(2, '0') + ':' +
-            dateObj.getMinutes().toString().padStart(2, '0');
+            const dateObj = new Date(timestamp);
+            const dateTimeStr =
+                dateObj.getDate().toString().padStart(2, '0') + '/' +
+                (dateObj.getMonth() + 1).toString().padStart(2, '0') + '/' +
+                dateObj.getFullYear() + ' ' +
+                dateObj.getHours().toString().padStart(2, '0') + ':' +
+                dateObj.getMinutes().toString().padStart(2, '0');
 
-        const html = `
+            const html = `
             <div class="notification-item ${isRead ? 'read' : 'unread'}" data-key="${key}">
                 <a href="/php-duhoc/public/admin/consultations" class="dropdown-item" onclick="markAsRead('${key}')">
                     <div class="media align-items-center">
@@ -219,59 +223,59 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         `;
 
-        if (isPrepend) notifyList.insertAdjacentHTML('afterbegin', html);
-        else notifyList.insertAdjacentHTML('beforeend', html);
+            if (isPrepend) notifyList.insertAdjacentHTML('afterbegin', html);
+            else notifyList.insertAdjacentHTML('beforeend', html);
 
-        if (!isRead && !unreadKeys.includes(key)) unreadKeys.push(key);
-    }
+            if (!isRead && !unreadKeys.includes(key)) unreadKeys.push(key);
+        }
 
-    function updateBadgeCount() {
-        db.ref('notifications').orderByChild('read').equalTo(false).once('value', snapshot => {
-            const count = snapshot.numChildren();
-            if (count > 0) {
-                badge.innerText = count > 99 ? '99+' : count;
-                badge.style.display = 'inline-block';
-            } else {
-                badge.style.display = 'none';
-            }
-        });
-    }
-
-    window.markAsRead = function(key) {
-        db.ref('notifications/' + key).update({
-            read: true
-        }).then(() => {
-            const item = document.querySelector(`[data-key="${key}"]`);
-            if (item) {
-                item.classList.remove('unread');
-                item.classList.add('read');
-            }
-            updateBadgeCount();
-        });
-    };
-
-    window.markAllAsRead = function() {
-        if (unreadKeys.length === 0) return;
-        const updates = {};
-        unreadKeys.forEach(key => updates[`/notifications/${key}/read`] = true);
-        db.ref().update(updates).then(() => {
-            unreadKeys = [];
-            updateBadgeCount();
-            document.querySelectorAll('.notification-item.unread').forEach(el => {
-                el.classList.remove('unread');
-                el.classList.add('read');
+        function updateBadgeCount() {
+            db.ref('notifications').orderByChild('read').equalTo(false).once('value', snapshot => {
+                const count = snapshot.numChildren();
+                if (count > 0) {
+                    badge.innerText = count > 99 ? '99+' : count;
+                    badge.style.display = 'inline-block';
+                } else {
+                    badge.style.display = 'none';
+                }
             });
-        });
-    };
+        }
 
-    function escapeHtml(text) {
-        if (!text) return '';
-        return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    }
+        window.markAsRead = function(key) {
+            db.ref('notifications/' + key).update({
+                read: true
+            }).then(() => {
+                const item = document.querySelector(`[data-key="${key}"]`);
+                if (item) {
+                    item.classList.remove('unread');
+                    item.classList.add('read');
+                }
+                updateBadgeCount();
+            });
+        };
 
-    function showNotificationPopup(data, timestamp) {
-        const modalBody = document.getElementById('notificationModalBody');
-        modalBody.innerHTML = `
+        window.markAllAsRead = function() {
+            if (unreadKeys.length === 0) return;
+            const updates = {};
+            unreadKeys.forEach(key => updates[`/notifications/${key}/read`] = true);
+            db.ref().update(updates).then(() => {
+                unreadKeys = [];
+                updateBadgeCount();
+                document.querySelectorAll('.notification-item.unread').forEach(el => {
+                    el.classList.remove('unread');
+                    el.classList.add('read');
+                });
+            });
+        };
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        function showNotificationPopup(data, timestamp) {
+            const modalBody = document.getElementById('notificationModalBody');
+            modalBody.innerHTML = `
             <div class="text-center mb-3">
                 <div class="rounded-circle bg-success d-inline-flex align-items-center justify-content-center notification-pulse" style="width: 70px; height: 70px;">
                     <i class="fa fa-user-plus text-white" style="font-size: 30px;"></i>
@@ -283,40 +287,40 @@ document.addEventListener('DOMContentLoaded', function() {
                 <p class="mb-0"><strong>Nội dung:</strong> ${escapeHtml(data.message || 'Cần tư vấn du học')}</p>
             </div>
         `;
-        $('#notificationModal').modal('show');
-    }
+            $('#notificationModal').modal('show');
+        }
 
-    // 1. Load History
-    db.ref('notifications').orderByChild('timestamp').limitToLast(10).once('value', snapshot => {
-        const items = [];
-        snapshot.forEach(child => {
-            items.push({
-                ...child.val(),
-                key: child.key
+        // 1. Load History
+        db.ref('notifications').orderByChild('timestamp').limitToLast(10).once('value', snapshot => {
+            const items = [];
+            snapshot.forEach(child => {
+                items.push({
+                    ...child.val(),
+                    key: child.key
+                });
             });
+            if (items.length > 0) {
+                items.reverse().forEach(item => addNotificationToDom(item.data, item.timestamp, item.key,
+                    item.read === true, false));
+                updateBadgeCount();
+            }
         });
-        if (items.length > 0) {
-            items.reverse().forEach(item => addNotificationToDom(item.data, item.timestamp, item.key,
-                item.read === true, false));
-            updateBadgeCount();
+
+        // 2. Listen Realtime
+        const now = Date.now();
+        db.ref('notifications').orderByChild('timestamp').startAt(now).on('child_added', function(snapshot) {
+            const msg = snapshot.val();
+            if (document.querySelector(`[data-key="${snapshot.key}"]`)) return;
+            if (msg && msg.type === 'new_consultation') {
+                if (!window.isConsultationPage) showNotificationPopup(msg.data, msg.timestamp);
+                addNotificationToDom(msg.data, msg.timestamp, snapshot.key, false, true);
+                updateBadgeCount();
+            }
+        });
+
+        // Auto mark all as read if on consultation page
+        if (window.isConsultationPage) {
+            setTimeout(markAllAsRead, 2000);
         }
     });
-
-    // 2. Listen Realtime
-    const now = Date.now();
-    db.ref('notifications').orderByChild('timestamp').startAt(now).on('child_added', function(snapshot) {
-        const msg = snapshot.val();
-        if (document.querySelector(`[data-key="${snapshot.key}"]`)) return;
-        if (msg && msg.type === 'new_consultation') {
-            if (!window.isConsultationPage) showNotificationPopup(msg.data, msg.timestamp);
-            addNotificationToDom(msg.data, msg.timestamp, snapshot.key, false, true);
-            updateBadgeCount();
-        }
-    });
-
-    // Auto mark all as read if on consultation page
-    if (window.isConsultationPage) {
-        setTimeout(markAllAsRead, 2000);
-    }
-});
 </script>

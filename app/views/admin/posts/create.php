@@ -98,15 +98,7 @@
                     </div>
                 </div>
 
-                <div class="row mt-5 mb-4 footer">
-                    <div class="col-sm-8">
-                        <span>&copy; All rights reserved 2019 designed by <a class="text-info" href="#">A-Fusion</a></span>
-                    </div>
-                    <div class="col-sm-4 text-right">
-                        <a href="#" class="ml-2">Contact Us</a>
-                        <a href="#" class="ml-2">Support</a>
-                    </div>
-                </div>
+                
             </div>
         </div>
     </div>
@@ -130,14 +122,14 @@
 
             $('#summernote_summary').summernote({
                 height: 150,
-                toolbar: [
-                    ['style', ['bold', 'italic', 'underline', 'clear']],
-                    ['font', ['strikethrough', 'superscript', 'subscript']],
-                    ['fontsize', ['fontsize']],
-                    ['color', ['color']],
-                    ['para', ['ul', 'ol', 'paragraph']],
-                    ['height', ['height']]
-                ],
+                // toolbar: [
+                //     ['style', ['bold', 'italic', 'underline', 'clear']],
+                //     ['font', ['strikethrough', 'superscript', 'subscript']],
+                //     ['fontsize', ['fontsize']],
+                //     ['color', ['color']],
+                //     ['para', ['ul', 'ol', 'paragraph']],
+                //     ['height', ['height']]
+                // ],
                 callbacks: {
                     onImageUpload: function(files) {
                         uploadImage(files[0], '#summernote_summary');
@@ -146,54 +138,80 @@
             });
         });
 
-        function uploadImage(file, editorId) {
-            var data = new FormData();
-            data.append("upload", file);
-            data.append("_csrf", "<?= $csrf ?>");
-            $.ajax({
-                url: "<?= $base ?>/admin/posts/upload-image",
-                cache: false,
-                contentType: false,
-                processData: false,
-                data: data,
-                type: "post",
-                success: function(response) {
-                    if (response.url) {
-                        $(editorId).summernote('insertImage', response.url, function($image) {
-                            $image.css('width', '100%');
-                            $image.attr('data-filename', 'image');
+       
+            function uploadImage(file, editorId) {
+                var data = new FormData();
+                data.append("upload", file);
+                data.append("_csrf", "<?= $csrf ?>");
+
+                $.ajax({
+                    url: "<?= $base ?>/admin/posts/upload-image",
+                    type: "POST",
+                    data: data,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+
+                    // QUAN TRỌNG: ép parse JSON
+                    dataType: "json",
+
+                    success: function(response) {
+                        console.log("Success response:", response);
+
+                        if (response && response.url) {
+                            // QUAN TRỌNG: project chạy subfolder => phải cộng $base
+                            const fullUrl = "<?= $base ?>" + response.url;
+
+                            $(editorId).summernote('insertImage', fullUrl, function($image) {
+                                $image.css('width', '100%');
+                            });
+                        } else {
+                            alert("No URL in response: " + JSON.stringify(response));
+                        }
+                    },
+
+                    error: function(xhr, status, error) {
+                        console.error("Upload error:", {
+                            status: xhr.status,
+                            statusText: xhr.statusText,
+                            responseText: xhr.responseText,
+                            error: error,
                         });
-                    } else {
-                        console.log(response);
-                    }
-                },
-                error: function(data) {
-                    console.log(data);
-                }
+                        alert("Upload failed: " + xhr.responseText);
+                    },
+                });
+            }
+
+
+            // Auto-generate slug from title
+            document.getElementById('title').addEventListener('keyup', function() {
+                var title = this.value;
+                var slug = title.toLowerCase();
+
+                // Đổi ký tự có dấu thành không dấu
+                slug = slug.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/g, 'a');
+                slug = slug.replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/g, 'e');
+                slug = slug.replace(/i|í|ì|ỉ|ĩ|ị/g, 'i');
+                slug = slug.replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/g, 'o');
+                slug = slug.replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/g, 'u');
+                slug = slug.replace(/ý|ỳ|ỷ|ỹ|ỵ/g, 'y');
+                slug = slug.replace(/đ/g, 'd');
+
+                // Xóa ký tự đặc biệt
+                slug = slug.replace(/[^a-z0-9 -]/g, '')
+                    .replace(/\s+/g, '-')
+                    .replace(/-+/g, '-');
+
+                document.getElementById('slug').value = slug;
             });
-        }
 
-        // Auto-generate slug from title
-        document.getElementById('title').addEventListener('keyup', function() {
-            var title = this.value;
-            var slug = title.toLowerCase();
+            // Submit form
+            document.getElementById('editPostForm').addEventListener('submit', function(e) {
+                // e.preventDefault();
 
-            // Đổi ký tự có dấu thành không dấu
-            slug = slug.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/g, 'a');
-            slug = slug.replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/g, 'e');
-            slug = slug.replace(/i|í|ì|ỉ|ĩ|ị/g, 'i');
-            slug = slug.replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/g, 'o');
-            slug = slug.replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/g, 'u');
-            slug = slug.replace(/ý|ỳ|ỷ|ỹ|ỵ/g, 'y');
-            slug = slug.replace(/đ/g, 'd');
-
-            // Xóa ký tự đặc biệt
-            slug = slug.replace(/[^a-z0-9 -]/g, '')
-                .replace(/\s+/g, '-')
-                .replace(/-+/g, '-');
-
-            document.getElementById('slug').value = slug;
-        });
+                // Summernote syncs automatically to textarea
+                // No manual sync needed
+            });
     </script>
 </body>
 
