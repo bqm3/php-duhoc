@@ -203,9 +203,13 @@ class AdminUserController {
         $stmt = $db->prepare("UPDATE users SET is_deleted = 1 WHERE id = ?");
         
         if ($stmt->execute([$id])) {
+            ob_clean();
             Response::json(['success' => true]);
+            exit;
         } else {
+            ob_clean();
             Response::json(['error' => 'Failed to delete user'], 500);
+            exit;
         }
     }
 }

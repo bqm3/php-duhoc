@@ -11,3 +11,7 @@ if (preg_match('#^/admin/consultations/(\d+)/edit$#', $uri, $matches) && $method
 if (preg_match('#^/admin/consultations/(\d+)/update$#', $uri, $matches) && $method === "POST") {
     AdminConsultationController::update($matches[1]);
 }
+
+if (preg_match('#^/admin/consultations/(\d+)/delete$#', $uri, $matches) && $method === "POST") {
+    AdminConsultationController::delete($matches[1]);
+}

@@ -83,4 +83,22 @@ class AdminConsultationController {
             Response::redirect("/admin/consultations/$id/edit?error=update_failed");
         }
     }
+
+    public static function delete($id) {
+        Auth::requireAdmin();
+        Csrf::verify($_POST['_csrf'] ?? '');
+        $db = Db::getInstance()->pdo();
+        
+        $stmt = $db->prepare("DELETE FROM consultations WHERE id = ?");
+        
+        if ($stmt->execute([$id])) {
+            ob_clean();
+            Response::json(['success' => true]);
+            exit;
+        } else {
+            ob_clean();
+            Response::json(['error' => 'Failed to delete'], 500);
+            exit;
+        }
+    }
 }

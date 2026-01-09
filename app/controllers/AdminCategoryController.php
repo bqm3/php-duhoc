@@ -186,9 +186,13 @@ class AdminCategoryController {
         $stmt = $db->prepare("DELETE FROM categories WHERE id = ?");
         
         if ($stmt->execute([$id])) {
+            ob_clean();
             Response::json(['success' => true]);
+            exit;
         } else {
+            ob_clean();
             Response::json(['error' => 'Failed to delete category'], 500);
+            exit;
         }
     }
 

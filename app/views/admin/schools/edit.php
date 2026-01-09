@@ -103,15 +103,31 @@
         </div>
     </div>
     <script src="<?= $base ?>/assets/js/jquery.min.js"></script>
+    <script src="<?= $base ?>/assets/js/popper.min.js"></script>
     <script src="<?= $base ?>/assets/js/bootstrap.min.js"></script>
     <script src="<?= $base ?>/assets/js/summernote/summernote-bs4.js"></script>
     <script src="<?= $base ?>/assets/js/custom.js"></script>
-    <script>
+        <script>
         $(document).ready(function() {
-            $('#summernote').summernote({height: 300});
-
-            function filterCities() {
-                var countryId = $('#country_select').val();
+            $('#summernote').summernote({
+                height: 300,
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'underline', 'clear']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['table', ['table']],
+                    ['insert', ['link', 'picture', 'video']],
+                    ['view', ['fullscreen', 'codeview', 'help']]
+                ],
+                callbacks: {
+                    onImageUpload: function(files) {
+                        uploadImage(files[0], '#summernote');
+                    }
+                }
+            });
+    
+            function filterCities() {                var countryId = $('#country_select').val();
                 $('#city_select option').each(function() {
                     var cityCountry = $(this).data('country');
                     if (!countryId || cityCountry == countryId || $(this).val() == "") {
@@ -132,6 +148,43 @@
             // Run on init
             filterCities();
         });
+
+        function uploadImage(file, editorId) {
+            var data = new FormData();
+            data.append("upload", file);
+            data.append("_csrf", "<?= $csrf ?>");
+
+            $.ajax({
+                url: "<?= $base ?>/admin/posts/upload-image", // Reuse existing upload endpoint
+                type: "POST",
+                data: data,
+                cache: false,
+                contentType: false,
+                processData: false,
+                dataType: "json",
+
+                success: function(response) {
+                    if (response.url) {
+                        const fullUrl = "<?= $base ?>" + response.url;
+                        $(editorId).summernote('insertImage', fullUrl, function($image) {
+                            $image.css('width', '100%');
+                        });
+                    } else {
+                        alert("Không có URL trong phản hồi: " + JSON.stringify(response));
+                    }
+                },
+
+                error: function(xhr, status, error) {
+                    console.error("Lỗi tải lên:", {
+                        status: xhr.status,
+                        statusText: xhr.statusText,
+                        responseText: xhr.responseText,
+                        error: error,
+                    });
+                    alert("Tải lên thất bại: " + xhr.responseText);
+                },
+            });
+        }
 
         document.querySelector('input[name="name"]').addEventListener('keyup', function() {
             var title = this.value;

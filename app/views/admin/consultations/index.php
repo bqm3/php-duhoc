@@ -134,7 +134,13 @@
     <script src="<?= $base ?>/assets/js/popper.min.js"></script>
     <script src="<?= $base ?>/assets/js/bootstrap.min.js"></script>
     <script src="<?= $base ?>/assets/js/sweetalert.js"></script>
+    <script src="<?= $base ?>/assets/js/toastr.min.js"></script>
     <script src="<?= $base ?>/assets/js/custom.js"></script>
+    <link rel="stylesheet" href="<?= $base ?>/assets/css/toastr.min.css">
+    
+    <!-- Datatables JS (Optional) -->
+    <!-- <script src="<?= $base ?>/assets/js/jquery.dataTables.min.js"></script> -->
+    <!-- <script src="<?= $base ?>/assets/js/dataTables.bootstrap4.min.js"></script> -->
 
     <script>
     function deleteConsultation(id) {
@@ -142,8 +148,38 @@
             return;
         }
 
-        alert("Chức năng xóa đang được phát triển.");
+        const btn = document.querySelector('button[onclick="deleteConsultation(' + id + ')"]');
+        const row = btn ? btn.closest('tr') : null;
+
+        fetch('<?= $base ?>/admin/consultations/' + id + '/delete', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: '_csrf=' + encodeURIComponent(window.__csrf || '')
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    toastr.success('Đã xóa thành công!', 'Deleted');
+                    if (row) {
+                        row.style.transition = 'all 0.5s';
+                        row.style.opacity = '0';
+                        setTimeout(() => row.remove(), 500);
+                    } else {
+                        setTimeout(() => window.location.reload(), 1000);
+                    }
+                } else {
+                    toastr.error(data.error || "Không thể xóa", 'Lỗi');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                toastr.error('Có lỗi xảy ra', 'Lỗi');
+            });
     }
+    
+    // Auto active sidebar based on URL is handled by sidebar.php logic
     </script>
 
     <!-- Firebase Realtime Update Script -->

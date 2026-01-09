@@ -292,9 +292,13 @@ class AdminPostController
         $stmt = $db->prepare("DELETE FROM posts WHERE id = ?");
 
         if ($stmt->execute([$id])) {
+            ob_clean();
             Response::json(['success' => true]);
+            exit;
         } else {
+            ob_clean();
             Response::json(['error' => 'Failed to delete post'], 500);
+            exit;
         }
     }
 

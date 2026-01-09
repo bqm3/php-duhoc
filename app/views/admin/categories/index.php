@@ -124,7 +124,9 @@
 <script src="<?= $base ?>/assets/js/popper.min.js"></script>
 <script src="<?= $base ?>/assets/js/bootstrap.min.js"></script>
 <script src="<?= $base ?>/assets/js/sweetalert.js"></script>
+<script src="<?= $base ?>/assets/js/toastr.min.js"></script>
 <script src="<?= $base ?>/assets/js/custom.js"></script>
+<link rel="stylesheet" href="<?= $base ?>/assets/css/toastr.min.css">
 
 <script>
 function deleteCategory(id) {
@@ -132,6 +134,9 @@ function deleteCategory(id) {
         return;
     }
     
+    const btn = document.querySelector('button[onclick="deleteCategory(' + id + ')"]');
+    const row = btn ? btn.closest('tr') : null;
+
     fetch('<?= $base ?>/admin/categories/' + id + '/delete', {
         method: 'POST',
         headers: {
@@ -142,8 +147,14 @@ function deleteCategory(id) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            swal("Đã xóa!", "Danh mục đã bị xóa.", "success")
-                .then(() => window.location.reload());
+            toastr.success('Xóa danh mục thành công!', 'Thành công');
+            if (row) {
+                row.style.transition = 'all 0.5s';
+                row.style.opacity = '0';
+                setTimeout(() => row.remove(), 500);
+            } else {
+                setTimeout(() => window.location.reload(), 1000);
+            }
         } else {
             swal("Không thể xóa!", data.error || "Có lỗi xảy ra", "error");
         }

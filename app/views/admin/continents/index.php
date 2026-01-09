@@ -79,16 +79,31 @@
     <script src="<?= $base ?>/assets/js/jquery.min.js"></script>
     <script src="<?= $base ?>/assets/js/bootstrap.min.js"></script>
     <script src="<?= $base ?>/assets/js/sweetalert.js"></script>
+    <script src="<?= $base ?>/assets/js/toastr.min.js"></script>
     <script src="<?= $base ?>/assets/js/custom.js"></script>
+    <link rel="stylesheet" href="<?= $base ?>/assets/css/toastr.min.css">
     <script>
     function deleteItem(id) {
         if(!confirm('Bạn có chắc muốn xóa?')) return;
+        
+        const btn = document.querySelector('button[onclick="deleteItem(' + id + ')"]');
+        const row = btn ? btn.closest('tr') : null;
+
         fetch('<?= $base ?>/admin/continents/' + id + '/delete', {
             method: 'POST',
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             body: '_csrf=' + encodeURIComponent('<?= Csrf::token() ?>')
         }).then(res => res.json()).then(data => {
-            if(data.success) location.reload();
+            if(data.success) {
+                toastr.success('Xóa thành công!', 'Thành công');
+                if (row) {
+                    row.style.transition = 'all 0.5s';
+                    row.style.opacity = '0';
+                    setTimeout(() => row.remove(), 500);
+                } else {
+                    setTimeout(() => location.reload(), 1000);
+                }
+            }
             else alert(data.error);
         });
     }

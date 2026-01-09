@@ -147,7 +147,9 @@
     <script src="<?= $base ?>/assets/js/popper.min.js"></script>
     <script src="<?= $base ?>/assets/js/bootstrap.min.js"></script>
     <script src="<?= $base ?>/assets/js/sweetalert.js"></script>
+    <script src="<?= $base ?>/assets/js/toastr.min.js"></script>
     <script src="<?= $base ?>/assets/js/custom.js"></script>
+    <link rel="stylesheet" href="<?= $base ?>/assets/css/toastr.min.css">
     
     <script>
     function deletePost(id) {
@@ -155,6 +157,9 @@
             return;
         }
         
+        const btn = document.querySelector('button[onclick="deletePost(' + id + ')"]');
+        const row = btn ? btn.closest('tr') : null;
+
         fetch('<?= $base ?>/admin/posts/' + id + '/delete', {
             method: 'POST',
             headers: {
@@ -165,8 +170,14 @@
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                swal("Deleted!", "Post has been deleted.", "success")
-                    .then(() => window.location.reload());
+                toastr.success('Post has been deleted successfully!', 'Success');
+                if (row) {
+                    row.style.transition = 'all 0.5s';
+                    row.style.opacity = '0';
+                    setTimeout(() => row.remove(), 500);
+                } else {
+                    setTimeout(() => window.location.reload(), 1000);
+                }
             } else {
                 swal("Error!", data.error || "Failed to delete post", "error");
             }

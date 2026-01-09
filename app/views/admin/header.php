@@ -1,5 +1,5 @@
 <!-- Admin header partial -->
-<div class="row header shadow-sm">
+<div class="row header shadow-sm align-items-center">
     <!--Logo-->
     <div class="col-sm-3 pl-0 text-center header-logo">
         <div class="bg-theme mr-3 pt-3 pb-2 mb-0">
@@ -9,10 +9,10 @@
     <!--Logo-->
 
     <!--Header Menu-->
-    <div class="col-sm-9 header-menu pt-2 pb-0">
-        <div class="row">
+    <div class="col-sm-9 header-menu">
+        <div class="row align-items-center">
             <!--Menu Icons-->
-            <div class="col-sm-4 col-8 pl-0">
+            <div class="col-sm-8 col-6 pl-0">
                 <!--Toggle sidebar-->
                 <span class="menu-icon" onclick="toggle_sidebar()">
                     <span id="sidebar-toggle-btn"></span>
@@ -47,49 +47,16 @@
                     </div>
                 </div>
                 <!--Notication icon-->
-
-                <!--Inbox icon-->
-                <!-- <span class="menu-icon inbox">
-                    <a class="" href="#" role="button" id="dropdownMenuLink3" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">
-                        <i class="fa fa-envelope"></i>
-                        <span class="badge badge-danger">0</span>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-left mt-10 animated zoomInDown"
-                        aria-labelledby="dropdownMenuLink3">
-                        <a class="dropdown-item" href="#"><strong>Tin nhắn</strong></a>
-                        <div class="dropdown-divider"></div>
-                        <div class="text-center p-2 text-muted small">Không có tin nhắn mới</div>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item text-center link-all font-weight-bold text-primary small" href="#">XEM
-                            TẤT CẢ</a>
-                    </div>
-                </span> -->
-                <!--Inbox icon-->
-                <!-- <span class="menu-icon">
-                    <i class="fa fa-th-large"></i>
-                </span> -->
             </div>
             <!--Menu Icons-->
 
-            <!--Search box and avatar-->
-            <div class="col-sm-8 col-4 text-right flex-header-menu justify-content-end">
-                <!-- <div class="search-rounded mr-3">
-                    <input type="text" class="form-control search-box" placeholder="Tìm kiếm..." />
-                </div> -->
-                <div class="mr-4">
-                    <a class="" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown">
-                        <!-- <i class="fa fa-user-circle" style="font-size: 40px; color: #6c757d;"></i> -->
-                        <i class="fa fa-circle-user" style="font-size: 40px; color: #6c757d;"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right mt-13" aria-labelledby="dropdownMenuLink">
-                        <a class="dropdown-item" href="#"><i class="fa fa-user pr-2"></i> Hồ sơ</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#"><i class="fa fa-power-off pr-2"></i>Đăng xuất</a>
-                    </div>
-                </div>
+            <!--Logout button-->
+            <div class="col-sm-4 col-6 text-right pr-3">
+                <a class="btn btn-outline-danger btn-sm" href="<?= $base ?>/admin/logout">
+                    <i class="fa fa-power-off"></i> Đăng xuất
+                </a>
             </div>
-            <!--Search box and avatar-->
+            <!--Logout button-->
         </div>
     </div>
     <!--Header Menu-->
@@ -115,65 +82,65 @@
 </div>
 
 <style>
-    /* Notification Styles */
-    #notification-list .notification-item {
-        transition: all 0.2s;
-        border-bottom: 1px solid #eee;
+/* Notification Styles */
+#notification-list .notification-item {
+    transition: all 0.2s;
+    border-bottom: 1px solid #eee;
+}
+
+#notification-list .notification-item:last-child {
+    border-bottom: none;
+}
+
+#notification-list .notification-item.unread {
+    background-color: #f0f7ff;
+}
+
+#notification-list .notification-item:hover {
+    background-color: #f8f9fa;
+}
+
+#notification-list .dropdown-item {
+    white-space: normal;
+    padding: 12px 15px;
+}
+
+.notify-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.bg-success-light {
+    background-color: #e8f5e9;
+    color: #28a745;
+}
+
+.text-success {
+    color: #28a745 !important;
+}
+
+.notification-pulse {
+    animation: pulse 2s infinite;
+    border: 4px solid #fff;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
     }
 
-    #notification-list .notification-item:last-child {
-        border-bottom: none;
+    70% {
+        box-shadow: 0 0 0 10px rgba(40, 167, 69, 0);
     }
 
-    #notification-list .notification-item.unread {
-        background-color: #f0f7ff;
+    100% {
+        box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
     }
-
-    #notification-list .notification-item:hover {
-        background-color: #f8f9fa;
-    }
-
-    #notification-list .dropdown-item {
-        white-space: normal;
-        padding: 12px 15px;
-    }
-
-    .notify-icon {
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
-    }
-
-    .bg-success-light {
-        background-color: #e8f5e9;
-        color: #28a745;
-    }
-
-    .text-success {
-        color: #28a745 !important;
-    }
-
-    .notification-pulse {
-        animation: pulse 2s infinite;
-        border: 4px solid #fff;
-    }
-
-    @keyframes pulse {
-        0% {
-            box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
-        }
-
-        70% {
-            box-shadow: 0 0 0 10px rgba(40, 167, 69, 0);
-        }
-
-        100% {
-            box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
-        }
-    }
+}
 </style>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -181,27 +148,27 @@
 <script src="/php-duhoc/public/assets/js/firebase-config.js"></script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        if (typeof firebase === 'undefined') return;
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof firebase === 'undefined') return;
 
-        const db = firebase.database();
-        const notifyList = document.getElementById('notification-list');
-        const badge = document.getElementById('notify-badge');
-        const noNotifyMsg = document.getElementById('no-notify');
-        let unreadKeys = [];
+    const db = firebase.database();
+    const notifyList = document.getElementById('notification-list');
+    const badge = document.getElementById('notify-badge');
+    const noNotifyMsg = document.getElementById('no-notify');
+    let unreadKeys = [];
 
-        function addNotificationToDom(data, timestamp, key, isRead, isPrepend = true) {
-            if (noNotifyMsg) noNotifyMsg.style.display = 'none';
+    function addNotificationToDom(data, timestamp, key, isRead, isPrepend = true) {
+        if (noNotifyMsg) noNotifyMsg.style.display = 'none';
 
-            const dateObj = new Date(timestamp);
-            const dateTimeStr =
-                dateObj.getDate().toString().padStart(2, '0') + '/' +
-                (dateObj.getMonth() + 1).toString().padStart(2, '0') + '/' +
-                dateObj.getFullYear() + ' ' +
-                dateObj.getHours().toString().padStart(2, '0') + ':' +
-                dateObj.getMinutes().toString().padStart(2, '0');
+        const dateObj = new Date(timestamp);
+        const timeStr =
+            dateObj.getDate().toString().padStart(2, '0') + '/' +
+            (dateObj.getMonth() + 1).toString().padStart(2, '0') + '/' +
+            dateObj.getFullYear() + ' ' +
+            dateObj.getHours().toString().padStart(2, '0') + ':' +
+            dateObj.getMinutes().toString().padStart(2, '0');
 
-            const html = `
+        const html = `
             <div class="notification-item ${isRead ? 'read' : 'unread'}" data-key="${key}">
                 <a href="/php-duhoc/public/admin/consultations" class="dropdown-item" onclick="markAsRead('${key}')">
                     <div class="media align-items-center">
@@ -213,8 +180,7 @@
                         <div class="media-body">
                             <h6 class="mt-0 mb-1 font-weight-bold ${isRead ? 'text-muted' : 'text-dark'}" style="font-size: 14px;">${escapeHtml(data.name)}</h6>
                             <div class="text-muted small mb-1"><i class="fa fa-phone mr-1"></i>${escapeHtml(data.phone)}</div>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="badge ${isRead ? 'badge-light' : 'badge-success'} py-1 px-2" style="font-size: 10px;">Tư vấn mới</span>
+                            <div class="d-flex justify-content-between align-items-center"
                                 <small class="text-muted"><i class="fa fa-clock-o mr-1"></i>${timeStr}</small>
                             </div>
                         </div>
@@ -223,59 +189,59 @@
             </div>
         `;
 
-            if (isPrepend) notifyList.insertAdjacentHTML('afterbegin', html);
-            else notifyList.insertAdjacentHTML('beforeend', html);
+        if (isPrepend) notifyList.insertAdjacentHTML('afterbegin', html);
+        else notifyList.insertAdjacentHTML('beforeend', html);
 
-            if (!isRead && !unreadKeys.includes(key)) unreadKeys.push(key);
-        }
+        if (!isRead && !unreadKeys.includes(key)) unreadKeys.push(key);
+    }
 
-        function updateBadgeCount() {
-            db.ref('notifications').orderByChild('read').equalTo(false).once('value', snapshot => {
-                const count = snapshot.numChildren();
-                if (count > 0) {
-                    badge.innerText = count > 99 ? '99+' : count;
-                    badge.style.display = 'inline-block';
-                } else {
-                    badge.style.display = 'none';
-                }
+    function updateBadgeCount() {
+        db.ref('notifications').orderByChild('read').equalTo(false).once('value', snapshot => {
+            const count = snapshot.numChildren();
+            if (count > 0) {
+                badge.innerText = count > 99 ? '99+' : count;
+                badge.style.display = 'inline-block';
+            } else {
+                badge.style.display = 'none';
+            }
+        });
+    }
+
+    window.markAsRead = function(key) {
+        db.ref('notifications/' + key).update({
+            read: true
+        }).then(() => {
+            const item = document.querySelector(`[data-key="${key}"]`);
+            if (item) {
+                item.classList.remove('unread');
+                item.classList.add('read');
+            }
+            updateBadgeCount();
+        });
+    };
+
+    window.markAllAsRead = function() {
+        if (unreadKeys.length === 0) return;
+        const updates = {};
+        unreadKeys.forEach(key => updates[`/notifications/${key}/read`] = true);
+        db.ref().update(updates).then(() => {
+            unreadKeys = [];
+            updateBadgeCount();
+            document.querySelectorAll('.notification-item.unread').forEach(el => {
+                el.classList.remove('unread');
+                el.classList.add('read');
             });
-        }
+        });
+    };
 
-        window.markAsRead = function(key) {
-            db.ref('notifications/' + key).update({
-                read: true
-            }).then(() => {
-                const item = document.querySelector(`[data-key="${key}"]`);
-                if (item) {
-                    item.classList.remove('unread');
-                    item.classList.add('read');
-                }
-                updateBadgeCount();
-            });
-        };
+    function escapeHtml(text) {
+        if (!text) return '';
+        return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
 
-        window.markAllAsRead = function() {
-            if (unreadKeys.length === 0) return;
-            const updates = {};
-            unreadKeys.forEach(key => updates[`/notifications/${key}/read`] = true);
-            db.ref().update(updates).then(() => {
-                unreadKeys = [];
-                updateBadgeCount();
-                document.querySelectorAll('.notification-item.unread').forEach(el => {
-                    el.classList.remove('unread');
-                    el.classList.add('read');
-                });
-            });
-        };
-
-        function escapeHtml(text) {
-            if (!text) return '';
-            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        }
-
-        function showNotificationPopup(data, timestamp) {
-            const modalBody = document.getElementById('notificationModalBody');
-            modalBody.innerHTML = `
+    function showNotificationPopup(data, timestamp) {
+        const modalBody = document.getElementById('notificationModalBody');
+        modalBody.innerHTML = `
             <div class="text-center mb-3">
                 <div class="rounded-circle bg-success d-inline-flex align-items-center justify-content-center notification-pulse" style="width: 70px; height: 70px;">
                     <i class="fa fa-user-plus text-white" style="font-size: 30px;"></i>
@@ -287,40 +253,40 @@
                 <p class="mb-0"><strong>Nội dung:</strong> ${escapeHtml(data.message || 'Cần tư vấn du học')}</p>
             </div>
         `;
-            $('#notificationModal').modal('show');
-        }
+        $('#notificationModal').modal('show');
+    }
 
-        // 1. Load History
-        db.ref('notifications').orderByChild('timestamp').limitToLast(10).once('value', snapshot => {
-            const items = [];
-            snapshot.forEach(child => {
-                items.push({
-                    ...child.val(),
-                    key: child.key
-                });
+    // 1. Load History
+    db.ref('notifications').orderByChild('timestamp').limitToLast(10).once('value', snapshot => {
+        const items = [];
+        snapshot.forEach(child => {
+            items.push({
+                ...child.val(),
+                key: child.key
             });
-            if (items.length > 0) {
-                items.reverse().forEach(item => addNotificationToDom(item.data, item.timestamp, item.key,
-                    item.read === true, false));
-                updateBadgeCount();
-            }
         });
-
-        // 2. Listen Realtime
-        const now = Date.now();
-        db.ref('notifications').orderByChild('timestamp').startAt(now).on('child_added', function(snapshot) {
-            const msg = snapshot.val();
-            if (document.querySelector(`[data-key="${snapshot.key}"]`)) return;
-            if (msg && msg.type === 'new_consultation') {
-                if (!window.isConsultationPage) showNotificationPopup(msg.data, msg.timestamp);
-                addNotificationToDom(msg.data, msg.timestamp, snapshot.key, false, true);
-                updateBadgeCount();
-            }
-        });
-
-        // Auto mark all as read if on consultation page
-        if (window.isConsultationPage) {
-            setTimeout(markAllAsRead, 2000);
+        if (items.length > 0) {
+            items.reverse().forEach(item => addNotificationToDom(item.data, item.timestamp, item.key,
+                item.read === true, false));
+            updateBadgeCount();
         }
     });
+
+    // 2. Listen Realtime
+    const now = Date.now();
+    db.ref('notifications').orderByChild('timestamp').startAt(now).on('child_added', function(snapshot) {
+        const msg = snapshot.val();
+        if (document.querySelector(`[data-key="${snapshot.key}"]`)) return;
+        if (msg && msg.type === 'new_consultation') {
+            if (!window.isConsultationPage) showNotificationPopup(msg.data, msg.timestamp);
+            addNotificationToDom(msg.data, msg.timestamp, snapshot.key, false, true);
+            updateBadgeCount();
+        }
+    });
+
+    // Auto mark all as read if on consultation page
+    if (window.isConsultationPage) {
+        setTimeout(markAllAsRead, 2000);
+    }
+});
 </script>

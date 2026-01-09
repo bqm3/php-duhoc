@@ -119,9 +119,13 @@ class AdminEducationLevelController {
         
         $stmt = $db->prepare("DELETE FROM education_levels WHERE id = ?");
         if ($stmt->execute([$id])) {
+            ob_clean();
             Response::json(['success' => true]);
+            exit;
         } else {
+            ob_clean();
             Response::json(['error' => 'Failed'], 500);
+            exit;
         }
     }
 

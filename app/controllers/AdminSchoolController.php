@@ -186,9 +186,13 @@ class AdminSchoolController {
         
         $stmt = $db->prepare("DELETE FROM schools WHERE id = ?");
         if ($stmt->execute([$id])) {
+            ob_clean();
             Response::json(['success' => true]);
+            exit;
         } else {
+            ob_clean();
             Response::json(['error' => 'Failed'], 500);
+            exit;
         }
     }
 
