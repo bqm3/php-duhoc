@@ -6,3 +6,7 @@ RewriteBase /php-duhoc/public/
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ index.php [QSA,L]
+
+AddDefaultCharset UTF-8
+AddCharset UTF-8 .php .html .htm .css .js
+
