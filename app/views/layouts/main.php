@@ -4,6 +4,16 @@
 // declare(strict_types=1);
 if (!isset($base))
   $base = '';
+
+// URI detection for active states and conditional sections
+$current_uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$relative_path = $current_uri;
+if ($base && strpos($current_uri, $base) === 0) {
+  $relative_path = substr($current_uri, strlen($base));
+}
+if ($relative_path === '')
+  $relative_path = '/';
+
 ini_set('default_charset', 'UTF-8');
 header('Content-Type: text/html; charset=UTF-8');
 mb_internal_encoding('UTF-8');

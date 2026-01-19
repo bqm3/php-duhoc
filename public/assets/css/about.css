@@ -1,0 +1,586 @@
+.vnpc-about-hero {
+    height: 350px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    overflow: hidden;
+    background-repeat: no-repeat;
+    background-color: #f7faff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vnpc-about-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(247, 250, 255, 0.8) 0%, rgba(247, 250, 255, 0.4) 100%);
+    z-index: 1;
+}
+
+.vnpc-about-hero-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+}
+
+.vnpc-about-hero-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: clamp(32px, 5vw, 48px);
+    line-height: 1.2;
+    text-transform: capitalize;
+    color: #0E2A46;
+    margin-bottom: 20px;
+}
+
+.vnpc-breadcrumb {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.vnpc-breadcrumb a {
+    color: #0E2A46;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.vnpc-breadcrumb a:hover {
+    color: #2777C4;
+}
+
+.vnpc-breadcrumb .sep {
+    font-family: 'Sora', sans-serif !important;
+    color: #2777C4;
+    font-weight: 700;
+}
+
+.vnpc-breadcrumb span {
+    color: #667085;
+}
+
+/* Responsive Decorative images */
+.hero-deco {
+    position: absolute;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0.6;
+    transition: transform 0.3s ease-out;
+}
+
+.h-deco-1 {
+    width: 6%;
+    max-width: 80px;
+    left: 5%;
+    top: 20%;
+    animation: float 4s ease-in-out infinite;
+}
+
+.h-deco-2 {
+    width: 5%;
+    max-width: 70px;
+    left: 20%;
+    bottom: 20%;
+    animation: float 5s ease-in-out infinite reverse
+}
+
+.h-deco-3 {
+    width: 3%;
+    max-width: 45px;
+    right: 25%;
+    bottom: 15%;
+    animation: float 6s ease-in-out infinite;
+}
+
+.h-deco-4 {
+    width: 5%;
+    max-width: 70px;
+    right: 5%;
+    top: 25%;
+    animation: float 4.5s ease-in-out infinite reverse;
+}
+
+/* SECTION 1: OVERVIEW */
+.vnpc-about-section {
+    padding: clamp(60px, 8vw, 100px) 0;
+}
+
+.vnpc-about-img-group {
+    position: relative;
+    width: 100%;
+    max-width: 597px;
+    height: 686px;
+    margin: 0 auto;
+}
+
+.vnpc-about-img-1 {
+    position: absolute;
+    width: 493px;
+    height: 517px;
+    left: 0;
+    top: 0;
+    object-fit: cover;
+    border: 5px solid #52DAF3;
+    z-index: 1;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.vnpc-about-img-2 {
+    position: absolute;
+    width: 364px;
+    height: 382px;
+    left: 233px;
+    top: 304px;
+    object-fit: cover;
+    border: 6px solid #FFD25D;
+    z-index: 3;
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.2);
+}
+
+.vnpc-about-deco {
+    position: absolute;
+    width: 80px;
+    height: 77px;
+    left: 76px;
+    top: 555px;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.vnpc-about-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    max-width: 628px;
+}
+
+.section-title-blue {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 40px;
+    color: #0E2A46;
+    margin: 0;
+    text-transform: capitalize;
+}
+
+.section-desc {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 22px;
+    color: #0E2A46;
+    text-align: justify;
+    margin: 0;
+}
+
+.vnpc-about-check-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.check-item {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.check-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.check-text {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 22px;
+    color: #000000;
+    flex: 1;
+}
+
+/* SECTION 2: VISION MISSION */
+.vnpc-vision-section {
+    padding: 110px 0;
+    position: relative;
+    min-height: 821px;
+    background-color: #f8fbff;
+}
+
+.vnpc-vision-header {
+    margin-bottom: 64px;
+}
+
+.vnpc-vision-main-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 40px;
+    color: #000000;
+    text-transform: capitalize;
+    margin: 0;
+}
+
+.vnpc-vision-cards-row {
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+.vnpc-vision-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 60px 24px;
+    gap: 23px;
+    height: 547px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.vnpc-vision-card-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 21px;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.vnpc-vision-card-desc {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: justify;
+    margin: 0;
+}
+
+.vnpc-vision-icon-outer {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+/* Standard Dashed Card */
+.vnpc-card-dashed {
+    background: #FFFFFF;
+    border: 2px dashed #2777C4;
+}
+
+.vnpc-card-dashed .vnpc-vision-icon-outer {
+    background: #2777C4;
+}
+
+.vnpc-card-dashed .vnpc-vision-card-title {
+    color: #2777C4;
+}
+
+.vnpc-card-dashed .vnpc-vision-card-desc {
+    color: #4D5756;
+}
+
+/* Highlighted Card */
+.vnpc-card-highlight {
+    background: #2777C4;
+}
+
+.vnpc-card-highlight .vnpc-vision-icon-outer {
+    background: #FFFFFF;
+}
+
+.vnpc-card-highlight .vnpc-vision-card-title {
+    color: #FFFFFF;
+}
+
+.vnpc-card-highlight .vnpc-vision-card-desc {
+    color: #FFFFFF;
+}
+
+.vnpc-card-highlight .vnpc-vision-icon-inner img {
+    filter: brightness(0) saturate(100%) invert(37%) sepia(34%) saturate(2135%) hue-rotate(188deg) brightness(92%) contrast(89%);
+    /* Approx #2777C4 */
+}
+
+@media (max-width: 992px) {
+    .vnpc-vision-card {
+        height: auto;
+        padding: 40px 20px;
+    }
+}
+
+/* SECTION 3: BEFORE SERVICES */
+.vnpc-services-before {
+    position: relative;
+    padding: 100px 0;
+    background-color: #f7faff;
+    overflow: hidden;
+    min-height: 928px;
+}
+
+.vnpc-services-content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    position: relative;
+    z-index: 5;
+}
+
+.vnpc-services-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 40px;
+    color: #0E2A46;
+    margin-bottom: 20px;
+    text-transform: capitalize;
+}
+
+.vnpc-services-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.vnpc-service-item-new {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.service-icon-new {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    position: relative;
+}
+
+.service-icon-new::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 6px;
+    border-left: 2px solid #4ADE80;
+    border-bottom: 2px solid #4ADE80;
+    left: 50%;
+    top: 45%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.service-text-new {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 22px;
+    color: #000000;
+    margin: 0;
+    flex: 1;
+}
+
+/* Image section */
+.vnpc-services-img-group {
+    position: relative;
+    z-index: 5;
+    width: 100%;
+    max-width: 588px;
+    margin: 0 auto;
+}
+
+.vnpc-services-img-main {
+    width: 90%;
+    margin-top:10%;
+    height: auto;
+    border-radius: 0;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 2;
+}
+
+/* Decorative background elements */
+.vnpc-before-deco-red {
+    position: absolute;
+    width: 218px;
+    height: 736px;
+    right: 23%;
+    top: 98px;
+    background: #FE543D;
+    z-index: 1;
+}
+
+.vnpc-before-deco-green-1 {
+    position: absolute;
+    width: 174px;
+    height: 167px;
+    left: 48px;
+    top: 554px;
+    z-index: 1;
+}
+
+.vnpc-before-deco-orange {
+    position: absolute;
+    width: 88px;
+    height: 183px;
+    right: 0;
+    top: -33px;
+    z-index: 1;
+}
+
+.vnpc-before-deco-green-2 {
+    position: absolute;
+    width: 619px;
+    height: 269px;
+    right: -40px;
+    top: -9px;
+    z-index: 1;
+}
+
+.vnpc-before-dots-group {
+    position: absolute;
+    width: 182px;
+    display: grid;
+    grid-template-columns: repeat(9, 6px);
+    gap: 16px;
+    left: 47%;
+    top: 86px;
+    z-index: 1;
+}
+
+.vnpc-before-dots-group span {
+    width: 6px;
+    height: 6px;
+    background: #D9D9D9;
+    border-radius: 50%;
+}
+
+@media (max-width: 992px) {
+    .vnpc-services-before {
+        min-height: auto;
+        padding-bottom: 60px;
+    }
+
+    .vnpc-before-deco-red,
+    .vnpc-before-deco-green-1,
+    .vnpc-before-deco-orange,
+    .vnpc-before-deco-green-2,
+    .vnpc-before-dots-group {
+        display: none;
+    }
+}
+
+/* SECTION 4: DURING & AFTER */
+.vnpc-services-after {
+    background-color: #F8FBFF;
+    padding: 100px 0;
+}
+
+.vnpc-services-main-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 40px;
+    color: #0E2A46;
+    text-transform: capitalize;
+    margin: 0;
+}
+
+.vnpc-card-service-v2 {
+    background: #FFFFFF;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.25);
+    border-radius: 12px;
+    padding: 24px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: transform 0.3s ease;
+}
+
+.vnpc-card-service-v2:hover {
+    transform: translateY(-5px);
+}
+
+.vnpc-card-service-v2-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 40px;
+    color: #0E2A46;
+    text-transform: capitalize;
+    margin: 0;
+}
+
+.vnpc-card-service-v2-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.vnpc-card-service-v2-item {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.service-icon-v2 {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.service-text-v2 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 22px;
+    color: #000000;
+    margin: 0;
+    flex: 1;
+}
+
+@media (max-width: 768px) {
+    .vnpc-card-service-v2-title {
+        font-size: 20px;
+        line-height: 1.4;
+    }
+}
+
+@media (max-width: 992px) {
+    .vnpc-about-img-group {
+        transform: scale(0.8);
+        transform-origin: left top;
+        margin-bottom: -100px;
+    }
+}
+
+@media (max-width: 768px) {
+    .vnpc-about-img-group {
+        transform: scale(0.6);
+        margin-bottom: -250px;
+    }
+
+    .vnpc-about-section {
+        overflow-x: hidden;
+    }
+}
+
+@media (max-width: 576px) {
+    .vnpc-about-img-group {
+        transform: scale(0.45);
+        margin-bottom: -350px;
+    }
+}

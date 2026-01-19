@@ -55,7 +55,7 @@ foreach (glob(__DIR__ . '/../app/controllers/*.php') as $controllerFile) {
  * URI & BASE PATH
  * -----------------------------------------------------
  */
-$uri    = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?? '/';
+$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?? '/';
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
 /**
@@ -88,7 +88,7 @@ function view(string $layout, string $view, array $data = []): void
 
     extract($data, EXTR_SKIP);
 
-    $viewFile   = __DIR__ . "/../app/views/$view.php";
+    $viewFile = __DIR__ . "/../app/views/$view.php";
     $layoutFile = __DIR__ . "/../app/views/layouts/$layout.php";
 
     if (!file_exists($layoutFile)) {
@@ -100,6 +100,19 @@ function view(string $layout, string $view, array $data = []): void
 
     include $layoutFile;
     exit;
+}
+
+/**
+ * Helper to render partial views
+ */
+function partial(string $view, array $data = []): void
+{
+    $data['base'] = $GLOBALS['base'] ?? '';
+    extract($data, EXTR_SKIP);
+    $viewFile = __DIR__ . "/../app/views/$view.php";
+    if (file_exists($viewFile)) {
+        include $viewFile;
+    }
 }
 
 /**
