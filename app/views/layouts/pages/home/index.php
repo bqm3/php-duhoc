@@ -1,5 +1,6 @@
 <!-- // views/layouts/pages/home/index.php -->
-<?php if (!isset($base)) $base = ''; ?>
+<?php if (!isset($base))
+    $base = ''; ?>
 
 <?php
 
@@ -67,7 +68,7 @@ $testimonials = [
 <?php include __DIR__ . '/sections/spacing.php'; ?>
 <?php include __DIR__ . '/sections/strip.php'; ?>
 <?php include __DIR__ . '/sections/spacing.php'; ?>
-<!-- <?php include __DIR__ . '/sections/countries.php'; ?> -->
+<?php include __DIR__ . '/sections/countries.php'; ?>
 <?php include __DIR__ . '/sections/scholarships.php'; ?>
 <?php include __DIR__ . '/sections/why.php'; ?>
 <?php include __DIR__ . '/sections/process.php'; ?>
@@ -76,5 +77,4 @@ $testimonials = [
 
 <?php
 include __DIR__ . '/sections/partners.php';
-include __DIR__ . '/sections/newsletter.php';
 ?>

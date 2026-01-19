@@ -89,7 +89,7 @@
 
     <div class="countries-grid">
 
-      <!-- Row 1: 2 cards -->
+      <!-- Row 1: Canada (6 cols) + Mỹ (6 cols) -->
       <?php
       $row1 = [
         ['title' => 'Du Học Canada', 'img' => 'dh_canada.png'],
@@ -102,7 +102,7 @@
         </a>
       <?php endforeach; ?>
 
-      <!-- Row 2: 3 cards -->
+      <!-- Row 2: New Zealand + Úc + Đức (4 cols each) -->
       <?php
       $row2 = [
         ['title' => 'Du Học New Zealand', 'img' => 'dh_new_zealand.png'],
@@ -116,10 +116,10 @@
         </a>
       <?php endforeach; ?>
 
-      <!-- Row 3: 1 small + 1 wide -->
+      <!-- Row 3: Phần Lan (4 cols) + Hà Lan (8 cols) -->
       <a class="country-card span-4" href="#">
-        <img src="<?= $base ?>/assets/img/client/countries/dh_phap.png" alt="Du Học Pháp">
-        <span class="country-label">Du Học Pháp</span>
+        <img src="<?= $base ?>/assets/img/client/countries/dh_phan_lan.png" alt="Du Học Phần Lan">
+        <span class="country-label">Du Học Phần Lan</span>
       </a>
 
       <a class="country-card span-8" href="#">
@@ -127,10 +127,10 @@
         <span class="country-label">Du Học Hà Lan</span>
       </a>
 
-      <!-- Row 4: 3 cards -->
+      <!-- Row 4: Singapore + Anh + Tây Ban Nha (4 cols each) -->
       <?php
       $row4 = [
-        ['title' => 'Du Học Phần Lan', 'img' => 'dh_phan_lan.png'],
+        ['title' => 'Du Học Singapore', 'img' => 'dh_singapore.png'],
         ['title' => 'Du Học Anh', 'img' => 'dh_anh.png'],
         ['title' => 'Du Học Tây Ban Nha', 'img' => 'dh_tay_ban_nha.png'],
       ];
@@ -141,18 +141,17 @@
         </a>
       <?php endforeach; ?>
 
-      <!-- Row 5: 2 wide cards -->
-      <a class="country-card span-6" href="#">
+      <!-- Row 5: Hàn Quốc (8 cols) + Thụy Sĩ (4 cols) -->
+      <a class="country-card span-8" href="#">
+        <img src="<?= $base ?>/assets/img/client/countries/dh_han_quoc.png" alt="Du Học Hàn Quốc">
+        <span class="country-label">Du Học Hàn Quốc</span>
+      </a>
+
+      <a class="country-card span-4" href="#">
         <img src="<?= $base ?>/assets/img/client/countries/dh_thuy_si.png" alt="Du Học Thụy Sĩ">
         <span class="country-label">Du Học Thụy Sĩ</span>
       </a>
 
-      <a class="country-card span-6" href="#">
-        <img src="<?= $base ?>/assets/img/client/countries/dh_singapore.png" alt="Du Học Singapore">
-        <span class="country-label">Du Học Singapore</span>
-      </a>
-
-      <!-- Bạn thêm các nước khác tương tự ở dưới nếu muốn -->
     </div>
 
     <div class="text-center mt-4">
