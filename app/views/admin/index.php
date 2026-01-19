@@ -37,7 +37,7 @@
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-    <title>Sleek Admin</title>
+    <title>Du học</title>
   </head>
   <body>
     <!--Page loader-->

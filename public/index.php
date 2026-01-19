@@ -6,6 +6,9 @@ declare(strict_types=1);
  * BOOTSTRAP / FRONT CONTROLLER
  * =====================================================
  */
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
 
 ini_set('default_charset', 'UTF-8');
 header('Content-Type: text/html; charset=UTF-8');
@@ -89,10 +92,17 @@ function view(string $layout, string $view, array $data = []): void
     extract($data, EXTR_SKIP);
 
     $viewFile = __DIR__ . "/../app/views/$view.php";
-    $layoutFile = __DIR__ . "/../app/views/layouts/$layout.php";
 
-    if (!file_exists($layoutFile)) {
-        throw new RuntimeException("Layout not found: $layoutFile");
+    // support both: {layout}.php and {layout}.layout.php
+    $layoutFile1 = __DIR__ . "/../app/views/layouts/$layout.php";
+    $layoutFile2 = __DIR__ . "/../app/views/layouts/$layout.layout.php";
+
+    $layoutFile = null;
+    if (file_exists($layoutFile1)) $layoutFile = $layoutFile1;
+    elseif (file_exists($layoutFile2)) $layoutFile = $layoutFile2;
+
+    if (!$layoutFile) {
+        throw new RuntimeException("Layout not found: $layoutFile1 OR $layoutFile2");
     }
     if (!file_exists($viewFile)) {
         throw new RuntimeException("View not found: $viewFile");
@@ -101,6 +111,7 @@ function view(string $layout, string $view, array $data = []): void
     include $layoutFile;
     exit;
 }
+
 
 /**
  * Helper to render partial views

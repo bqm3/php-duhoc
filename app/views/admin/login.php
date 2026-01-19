@@ -1,7 +1,7 @@
 <div class="card">
   <div class="card-header">
     <span class="logo-icon"><i class="fa fa-rocket"></i></span>
-    <h3>Sleek Admin</h3>
+    <h3>Du học</h3>
     <p>Chào mừng bạn quay trở lại!</p>
   </div>
   <div class="card-body p-4">
@@ -48,6 +48,6 @@
     </form>
   </div>
   <div class="card-footer bg-white text-center py-3 border-0">
-      <p class="mb-0 text-muted" style="font-size: 13px;">&copy; 2026 Sleek Admin Terminal</p>
+      <p class="mb-0 text-muted" style="font-size: 13px;">&copy; 2026 Du học Terminal</p>
   </div>
 </div>
