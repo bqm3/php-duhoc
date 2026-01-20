@@ -16,11 +16,11 @@ $menus = [
   ['Giới Thiệu', $base . '/gioi-thieu', $relative_path === '/gioi-thieu'],
   ['Tin Tức & Sự kiện', '#', false],
   ['Du Học', '#', strpos($relative_path, '/du-hoc') === 0],
-  ['Học bổng du học', '#', false],
-  ['Visa du học', '#', false],
-  ['Tìm trường', '#', false],
-  ['Tuyển Dụng', '#', false],
-  ['Liên hệ', '#', false],
+  ['Học bổng du học', $base . '/hoc-bong', strpos($relative_path, '/hoc-bong') === 0],
+  ['Visa du học', $base . '/visa-du-hoc', strpos($relative_path, '/visa-du-hoc') === 0],
+  ['Tìm trường', $base . '/tim-truong', strpos($relative_path, '/tim-truong') === 0],
+  ['Tuyển Dụng', $base . '/tuyen-dung', strpos($relative_path, '/tuyen-dung') === 0],
+  ['Liên hệ', $base . '/lien-he', strpos($relative_path, '/lien-he') === 0],
 ];
 ?>
 

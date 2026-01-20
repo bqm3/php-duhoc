@@ -80,18 +80,11 @@ $title = $post['title'] ?? 'Bài viết';
   }
 </style>
 
-<div class="container py-4">
+<?php partial('layouts/pages/base/base_hero', ['title' => $title]) ?>
+
+<div class="container py-5">
   <div class="row">
     <div class="col-lg-8 mx-auto">
-
-      <!-- Breadcrumb -->
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb bg-transparent p-0">
-          <li class="breadcrumb-item"><a href="<?= $base ?>/">Trang chủ</a></li>
-          
-          <li class="breadcrumb-item active" aria-current="page"><?= htmlspecialchars($title) ?></li>
-        </ol>
-      </nav>
 
       <!-- Post Header -->
       <!-- <h1 class="mb-3"><?= htmlspecialchars($title) ?></h1> -->
