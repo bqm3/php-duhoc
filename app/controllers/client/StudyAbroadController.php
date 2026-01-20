@@ -7,7 +7,7 @@ class StudyAbroadController
     $pdo = Db::getInstance()->pdo();
 
     $stmt = $pdo->prepare("
-      SELECT p.*, c.name AS category_name, u.full_name AS creator_name, ctry.name AS country_name
+      SELECT p.*, c.name AS category_name, c.slug AS category_slug, u.full_name AS creator_name, ctry.name AS country_name
       FROM posts p
       LEFT JOIN categories c ON p.category_id = c.id
       LEFT JOIN users u ON p.user_id = u.id

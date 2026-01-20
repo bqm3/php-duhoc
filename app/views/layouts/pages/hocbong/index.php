@@ -1,11 +1,16 @@
 <?php
 // app/views/layouts/pages/hocbong/index.php (LIST)
-$title = $category['name'] ?? 'Học bổng du học';
+$title = $category['title'] ?? 'Học bổng du học';
 ?>
 
-<?php partial('layouts/pages/base/base_hero', [
-    'title' => 'Học bổng du học',
-    'showSearch' => $showSearch ?? false
+<?php 
+$breadcrumbs = [
+    ['label' => 'Học bổng du học', 'url' => '/hoc-bong']
+];
+partial('layouts/pages/base/base_hero', [
+    'title' => $title,
+    'showSearch' => $showSearch ?? false,
+    'breadcrumbs' => $breadcrumbs
 ]) ?>
 
 <style>
@@ -128,8 +133,10 @@ $title = $category['name'] ?? 'Học bổng du học';
                             <?php if ($post['is_popular']): ?>
                                 <span class="badge-hot">HOT</span>
                             <?php endif; ?>
-                            <img src="<?= $base . ($post['featured_image'] ?: '/public/assets/images/placeholder.jpg') ?>"
-                                alt="<?= htmlspecialchars($post['title']) ?>">
+                            <a href="<?= $base . '/' . $post['slug'] ?>">
+                                <img src="<?= $base . ($post['featured_image'] ?: '/public/assets/images/placeholder.jpg') ?>"
+                                    alt="<?= htmlspecialchars($post['title']) ?>">
+                            </a>
                         </div>
                         <div class="card-body p-4">
                             <div class="rating-section d-flex align-items-center">

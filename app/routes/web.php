@@ -25,7 +25,10 @@ if ($uri === "/api/study-abroad-menu" && $method === "GET") {
   (new NavbarController())->getStudyAbroadMenu();
 }
 
-
+if ($uri === "/du-hoc" && $method === "GET") {
+  (new HomeController())->index();
+  exit;
+}
 
 if (preg_match('#^/hoc-bong$#', $uri, $m) && $method === 'GET') {
   require_once __DIR__ . '/../controllers/client/ScholarshipController.php';

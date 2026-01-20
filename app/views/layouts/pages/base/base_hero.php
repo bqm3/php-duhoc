@@ -28,8 +28,19 @@
 
         <div class="vnpc-breadcrumb animate-fade-in-up" style="animation-delay: 0.2s;">
             <a href="<?= $base ?>/">Trang chủ</a>
-            <span class="sep">//</span>
-            <span><?= $title ?? 'Giới thiệu' ?></span>
+            <?php if (isset($breadcrumbs) && is_array($breadcrumbs)): ?>
+                <?php foreach ($breadcrumbs as $bc): ?>
+                    <span class="sep">//</span>
+                    <?php if (!empty($bc['url'])): ?>
+                        <a href="<?= $base . $bc['url'] ?>"><?= htmlspecialchars($bc['label']) ?></a>
+                    <?php else: ?>
+                        <span><?= htmlspecialchars($bc['label']) ?></span>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <span class="sep">//</span>
+                <span><?= $title ?? 'Giới thiệu' ?></span>
+            <?php endif; ?>
         </div>
 
 
