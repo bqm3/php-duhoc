@@ -4,7 +4,8 @@ class NavbarController
 {
   public function getStudyAbroadMenu()
   {
-    if (ob_get_length()) ob_clean();
+    if (ob_get_length())
+      ob_clean();
     header('Content-Type: application/json; charset=utf-8');
 
     try {
@@ -13,7 +14,7 @@ class NavbarController
       // 1) lấy category du-hoc
       $stmt = $db->prepare("SELECT id FROM categories WHERE slug = ? LIMIT 1");
       $stmt->execute(['du-hoc']);
-      $catId = (int)$stmt->fetchColumn();
+      $catId = (int) $stmt->fetchColumn();
 
       if (!$catId) {
         echo json_encode(['ok' => true, 'items' => []], JSON_UNESCAPED_UNICODE);
@@ -53,7 +54,7 @@ class NavbarController
       // 3) group theo continent
       $map = [];
       foreach ($rows as $r) {
-        $contId = (int)$r['continent_id'];
+        $contId = (int) $r['continent_id'];
 
         if (!isset($map[$contId])) {
           $map[$contId] = [
@@ -66,11 +67,11 @@ class NavbarController
 
         $postSlug = $r['post_slug']; // vd: du-hoc-viet-nam
         $map[$contId]['countries'][] = [
-          'id' => (int)$r['country_id2'],
+          'id' => (int) $r['country_id2'],
           'name' => $r['country_name'],
           'slug' => $r['country_slug'],
           'post' => [
-            'id' => (int)$r['post_id'],
+            'id' => (int) $r['post_id'],
             'title' => $r['post_title'],
             'slug' => $postSlug,
             'href' => '/' . $postSlug, // <<< LINK ĐÚNG theo yêu cầu
@@ -90,4 +91,5 @@ class NavbarController
       exit;
     }
   }
+
 }

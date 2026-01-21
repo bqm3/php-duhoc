@@ -303,43 +303,43 @@ class AdminPostController
     }
 
     // /posts/{slug}
-    public static function show($slug)
-    {
-        $db = Db::getInstance()->pdo();
+    // public static function show($slug)
+    // {
+    //     $db = Db::getInstance()->pdo();
 
-        $stmt = $db->prepare("
-            SELECT p.*, c.name AS category_name, u.full_name AS creator_name
-            FROM posts p
-            LEFT JOIN categories c ON p.category_id = c.id
-            LEFT JOIN users u ON p.user_id = u.id
-            WHERE p.slug = ?
-            LIMIT 1
-        ");
-        $stmt->execute([$slug]);
-        $post = $stmt->fetch(PDO::FETCH_ASSOC);
+    //     $stmt = $db->prepare("
+    //         SELECT p.*, c.name AS category_name, u.full_name AS creator_name
+    //         FROM posts p
+    //         LEFT JOIN categories c ON p.category_id = c.id
+    //         LEFT JOIN users u ON p.user_id = u.id
+    //         WHERE p.slug = ?
+    //         LIMIT 1
+    //     ");
+    //     $stmt->execute([$slug]);
+    //     $post = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (!$post) {
-            Response::notFound();
-        }
+    //     if (!$post) {
+    //         Response::notFound();
+    //     }
 
-        // Chống tăng view liên tục khi refresh: 1 session / 1 bài
-        if (session_status() !== PHP_SESSION_ACTIVE) session_start();
-        $key = "viewed_post_" . $post['id'];
-        if (empty($_SESSION[$key])) {
-            $_SESSION[$key] = true;
+    //     // Chống tăng view liên tục khi refresh: 1 session / 1 bài
+    //     if (session_status() !== PHP_SESSION_ACTIVE) session_start();
+    //     $key = "viewed_post_" . $post['id'];
+    //     if (empty($_SESSION[$key])) {
+    //         $_SESSION[$key] = true;
 
-            $up = $db->prepare("UPDATE posts SET count_view = count_view + 1 WHERE id = ?");
-            $up->execute([$post['id']]);
+    //         $up = $db->prepare("UPDATE posts SET count_view = count_view + 1 WHERE id = ?");
+    //         $up->execute([$post['id']]);
 
-            // cập nhật lại để view hiển thị đúng ngay trong lần render này
-            $post['count_view'] = (int)$post['count_view'] + 1;
-        }
+    //         // cập nhật lại để view hiển thị đúng ngay trong lần render này
+    //         $post['count_view'] = (int)$post['count_view'] + 1;
+    //     }
 
-        view('main', 'client/posts/show', [
-            'post' => $post,
-            'csrf' => Csrf::token()
-        ]);
-    }
+    //     view('main', 'client/posts/show', [
+    //         'post' => $post,
+    //         'csrf' => Csrf::token()
+    //     ]);
+    // }
 
     // POST /posts/{id}/share
     public static function share($id)

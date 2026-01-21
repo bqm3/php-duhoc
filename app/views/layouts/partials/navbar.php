@@ -15,12 +15,12 @@ $menus = [
   ['Trang Chủ', $base . '/', $relative_path === '/'],
   ['Giới Thiệu', $base . '/gioi-thieu', $relative_path === '/gioi-thieu'],
   ['Tin Tức & Sự kiện', '#', false],
-  ['Du Học', '#', strpos($relative_path, '/du-hoc') === 0],
-  ['Học bổng du học', '#', false],
-  ['Visa du học', '#', false],
-  ['Tìm trường', '#', false],
-  ['Tuyển Dụng', '#', false],
-  ['Liên hệ', '#', false],
+  ['Du Học', $base . '/du-hoc', strpos($relative_path, '/du-hoc') === 0],
+  ['Học bổng du học', $base . '/hoc-bong', strpos($relative_path, '/hoc-bong') === 0],
+  ['Visa du học', $base . '/visa-du-hoc', strpos($relative_path, '/visa-du-hoc') === 0],
+  ['Tìm trường', $base . '/tim-truong', strpos($relative_path, '/tim-truong') === 0],
+  ['Tuyển Dụng', $base . '/tuyen-dung', strpos($relative_path, '/tuyen-dung') === 0],
+  ['Liên hệ', $base . '/lien-he', strpos($relative_path, '/lien-he') === 0],
 ];
 ?>
 
@@ -40,8 +40,8 @@ $menus = [
           [$label, $href, $active] = $m; ?>
           <?php if ($label === 'Du Học'): ?>
             <li class="nav-item dropdown vnpc-dropdown">
-              <a class="nav-link vnpc-navlink dropdown-toggle <?= $active ? 'active' : '' ?>" href="#"
-                id="studyAbroadDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <a class="nav-link vnpc-navlink dropdown-toggle <?= $active ? 'active' : '' ?>" href="<?= $href ?>"
+                id="studyAbroadDropdown" role="button" aria-expanded="false">
                 <?= htmlspecialchars($label) ?>
               </a>
               <div class="dropdown-menu vnpc-dropdown-menu shadow border-0 p-4" aria-labelledby="studyAbroadDropdown"
@@ -67,12 +67,12 @@ $menus = [
 </nav>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     const dropdown = document.querySelector('.vnpc-dropdown');
     const menuContent = document.getElementById('studyAbroadMenuContent');
     let loaded = false;
 
-    dropdown.addEventListener('mouseenter', function() {
+    dropdown.addEventListener('mouseenter', function () {
       if (!loaded) {
         fetch('<?= $base ?>/api/study-abroad-menu')
           .then(r => r.json())

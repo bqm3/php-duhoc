@@ -1,7 +1,16 @@
 <?php
-// app/views/layouts/pages/duhoc/index.php  (DETAIL)
-// Yêu cầu biến: $post (array) và $base (string)
+// app/views/layouts/pages/detail/index.php  (DETAIL)
 $title = $post['title'] ?? 'Bài viết';
+
+// Build Breadcrumbs
+$breadcrumbs = [];
+if (!empty($post['category_name'])) {
+  $breadcrumbs[] = [
+    'label' => $post['category_name'],
+    'url' => !empty($post['category_slug']) ? '/' . $post['category_slug'] : ''
+  ];
+}
+$breadcrumbs[] = ['label' => $post['title'] ?? 'Chi tiết', 'url' => ''];
 ?>
 
 <style>
@@ -125,7 +134,12 @@ $title = $post['title'] ?? 'Bài viết';
   }
 </style>
 
-<div class="container py-4">
+<?php partial('layouts/pages/base/base_hero', [
+  'title' => $title,
+  'breadcrumbs' => $breadcrumbs ?? null
+]) ?>
+
+<div class="container py-5">
   <div class="row">
     <div class="col-lg-8 mx-auto">
 
@@ -157,7 +171,7 @@ $title = $post['title'] ?? 'Bài viết';
         <?php if (isset($post['count_view'])): ?>
           <small>
             <i class="fa fa-eye mr-1"></i>
-            <?= (int)$post['count_view'] ?> lượt xem
+            <?= (int) $post['count_view'] ?> lượt xem
           </small>
         <?php endif; ?>
       </div>
@@ -204,7 +218,7 @@ $title = $post['title'] ?? 'Bài viết';
       <!-- Share Buttons -->
       <div class="mt-5 pt-3 border-top">
         <p class="font-weight-bold mb-2">Chia sẻ bài viết:</p>
-        <button class="btn btn-primary btn-sm" onclick="sharePost(<?= (int)($post['id'] ?? 0) ?>)">
+        <button class="btn btn-primary btn-sm" onclick="sharePost(<?= (int) ($post['id'] ?? 0) ?>)">
           <i class="fa fa-facebook"></i> Facebook
         </button>
         <button class="btn btn-info btn-sm" type="button">
@@ -217,7 +231,7 @@ $title = $post['title'] ?? 'Bài viết';
 </div>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
+  document.addEventListener("DOMContentLoaded", function () {
     const content = document.getElementById('post-content');
     const tocList = document.getElementById('toc-list');
     const tocWrapper = document.getElementById('toc-wrapper');
@@ -246,7 +260,7 @@ $title = $post['title'] ?? 'Bài viết';
           li.classList.add('toc-sub-item');
         }
 
-        a.addEventListener('click', function(e) {
+        a.addEventListener('click', function (e) {
           e.preventDefault();
           const target = document.querySelector(this.getAttribute('href'));
           if (target) target.scrollIntoView({
