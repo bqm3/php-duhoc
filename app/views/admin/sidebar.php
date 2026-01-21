@@ -19,6 +19,7 @@ function activeClass($targetPath) {
 
     // 3. Fallback: Kiểm tra từ khóa cụ thể cho các module chính (khắc phục lỗi path prefix)
     if (strpos($targetPath, '/admin/users') !== false && strpos($currentPath, '/users') !== false) return 'text-primary font-weight-bold';
+    if (strpos($targetPath, '/admin/files') !== false && strpos($currentPath, '/files') !== false) return 'text-primary font-weight-bold';
     if (strpos($targetPath, '/admin/posts') !== false && strpos($currentPath, '/posts') !== false) return 'text-primary font-weight-bold';
     if (strpos($targetPath, '/admin/categories') !== false && strpos($currentPath, '/categories') !== false) return 'text-primary font-weight-bold';
     if (strpos($targetPath, '/admin/consultations') !== false && strpos($currentPath, '/consultations') !== false) return 'text-primary font-weight-bold';
@@ -157,6 +158,14 @@ $open_pages     = isGroupActive(['email', 'login', 'register', 'lockscreen', 'fo
                     <a href="<?= $base ?>/admin/consultations" class="<?= activeClass('/admin/consultations') ?>">
                         <i class="fa fa-commenting mr-3"></i>
                         <span class="none"> Danh sách tư vấn </span>
+                    </a>
+                </li>
+
+                <!-- FILES -->
+                 <li class="parent">
+                    <a href="<?= $base ?>/admin/files" class="<?= activeClass('/admin/files') ?>">
+                        <i class="fa fa-file mr-3"></i>
+                        <span class="none"> Danh sách files </span>
                     </a>
                 </li>
 

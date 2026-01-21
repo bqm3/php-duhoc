@@ -2,3 +2,5 @@ app/logs
 
 app/config/config.php
 public/assets/js/firebase-config.js
+
+public/assets/uploads
