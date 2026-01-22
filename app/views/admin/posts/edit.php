@@ -30,6 +30,15 @@
                 <div class="row mt-3">
                     <div class="col-sm-12">
                         <div class="mt-1 mb-3 p-4 button-container bg-white border shadow-sm">
+                            <?php if (isset($error)): ?>
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <i class="fa fa-exclamation-circle mr-2"></i>
+                                    <strong>Lỗi:</strong> <?= htmlspecialchars($error) ?>
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            <?php endif; ?>
                             <form id="editPostForm" method="POST" action="<?= $base ?>/admin/posts/<?= $post['id'] ?>" enctype="multipart/form-data">
                                 <input type="hidden" name="_csrf" value="<?= $csrf ?>">
 
@@ -87,6 +96,11 @@
                                 <div class="form-check mb-3">
                                     <input type="checkbox" class="form-check-input" id="is_popular" name="is_popular" value="1" <?= !empty($post['is_popular']) ? 'checked' : '' ?>>
                                     <label class="form-check-label font-weight-bold" for="is_popular">Đánh dấu là bài viết Nổi bật</label>
+                                </div>
+
+                                <div class="form-check mb-3">
+                                    <input type="checkbox" class="form-check-input" id="is_hidden" name="is_hidden" value="1" <?= (isset($post['is_hidden']) && (int)$post['is_hidden'] === 1) ? 'checked' : '' ?>>
+                                    <label class="form-check-label font-weight-bold" for="is_hidden">Ẩn bài viết (không hiển thị)</label>
                                 </div>
 
                                 <div class="form-group">
@@ -172,7 +186,10 @@
     <script src="<?= $base ?>/assets/js/popper.min.js"></script>
     <script src="<?= $base ?>/assets/js/bootstrap.min.js"></script>
     <script src="<?= $base ?>/assets/js/summernote/summernote-bs4.js"></script>
+    <script src="<?= $base ?>/assets/js/sweetalert.js"></script>
+    <script src="<?= $base ?>/assets/js/toastr.min.js"></script>
     <script src="<?= $base ?>/assets/js/custom.js"></script>
+    <link rel="stylesheet" href="<?= $base ?>/assets/css/toastr.min.css">
     <script>
         function stepNumber(name, step) {
             const el = document.querySelector('input[name="' + name + '"]');
@@ -284,12 +301,75 @@
                 document.getElementById('slug').value = slug;
             });
 
-            // Submit form
+            // Submit form với AJAX để hiển thị lỗi đẹp
             document.getElementById('editPostForm').addEventListener('submit', function(e) {
-                // e.preventDefault();
-
-                // Summernote syncs automatically to textarea
-                // No manual sync needed
+                e.preventDefault();
+                
+                // Summernote tự động đồng bộ với textarea
+                $('#summernote').summernote('code');
+                $('#summernote_summary').summernote('code');
+                
+                const form = this;
+                const formData = new FormData(form);
+                const submitBtn = form.querySelector('button[type="submit"]');
+                const originalBtnText = submitBtn.innerHTML;
+                
+                // Disable button và hiển thị loading
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Đang cập nhật...';
+                
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    // Kiểm tra content-type để biết response là JSON hay HTML
+                    const contentType = response.headers.get('content-type') || '';
+                    
+                    if (contentType.includes('application/json')) {
+                        // Nếu là JSON, parse và kiểm tra
+                        return response.json().then(data => {
+                            if (data.error) {
+                                // Có lỗi, throw để catch xử lý
+                                throw new Error(data.error);
+                            }
+                            // Nếu không có error, có thể là success
+                            if (data.success) {
+                                window.location.href = '<?= $base ?>/admin/posts';
+                                return;
+                            }
+                            throw new Error('Có lỗi xảy ra');
+                        });
+                    }
+                    
+                    // Nếu không phải JSON, kiểm tra status
+                    if (response.status >= 200 && response.status < 300) {
+                        // Thành công, redirect về danh sách
+                        window.location.href = '<?= $base ?>/admin/posts';
+                        return;
+                    }
+                    
+                    // Nếu có lỗi HTTP
+                    throw new Error('HTTP Error: ' + response.status);
+                })
+                .catch(error => {
+                    // Hiển thị lỗi bằng toastr hoặc sweetalert
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+                    
+                    const errorMessage = error.message || 'Có lỗi xảy ra khi cập nhật bài viết';
+                    
+                    if (typeof toastr !== 'undefined') {
+                        toastr.error(errorMessage, 'Lỗi', {
+                            timeOut: 5000,
+                            closeButton: true
+                        });
+                    } else if (typeof swal !== 'undefined') {
+                        swal("Lỗi!", errorMessage, "error");
+                    } else {
+                        alert('Lỗi: ' + errorMessage);
+                    }
+                });
             });
     </script>
 </body>

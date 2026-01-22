@@ -93,6 +93,12 @@
                                                     </td>
                                                     <td><?= date('d/m/Y', strtotime($post['created_at'])) ?></td>
                                                     <td>
+                                                        <?php $isHidden = isset($post['is_hidden']) ? (int)$post['is_hidden'] : 0; ?>
+                                                        <button class="btn btn-sm <?= $isHidden ? 'btn-secondary' : 'btn-info' ?>" 
+                                                                onclick="toggleHidden(<?= $post['id'] ?>, <?= $isHidden ? '1' : '0' ?>)" 
+                                                                title="<?= $isHidden ? 'Hiện bài viết' : 'Ẩn bài viết' ?>">
+                                                            <i class="fa fa-<?= $isHidden ? 'eye-slash' : 'eye' ?>"></i>
+                                                        </button>
                                                         <a href="<?= $base ?>/admin/posts/<?= $post['id'] ?>/edit" 
                                                            class="btn btn-sm btn-warning" title="Edit">
                                                             <i class="fa fa-edit"></i>
@@ -152,6 +158,9 @@
     <link rel="stylesheet" href="<?= $base ?>/assets/css/toastr.min.css">
     
     <script>
+    // Set CSRF token for JavaScript
+    window.__csrf = window.__csrf || '<?= htmlspecialchars($csrf ?? '') ?>';
+    
     function deletePost(id) {
         if (!confirm('Are you sure you want to delete this post?')) {
             return;
@@ -180,6 +189,45 @@
                 }
             } else {
                 swal("Error!", data.error || "Failed to delete post", "error");
+            }
+        })
+        .catch(error => {
+            swal("Error!", "An error occurred", "error");
+            console.error('Error:', error);
+        });
+    }
+
+    function toggleHidden(id, currentState) {
+        const btn = document.querySelector('button[onclick*="toggleHidden(' + id + '"]');
+        const newState = currentState ? 0 : 1;
+        
+        fetch('<?= $base ?>/admin/posts/' + id + '/toggle-hidden', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: '_csrf=' + encodeURIComponent(window.__csrf || '') + '&is_hidden=' + newState
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                toastr.success(data.message || 'Đã cập nhật trạng thái thành công!', 'Success');
+                // Cập nhật UI ngay lập tức
+                if (btn) {
+                    if (newState) {
+                        btn.className = 'btn btn-sm btn-secondary';
+                        btn.title = 'Hiện bài viết';
+                        btn.innerHTML = '<i class="fa fa-eye-slash"></i>';
+                        btn.setAttribute('onclick', 'toggleHidden(' + id + ', 1)');
+                    } else {
+                        btn.className = 'btn btn-sm btn-info';
+                        btn.title = 'Ẩn bài viết';
+                        btn.innerHTML = '<i class="fa fa-eye"></i>';
+                        btn.setAttribute('onclick', 'toggleHidden(' + id + ', 0)');
+                    }
+                }
+            } else {
+                swal("Error!", data.error || "Failed to update post", "error");
             }
         })
         .catch(error => {

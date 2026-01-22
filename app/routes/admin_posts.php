@@ -40,6 +40,11 @@ if (preg_match('#^/admin/posts/(\d+)/delete$#', $uri, $matches) && $method === '
     AdminPostController::delete((int)$matches[1]);
 }
 
+// Toggle hidden status
+if (preg_match('#^/admin/posts/(\d+)/toggle-hidden$#', $uri, $matches) && $method === 'POST') {
+    AdminPostController::toggleHidden((int)$matches[1]);
+}
+
 
 
 

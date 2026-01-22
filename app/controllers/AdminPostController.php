@@ -126,6 +126,7 @@ class AdminPostController
         $country_id = !empty($_POST['country_id']) ? (int)$_POST['country_id'] : null;
         $school_id = !empty($_POST['school_id']) ? (int)$_POST['school_id'] : null;
         $is_popular = isset($_POST['is_popular']) ? 1 : 0;
+        $is_hidden = isset($_POST['is_hidden']) ? 1 : 0;
         $content = $_POST['content'] ?? '';
 
         $user = Auth::user();
@@ -147,6 +148,30 @@ class AdminPostController
 
         $db = Db::getInstance()->pdo();
 
+        // Validation: Kiểm tra duplicate category_id + country_id hoặc category_id + school_id
+        // Chỉ kiểm tra khi có cả category_id và country_id, HOẶC cả category_id và school_id
+        if ($category_id) {
+            // Kiểm tra duplicate với country_id
+            if ($country_id) {
+                $checkStmt = $db->prepare("SELECT id FROM posts WHERE category_id = ? AND country_id = ? LIMIT 1");
+                $checkStmt->execute([$category_id, $country_id]);
+                if ($checkStmt->fetch()) {
+                    Response::json(['error' => 'Đã tồn tại bài viết với cùng danh mục và quốc gia này. Vui lòng ẩn hoặc xóa bài viết cũ trước khi tạo mới.'], 400);
+                    return;
+                }
+            }
+            
+            // Kiểm tra duplicate với school_id
+            if ($school_id) {
+                $checkStmt = $db->prepare("SELECT id FROM posts WHERE category_id = ? AND school_id = ? LIMIT 1");
+                $checkStmt->execute([$category_id, $school_id]);
+                if ($checkStmt->fetch()) {
+                    Response::json(['error' => 'Đã tồn tại bài viết với cùng danh mục và trường học này. Vui lòng ẩn hoặc xóa bài viết cũ trước khi tạo mới.'], 400);
+                    return;
+                }
+            }
+        }
+
         // Check if slug exists
         $stmt = $db->prepare("SELECT id FROM posts WHERE slug = ?");
         $stmt->execute([$slug]);
@@ -155,11 +180,11 @@ class AdminPostController
         }
 
         $stmt = $db->prepare("
-            INSERT INTO posts (slug, title, summary, category_id, country_id, school_id, is_popular, content, user_id, featured_image) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO posts (slug, title, summary, category_id, country_id, school_id, is_popular, is_hidden, content, user_id, featured_image) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
 
-        if ($stmt->execute([$slug, $title, $summary, $category_id, $country_id, $school_id, $is_popular, $content, $user_id, $featured_image])) {
+        if ($stmt->execute([$slug, $title, $summary, $category_id, $country_id, $school_id, $is_popular, $is_hidden, $content, $user_id, $featured_image])) {
             Response::redirect('/admin/posts');
         } else {
             Response::json(['error' => 'Failed to create post'], 500);
@@ -218,6 +243,7 @@ class AdminPostController
         $country_id = !empty($_POST['country_id']) ? (int)$_POST['country_id'] : null;
         $school_id = !empty($_POST['school_id']) ? (int)$_POST['school_id'] : null;
         $is_popular = isset($_POST['is_popular']) ? 1 : 0;
+        $is_hidden = isset($_POST['is_hidden']) ? 1 : 0;
         $content = $_POST['content'] ?? '';
 
         // ADMIN chỉnh tay view/share
@@ -242,6 +268,30 @@ class AdminPostController
         if (!$old) {
             Response::notFound();
             return;
+        }
+
+        // Validation: Kiểm tra duplicate category_id + country_id hoặc category_id + school_id (trừ post hiện tại)
+        // Chỉ kiểm tra khi có cả category_id và country_id, HOẶC cả category_id và school_id
+        if ($category_id) {
+            // Kiểm tra duplicate với country_id
+            if ($country_id) {
+                $checkStmt = $db->prepare("SELECT id FROM posts WHERE category_id = ? AND country_id = ? AND id != ? LIMIT 1");
+                $checkStmt->execute([$category_id, $country_id, $id]);
+                if ($checkStmt->fetch()) {
+                    Response::json(['error' => 'Đã tồn tại bài viết khác với cùng danh mục và quốc gia này. Vui lòng ẩn hoặc xóa bài viết cũ trước khi cập nhật.'], 400);
+                    return;
+                }
+            }
+            
+            // Kiểm tra duplicate với school_id
+            if ($school_id) {
+                $checkStmt = $db->prepare("SELECT id FROM posts WHERE category_id = ? AND school_id = ? AND id != ? LIMIT 1");
+                $checkStmt->execute([$category_id, $school_id, $id]);
+                if ($checkStmt->fetch()) {
+                    Response::json(['error' => 'Đã tồn tại bài viết khác với cùng danh mục và trường học này. Vui lòng ẩn hoặc xóa bài viết cũ trước khi cập nhật.'], 400);
+                    return;
+                }
+            }
         }
 
         // Check if slug exists (exclude current post)
@@ -270,11 +320,11 @@ class AdminPostController
 
         $stmt = $db->prepare("
             UPDATE posts 
-            SET slug = ?, title = ?, summary = ?, category_id = ?, country_id = ?, school_id = ?, is_popular = ?, content = ?, featured_image = ?, count_view = ?, count_share = ?
+            SET slug = ?, title = ?, summary = ?, category_id = ?, country_id = ?, school_id = ?, is_popular = ?, is_hidden = ?, content = ?, featured_image = ?, count_view = ?, count_share = ?
             WHERE id = ?
         ");
 
-        if ($stmt->execute([$slug, $title, $summary, $category_id, $country_id, $school_id, $is_popular, $content, $newFeatured, $count_view, $count_share, $id])) {
+        if ($stmt->execute([$slug, $title, $summary, $category_id, $country_id, $school_id, $is_popular, $is_hidden, $content, $newFeatured, $count_view, $count_share, $id])) {
             Response::redirect('/admin/posts');
         } else {
             Response::json(['error' => 'Failed to update post'], 500);
@@ -606,6 +656,30 @@ class AdminPostController
         ];
 
         return strtr($str, $vietnameseTones);
+    }
+
+    // Toggle hidden status
+    public static function toggleHidden($id)
+    {
+        Auth::requireAdmin();
+        
+        if (!Csrf::verify($_POST['_csrf'] ?? '')) {
+            Response::json(['error' => 'Invalid CSRF token'], 403);
+            return;
+        }
+
+        $is_hidden = isset($_POST['is_hidden']) ? (int)$_POST['is_hidden'] : 0;
+        $is_hidden = $is_hidden ? 1 : 0;
+
+        $db = Db::getInstance()->pdo();
+        $stmt = $db->prepare("UPDATE posts SET is_hidden = ? WHERE id = ?");
+        
+        if ($stmt->execute([$is_hidden, $id])) {
+            $message = $is_hidden ? 'Đã ẩn bài viết thành công!' : 'Đã hiện bài viết thành công!';
+            Response::json(['success' => true, 'message' => $message, 'is_hidden' => $is_hidden]);
+        } else {
+            Response::json(['error' => 'Failed to update post'], 500);
+        }
     }
 
     // Upload image for CKEditor

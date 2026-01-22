@@ -44,7 +44,7 @@ class NavbarController
         FROM posts p
         JOIN countries co   ON co.id = p.country_id
         JOIN continents ct  ON ct.id = co.continent_id
-        WHERE p.category_id = ?
+        WHERE p.category_id = ? AND p.is_hidden = 0
         ORDER BY ct.display_order ASC, co.display_order ASC, co.name ASC
       ";
       $stmt = $db->prepare($sql);
