@@ -8,6 +8,12 @@ if ($uri === "/gioi-thieu" && $method === "GET") {
   (new AboutController())->index();
 }
 
+if ($uri === "/lien-he" && $method === "GET") {
+  require_once __DIR__ . '/../controllers/client/LienheController.php';
+  (new LienheController())->index();
+  exit;
+}
+
 if ($uri === "/consultation/register" && $method === "POST") {
   require_once __DIR__ . '/../controllers/ConsultationController.php';
   (new ConsultationController())->register();
