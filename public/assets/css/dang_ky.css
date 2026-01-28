@@ -1,0 +1,166 @@
+/* Dang Ky Page Styles */
+.registration-section {
+    padding: 100px 0;
+    background-color: #fff;
+}
+
+.registration-card {
+    position: relative;
+    max-width: 1280px;
+    min-height: 700px;
+    margin: 0 auto;
+    background: #F2F2F2;
+    box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.25);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.registration-form-side {
+    flex: 1;
+    padding: 60px 56px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.registration-image-side {
+    width: 660px;
+    background-image: url('../img/client/signup_bg.jpg');
+    /* Default placeholder name from prompt */
+    background-size: cover;
+    background-position: center;
+}
+
+.registration-heading {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid #E2E1E1;
+    padding-bottom: 5px;
+    margin-bottom: 48px;
+    width: fit-content;
+}
+
+.registration-heading h4 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 30px;
+    line-height: 30px;
+    text-transform: uppercase;
+    color: #0A0909;
+    margin: 0;
+}
+
+.registration-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    max-width: 508px;
+}
+
+.registration-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.registration-input-wrapper {
+    width: 100%;
+}
+
+.registration-input {
+    width: 100%;
+    height: 44px;
+    background: #FFFFFF;
+    border-radius: 8px;
+    border: none;
+    padding: 18px 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 19px;
+    color: #0A0909;
+    outline: none;
+}
+
+.registration-input::placeholder {
+    color: #8F8F8F;
+    text-transform: capitalize;
+}
+
+.registration-textarea {
+    width: 100% !important;
+    height: 100px !important;
+    background: #FFFFFF;
+    border-radius: 8px;
+    border: none;
+    padding: 12px 12px 18px !important;
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 19px;
+    color: #0A0909;
+    outline: none;
+    resize: none;
+}
+
+.registration-textarea::placeholder {
+    color: #8F8F8F;
+    text-transform: capitalize;
+}
+
+.registration-submit-btn {
+    width: 100%;
+    height: 50px;
+    background: #1B99D4;
+    border-radius: 200px;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    color: #FFFFFF;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 32px;
+    text-transform: capitalize;
+    transition: background 0.3s ease;
+    cursor: pointer;
+}
+
+.registration-submit-btn:hover {
+    background: #157fb1;
+}
+
+.registration-submit-btn .btn-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .registration-card {
+        max-width: 95%;
+    }
+
+    .registration-image-side {
+        width: 40%;
+    }
+}
+
+@media (max-width: 992px) {
+    .registration-image-side {
+        display: none;
+    }
+
+    .registration-form-side {
+        padding: 40px 20px;
+        align-items: center;
+    }
+
+    .registration-form-group {
+        width: 100%;
+    }
+}

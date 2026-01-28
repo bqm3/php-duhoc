@@ -19,6 +19,13 @@ if ($uri === "/consultation/register" && $method === "POST") {
   (new ConsultationController())->register();
 }
 
+if ($uri === "/dang-ky" && $method === "GET") {
+  view('main', 'layouts/pages/dang_ky/index', [
+    'title' => 'Đăng ký tư vấn',
+    'pageCss' => ['dang_ky.css', 'about.css'],
+  ]);
+}
+
 // Post Detail Route
 if (preg_match('#^/posts/([^/]+)$#', $uri, $matches) && $method === "GET") {
   require_once __DIR__ . '/../controllers/client/StudyAbroadController.php';

@@ -16,7 +16,7 @@ $menus = [
   ['Học bổng du học', $base . '/hoc-bong', strpos($relative_path, '/hoc-bong') === 0],
   ['Visa du học', $base . '/visa-du-hoc', strpos($relative_path, '/visa-du-hoc') === 0],
   ['Tìm trường', $base . '/tim-truong', strpos($relative_path, '/tim-truong') === 0],
-  ['Tuyển Dụng', $base . '/tuyen-dung', strpos($relative_path, '/tuyen-dung') === 0],
+  ['Tuyển Dụng', $base . '/dang-ky', strpos($relative_path, '/dang-ky') === 0],
   ['Liên hệ', $base . '/lien-he', strpos($relative_path, '/lien-he') === 0],
 ];
 ?>
