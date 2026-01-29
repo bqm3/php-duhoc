@@ -332,8 +332,8 @@ $base_url = $base ?? '';
                     <!-- Pagination -->
                     <div class="swiper-pagination"></div>
                     <!-- Navigation -->
-                    <div class="swiper-button-next" style="transform: scale(0.7); right: -10px;"></div>
-                    <div class="swiper-button-prev" style="transform: scale(0.7); left: -10px;"></div>
+                    <!-- <div class="swiper-button-next" style="transform: scale(0.7); right: -10px;"></div>
+                    <div class="swiper-button-prev" style="transform: scale(0.7); left: -10px;"></div> -->
                 </div>
             <?php endif; ?>
         </div>
