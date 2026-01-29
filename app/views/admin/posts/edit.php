@@ -94,11 +94,16 @@
                                     </select>
                                 </div>
 
-                                <div class="form-check mb-3">
-                                    <input type="checkbox" class="form-check-input" id="is_popular" name="is_popular"
-                                        value="1" <?= !empty($post['is_popular']) ? 'checked' : '' ?>>
-                                    <label class="form-check-label font-weight-bold" for="is_popular">Đánh dấu là bài
-                                        viết Nổi bật</label>
+                                <div class="form-group">
+                                    <label for="tag_id"><strong>Gắn Tag (Cập nhật)</strong></label>
+                                    <select class="form-control" id="tag_id" name="tag_id">
+                                        <option value="">-- Không có tag --</option>
+                                        <?php foreach ($tags as $tag): ?>
+                                            <option value="<?= $tag['id'] ?>" <?= ($post['tag_id'] ?? '') == $tag['id'] ? 'selected' : '' ?>>
+                                                <?= htmlspecialchars($tag['name']) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
                                 </div>
 
                                 <div class="form-check mb-3">
@@ -178,6 +183,14 @@
                                         value="<?= date('Y-m-d\TH:i', strtotime($post['created_at'])) ?>">
                                     <small class="form-text text-muted">Mặc định là thời gian bài viết được tạo ban
                                         đầu.</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="updated_at"><strong>Ngày cập nhật</strong></label>
+                                    <input type="datetime-local" class="form-control" id="updated_at" name="updated_at"
+                                        value="<?= date('Y-m-d\TH:i', strtotime($post['updated_at'])) ?>">
+                                    <small class="form-text text-muted">Mặc định là thời gian bài viết cập nhật gần
+                                        nhất.</small>
                                 </div>
 
                                 <div class="form-group">

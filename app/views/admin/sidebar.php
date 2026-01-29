@@ -4,55 +4,73 @@ $uri = $_SERVER['REQUEST_URI'];
 $base = $GLOBALS['base'] ?? '';
 
 // Helper để kiểm tra trang hiện tại và trả về class màu sắc
-function activeClass($targetPath) {
+function activeClass($targetPath)
+{
     global $uri, $base;
-    
+
     $currentPath = parse_url($uri, PHP_URL_PATH);
     $fullPath = $base . $targetPath;
-    
+
     // 1. So sánh chính xác tuyệt đối
-    if ($currentPath == $fullPath) return 'text-primary font-weight-bold';
-    
+    if ($currentPath == $fullPath)
+        return 'text-primary font-weight-bold';
+
     // 2. So sánh bắt đầu (cho các trang con như /edit, /create)
     // Đảm bảo không match nhầm (ví dụ /userABC so với /user) bằng cách thêm dấu / hoặc kiểm tra kỹ
-    if ($fullPath !== $base && strpos($currentPath, $fullPath) === 0) return 'text-primary font-weight-bold';
+    if ($fullPath !== $base && strpos($currentPath, $fullPath) === 0)
+        return 'text-primary font-weight-bold';
 
     // 3. Fallback: Kiểm tra từ khóa cụ thể cho các module chính (khắc phục lỗi path prefix)
-    if (strpos($targetPath, '/admin/users') !== false && strpos($currentPath, '/users') !== false) return 'text-primary font-weight-bold';
-    if (strpos($targetPath, '/admin/files') !== false && strpos($currentPath, '/files') !== false) return 'text-primary font-weight-bold';
-    if (strpos($targetPath, '/admin/posts') !== false && strpos($currentPath, '/posts') !== false) return 'text-primary font-weight-bold';
-    if (strpos($targetPath, '/admin/categories') !== false && strpos($currentPath, '/categories') !== false) return 'text-primary font-weight-bold';
-    if (strpos($targetPath, '/admin/consultations') !== false && strpos($currentPath, '/consultations') !== false) return 'text-primary font-weight-bold';
-    if (strpos($targetPath, '/admin/continents') !== false && strpos($currentPath, '/continents') !== false) return 'text-primary font-weight-bold';
-    if (strpos($targetPath, '/admin/countries') !== false && strpos($currentPath, '/countries') !== false) return 'text-primary font-weight-bold';
-    if (strpos($targetPath, '/admin/cities') !== false && strpos($currentPath, '/cities') !== false) return 'text-primary font-weight-bold';
-    if (strpos($targetPath, '/admin/education-levels') !== false && strpos($currentPath, '/education-levels') !== false) return 'text-primary font-weight-bold';
-    if (strpos($targetPath, '/admin/schools') !== false && strpos($currentPath, '/schools') !== false) return 'text-primary font-weight-bold';
-    
-    
+    if (strpos($targetPath, '/admin/users') !== false && strpos($currentPath, '/users') !== false)
+        return 'text-primary font-weight-bold';
+    if (strpos($targetPath, '/admin/files') !== false && strpos($currentPath, '/files') !== false)
+        return 'text-primary font-weight-bold';
+    if (strpos($targetPath, '/admin/posts') !== false && strpos($currentPath, '/posts') !== false)
+        return 'text-primary font-weight-bold';
+    if (strpos($targetPath, '/admin/categories') !== false && strpos($currentPath, '/categories') !== false)
+        return 'text-primary font-weight-bold';
+    if (strpos($targetPath, '/admin/tags') !== false && strpos($currentPath, '/tags') !== false)
+        return 'text-primary font-weight-bold';
+    if (strpos($targetPath, '/admin/consultations') !== false && strpos($currentPath, '/consultations') !== false)
+        return 'text-primary font-weight-bold';
+    if (strpos($targetPath, '/admin/continents') !== false && strpos($currentPath, '/continents') !== false)
+        return 'text-primary font-weight-bold';
+    if (strpos($targetPath, '/admin/countries') !== false && strpos($currentPath, '/countries') !== false)
+        return 'text-primary font-weight-bold';
+    if (strpos($targetPath, '/admin/cities') !== false && strpos($currentPath, '/cities') !== false)
+        return 'text-primary font-weight-bold';
+    if (strpos($targetPath, '/admin/education-levels') !== false && strpos($currentPath, '/education-levels') !== false)
+        return 'text-primary font-weight-bold';
+    if (strpos($targetPath, '/admin/schools') !== false && strpos($currentPath, '/schools') !== false)
+        return 'text-primary font-weight-bold';
+
+
     return '';
 }
 
 // Helper để check mở menu con (giữ nguyên logic cũ)
-function isGroupActive($keywords) {
+function isGroupActive($keywords)
+{
     global $uri;
-    if (!is_array($keywords)) $keywords = [$keywords];
+    if (!is_array($keywords))
+        $keywords = [$keywords];
     foreach ($keywords as $k) {
-        if (strpos($uri, $k) !== false) return true;
+        if (strpos($uri, $k) !== false)
+            return true;
     }
     return false;
 }
 
 // Định nghĩa trạng thái mở cho từng nhóm menu
-$open_dashboard = isGroupActive(['/admin/index', '/admin/dashboard']) || $uri == $base.'/admin' || $uri == $base.'/admin/';
-$open_ui        = isGroupActive(['accordion', 'buttons', 'badges', 'breadcrumb', 'cards', 'icons', 'modal', 'notification', 'progressbar', 'sweetalert', 'tabs', 'tooltip', 'typography']);
-$open_forms     = isGroupActive(['form-']);
-$open_editors   = isGroupActive(['ckeditor', 'summernote']);
-$open_tables    = isGroupActive(['table', 'datatable', 'jsgrid']);
-$open_charts    = isGroupActive(['chart', 'flot', 'morris', 'nvd3', 'sparkline']);
+$open_dashboard = isGroupActive(['/admin/index', '/admin/dashboard']) || $uri == $base . '/admin' || $uri == $base . '/admin/';
+$open_ui = isGroupActive(['accordion', 'buttons', 'badges', 'breadcrumb', 'cards', 'icons', 'modal', 'notification', 'progressbar', 'sweetalert', 'tabs', 'tooltip', 'typography']);
+$open_forms = isGroupActive(['form-']);
+$open_editors = isGroupActive(['ckeditor', 'summernote']);
+$open_tables = isGroupActive(['table', 'datatable', 'jsgrid']);
+$open_charts = isGroupActive(['chart', 'flot', 'morris', 'nvd3', 'sparkline']);
 $open_ecommerce = isGroupActive(['product', 'order', 'invoice']);
-$open_maps      = isGroupActive(['map']);
-$open_pages     = isGroupActive(['email', 'login', 'register', 'lockscreen', 'forgot', 'profile', 'gallery', 'search', 'pricing', 'blank', 'error']);
+$open_maps = isGroupActive(['map']);
+$open_pages = isGroupActive(['email', 'login', 'register', 'lockscreen', 'forgot', 'profile', 'gallery', 'search', 'pricing', 'blank', 'error']);
 ?>
 
 <div class="col-sm-3 col-xs-6 sidebar pl-0">
@@ -62,7 +80,8 @@ $open_pages     = isGroupActive(['email', 'login', 'register', 'lockscreen', 'fo
             <?php $currentUser = Auth::user(); ?>
             <img src="<?= $base ?>/assets/img/client-img4.png" alt="" class="rounded-circle" />
             <p><strong><?= htmlspecialchars($currentUser['full_name'] ?? 'Admin') ?></strong></p>
-            <span class="text-primary small"><strong><?= ucfirst($currentUser['email'] ?? 'Administrator') ?></strong></span>
+            <span
+                class="text-primary small"><strong><?= ucfirst($currentUser['email'] ?? 'Administrator') ?></strong></span>
         </div>
         <!--Image Avatar-->
 
@@ -88,32 +107,35 @@ $open_pages     = isGroupActive(['email', 'login', 'register', 'lockscreen', 'fo
                 } catch (Exception $e) {
                     // Ignore error if DB fails
                 }
-                
+
                 // Check if Posts menu should be open
                 $open_posts = isGroupActive(['/admin/posts']);
                 ?>
                 <li class="parent">
                     <a href="#" onclick="toggle_menu('posts_menu'); return false" class="">
                         <i class="fa fa-file-text mr-3"></i>
-                        <span class="none"> Quản lý bài viết <i class="fa fa-angle-down pull-right align-bottom"></i></span>
+                        <span class="none"> Quản lý bài viết <i
+                                class="fa fa-angle-down pull-right align-bottom"></i></span>
                     </a>
                     <ul class="children" id="posts_menu" style="display: <?= $open_posts ? 'block' : 'none' ?>;">
                         <li class="child">
-                            <a href="<?= $base ?>/admin/posts" class="ml-4 <?= ($uri == $base.'/admin/posts' && empty($_GET['category_id'])) ? 'text-primary font-weight-bold' : '' ?>">
+                            <a href="<?= $base ?>/admin/posts"
+                                class="ml-4 <?= ($uri == $base . '/admin/posts' && empty($_GET['category_id'])) ? 'text-primary font-weight-bold' : '' ?>">
                                 <i class="fa fa-angle-right mr-2"></i> Tất cả bài viết
                             </a>
                         </li>
                         <?php foreach ($sidebarCategories as $cat): ?>
                             <li class="child">
-                                <a href="<?= $base ?>/admin/posts?category_id=<?= $cat['id'] ?>" 
-                                   class="ml-4 <?= (isset($_GET['category_id']) && $_GET['category_id'] == $cat['id']) ? 'text-primary font-weight-bold' : '' ?>">
+                                <a href="<?= $base ?>/admin/posts?category_id=<?= $cat['id'] ?>"
+                                    class="ml-4 <?= (isset($_GET['category_id']) && $_GET['category_id'] == $cat['id']) ? 'text-primary font-weight-bold' : '' ?>">
                                     <i class="fa fa-angle-right mr-2"></i> <?= htmlspecialchars($cat['name']) ?>
                                 </a>
                             </li>
                         <?php endforeach; ?>
-                        
+
                         <li class="child" style="border-top: 1px dashed #eee; margin-top: 5px; padding-top: 5px;">
-                             <a href="<?= $base ?>/admin/posts/create<?= isset($_GET['category_id']) ? '?category_id='.$_GET['category_id'] : '' ?>" class="ml-4 text-success">
+                            <a href="<?= $base ?>/admin/posts/create<?= isset($_GET['category_id']) ? '?category_id=' . $_GET['category_id'] : '' ?>"
+                                class="ml-4 text-success">
                                 <i class="fa fa-plus mr-2"></i> Viết bài mới
                             </a>
                         </li>
@@ -128,16 +150,31 @@ $open_pages     = isGroupActive(['email', 'login', 'register', 'lockscreen', 'fo
                     </a>
                 </li>
 
+                <!-- TAGS -->
+                <li class="parent">
+                    <a href="<?= $base ?>/admin/tags" class="<?= activeClass('/admin/tags') ?>">
+                        <i class="fa fa-bookmark mr-3"></i>
+                        <span class="none"> Quản lý Cập nhật (Tags) </span>
+                    </a>
+                </li>
+
                 <!-- LOCATIONS -->
                 <li class="parent">
                     <a href="#" onclick="toggle_menu('locations'); return false" class="">
                         <i class="fa fa-globe mr-3"></i>
-                        <span class="none"> Quản lý Địa điểm <i class="fa fa-angle-down pull-right align-bottom"></i></span>
+                        <span class="none"> Quản lý Địa điểm <i
+                                class="fa fa-angle-down pull-right align-bottom"></i></span>
                     </a>
                     <ul class="children" id="locations" style="display: none;">
-                        <li class="child"><a href="<?= $base ?>/admin/continents" class="ml-4 <?= activeClass('/admin/continents') ?>"><i class="fa fa-angle-right mr-2"></i> Châu Lục</a></li>
-                        <li class="child"><a href="<?= $base ?>/admin/countries" class="ml-4 <?= activeClass('/admin/countries') ?>"><i class="fa fa-angle-right mr-2"></i> Quốc Gia</a></li>
-                        <li class="child"><a href="<?= $base ?>/admin/cities" class="ml-4 <?= activeClass('/admin/cities') ?>"><i class="fa fa-angle-right mr-2"></i> Thành Phố</a></li>
+                        <li class="child"><a href="<?= $base ?>/admin/continents"
+                                class="ml-4 <?= activeClass('/admin/continents') ?>"><i
+                                    class="fa fa-angle-right mr-2"></i> Châu Lục</a></li>
+                        <li class="child"><a href="<?= $base ?>/admin/countries"
+                                class="ml-4 <?= activeClass('/admin/countries') ?>"><i
+                                    class="fa fa-angle-right mr-2"></i> Quốc Gia</a></li>
+                        <li class="child"><a href="<?= $base ?>/admin/cities"
+                                class="ml-4 <?= activeClass('/admin/cities') ?>"><i class="fa fa-angle-right mr-2"></i>
+                                Thành Phố</a></li>
                     </ul>
                 </li>
 
@@ -145,11 +182,16 @@ $open_pages     = isGroupActive(['email', 'login', 'register', 'lockscreen', 'fo
                 <li class="parent">
                     <a href="#" onclick="toggle_menu('education'); return false" class="">
                         <i class="fa fa-graduation-cap mr-3"></i>
-                        <span class="none"> Quản lý Đào tạo <i class="fa fa-angle-down pull-right align-bottom"></i></span>
+                        <span class="none"> Quản lý Đào tạo <i
+                                class="fa fa-angle-down pull-right align-bottom"></i></span>
                     </a>
                     <ul class="children" id="education" style="display: none;">
-                        <li class="child"><a href="<?= $base ?>/admin/education-levels" class="ml-4 <?= activeClass('/admin/education-levels') ?>"><i class="fa fa-angle-right mr-2"></i> Bậc Học</a></li>
-                        <li class="child"><a href="<?= $base ?>/admin/schools" class="ml-4 <?= activeClass('/admin/schools') ?>"><i class="fa fa-angle-right mr-2"></i> Trường Học</a></li>
+                        <li class="child"><a href="<?= $base ?>/admin/education-levels"
+                                class="ml-4 <?= activeClass('/admin/education-levels') ?>"><i
+                                    class="fa fa-angle-right mr-2"></i> Bậc Học</a></li>
+                        <li class="child"><a href="<?= $base ?>/admin/schools"
+                                class="ml-4 <?= activeClass('/admin/schools') ?>"><i class="fa fa-angle-right mr-2"></i>
+                                Trường Học</a></li>
                     </ul>
                 </li>
 
@@ -162,7 +204,7 @@ $open_pages     = isGroupActive(['email', 'login', 'register', 'lockscreen', 'fo
                 </li>
 
                 <!-- FILES -->
-                 <li class="parent">
+                <li class="parent">
                     <a href="<?= $base ?>/admin/files" class="<?= activeClass('/admin/files') ?>">
                         <i class="fa fa-file mr-3"></i>
                         <span class="none"> Danh sách files </span>
@@ -342,9 +384,9 @@ $open_pages     = isGroupActive(['email', 'login', 'register', 'lockscreen', 'fo
 
 <script>
     // Script để đồng bộ trạng thái menu với custom.js của theme
-    (function() {
+    (function () {
         var currentUrl = window.location.href;
-        
+
         // Nhóm các trang thuộc Dashboard
         if (currentUrl.indexOf('/admin/index') > -1 || currentUrl.endsWith('/admin') || currentUrl.endsWith('/admin/')) {
             localStorage.setItem('lastTab', 'dashboard');
@@ -386,19 +428,19 @@ $open_pages     = isGroupActive(['email', 'login', 'register', 'lockscreen', 'fo
             localStorage.setItem('lastTab', 'posts_menu');
         }
         // Nhóm các trang độc lập (Users, Categories) -> Xóa trạng thái để đóng hết
-        else if (currentUrl.indexOf('/admin/users') > -1 || 
-                 // currentUrl.indexOf('/admin/posts') > -1 ||  <-- Removed
-                 currentUrl.indexOf('/admin/categories') > -1) {
-            
+        else if (currentUrl.indexOf('/admin/users') > -1 ||
+            currentUrl.indexOf('/admin/categories') > -1 ||
+            currentUrl.indexOf('/admin/tags') > -1) {
+
             localStorage.removeItem('lastTab');
-            
+
             // Cưỡng chế đóng menu con sau khi trang load
-            document.addEventListener('DOMContentLoaded', function() {
-                setTimeout(function() {
-                     var children = document.querySelectorAll('.children');
-                     children.forEach(function(ul) {
-                         ul.style.display = 'none';
-                     });
+            document.addEventListener('DOMContentLoaded', function () {
+                setTimeout(function () {
+                    var children = document.querySelectorAll('.children');
+                    children.forEach(function (ul) {
+                        ul.style.display = 'none';
+                    });
                 }, 100);
             });
         }

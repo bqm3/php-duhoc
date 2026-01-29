@@ -3,7 +3,7 @@
 $title = $category['title'] ?? 'Học bổng du học';
 ?>
 
-<?php 
+<?php
 $breadcrumbs = [
     ['label' => 'Học bổng du học', 'url' => '/hoc-bong']
 ];
@@ -130,8 +130,14 @@ partial('layouts/pages/base/base_hero', [
                 <div class="col-md-6 col-lg-4 mb-4">
                     <div class="card scholarship-card">
                         <div class="card-img-wrapper">
-                            <?php if ($post['is_popular']): ?>
-                                <span class="badge-hot">HOT</span>
+                            <?php if (!empty($post['tag_name'])): ?>
+                                <span class="badge-hot"
+                                    style="background: <?= strpos(strtolower($post['tag_name']), 'hot') !== false ? '#ff5e5e' : '#4e73df' ?>;">
+                                    <?php if ($post['tag_icon']): ?>
+                                        <i class="<?= htmlspecialchars($post['tag_icon']) ?>"></i>
+                                    <?php endif; ?>
+                                    <?= htmlspecialchars($post['tag_name']) ?>
+                                </span>
                             <?php endif; ?>
                             <a href="<?= $base . '/' . $post['slug'] ?>">
                                 <img src="<?= $base . ($post['featured_image'] ?: '/public/assets/images/placeholder.jpg') ?>"

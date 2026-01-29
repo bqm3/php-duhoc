@@ -43,9 +43,10 @@ class ScholarshipController
 
         // Fetch posts
         $sql = "
-      SELECT p.*, u.full_name AS creator_name
+      SELECT p.*, u.full_name AS creator_name, t.name AS tag_name, t.icon AS tag_icon
       FROM posts p
       LEFT JOIN users u ON p.user_id = u.id
+      LEFT JOIN tags t ON p.tag_id = t.id
       $where
       ORDER BY p.created_at DESC
       LIMIT $limit OFFSET $offset

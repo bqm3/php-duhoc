@@ -93,11 +93,16 @@
                                     </select>
                                 </div>
 
-                                <div class="form-check mb-3">
-                                    <input type="checkbox" class="form-check-input" id="is_popular" name="is_popular"
-                                        value="1">
-                                    <label class="form-check-label font-weight-bold" for="is_popular">Đánh dấu là bài
-                                        viết nổi bật</label>
+                                <div class="form-group">
+                                    <label for="tag_id"><strong>Gắn Tag (Cập nhật)</strong></label>
+                                    <select class="form-control" id="tag_id" name="tag_id">
+                                        <option value="">-- Không có tag --</option>
+                                        <?php foreach ($tags as $tag): ?>
+                                            <option value="<?= $tag['id'] ?>">
+                                                <?= htmlspecialchars($tag['name']) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
                                 </div>
 
                                 <div class="form-check mb-3">
@@ -111,8 +116,14 @@
                                     <label for="created_at"><strong>Ngày tạo</strong></label>
                                     <input type="datetime-local" class="form-control" id="created_at" name="created_at"
                                         value="<?= date('Y-m-d\TH:i') ?>">
-                                    <small class="form-text text-muted">Để trống bộ chọn để sử dụng thời gian hiện
-                                        tại.</small>
+                                    <small class="form-text text-muted">Mặc định là thời gian hiện tại.</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="updated_at"><strong>Ngày cập nhật</strong></label>
+                                    <input type="datetime-local" class="form-control" id="updated_at" name="updated_at"
+                                        value="<?= date('Y-m-d\TH:i') ?>">
+                                    <small class="form-text text-muted">Mặc định là thời gian hiện tại.</small>
                                 </div>
 
                                 <div class="form-group">

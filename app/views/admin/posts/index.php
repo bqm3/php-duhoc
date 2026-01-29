@@ -55,6 +55,17 @@
                                     </select>
                                 </div>
                                 <div class="col-md-2 mb-2">
+                                    <label class="small font-weight-bold">Tag</label>
+                                    <select name="tag_id" class="form-control">
+                                        <option value="">-- Tất cả --</option>
+                                        <?php foreach ($tags as $tag): ?>
+                                            <option value="<?= $tag['id'] ?>" <?= (isset($current_tag_id) && $current_tag_id == $tag['id']) ? 'selected' : '' ?>>
+                                                <?= htmlspecialchars($tag['name']) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <div class="col-md-2 mb-2">
                                     <label class="small font-weight-bold">Quốc gia</label>
                                     <select name="country_id" class="form-control">
                                         <option value="">-- Tất cả --</option>
@@ -80,6 +91,11 @@
                                     <label class="small font-weight-bold">Ngày tạo</label>
                                     <input type="date" name="date" class="form-control"
                                         value="<?= htmlspecialchars($current_date ?? '') ?>">
+                                </div>
+                                <div class="col-md-2 mb-2">
+                                    <label class="small font-weight-bold">Ngày cập nhật</label>
+                                    <input type="date" name="date_updated" class="form-control"
+                                        value="<?= htmlspecialchars($current_date_updated ?? '') ?>">
                                 </div>
                                 <div class="col-md-1 mb-2">
                                     <button class="btn btn-block btn-info" type="submit"><i
@@ -107,6 +123,7 @@
                                                 <th>Country / School</th>
                                                 <th>Views</th>
                                                 <th>Created</th>
+                                                <th>Updated</th>
                                                 <th>Actions</th>
                                             </tr>
                                         </thead>
@@ -116,8 +133,16 @@
                                                     <td><?= $post['id'] ?></td>
                                                     <td>
                                                         <strong><?= htmlspecialchars($post['title']) ?></strong>
-                                                        <?php if (!empty($post['is_popular'])): ?>
-                                                            <i class="fa fa-star text-warning ml-1" title="Popular"></i>
+                                                        <?php if (!empty($post['tag_name'])): ?>
+                                                            <div class="mt-1">
+                                                                <span class="badge badge-pill badge-light border text-dark"
+                                                                    title="<?= htmlspecialchars($post['tag_name']) ?>">
+                                                                    <?php if ($post['tag_icon']): ?>
+                                                                        <i class="<?= htmlspecialchars($post['tag_icon']) ?> mr-1"></i>
+                                                                    <?php endif; ?>
+                                                                    <?= htmlspecialchars($post['tag_name']) ?>
+                                                                </span>
+                                                            </div>
                                                         <?php endif; ?>
                                                     </td>
                                                     <td>
@@ -140,6 +165,7 @@
                                                         <span class="badge badge-info"><?= $post['count_view'] ?></span>
                                                     </td>
                                                     <td><?= date('d/m/Y', strtotime($post['created_at'])) ?></td>
+                                                    <td><?= date('d/m/Y', strtotime($post['updated_at'])) ?></td>
                                                     <td>
                                                         <?php $isHidden = isset($post['is_hidden']) ? (int) $post['is_hidden'] : 0; ?>
                                                         <button

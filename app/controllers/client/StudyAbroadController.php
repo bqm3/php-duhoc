@@ -7,11 +7,12 @@ class StudyAbroadController
     $pdo = Db::getInstance()->pdo();
 
     $stmt = $pdo->prepare("
-      SELECT p.*, c.name AS category_name, c.slug AS category_slug, u.full_name AS creator_name, ctry.name AS country_name
+      SELECT p.*, c.name AS category_name, c.slug AS category_slug, u.full_name AS creator_name, ctry.name AS country_name, t.name AS tag_name, t.icon AS tag_icon
       FROM posts p
       LEFT JOIN categories c ON p.category_id = c.id
       LEFT JOIN users u ON p.user_id = u.id
       LEFT JOIN countries ctry ON p.country_id = ctry.id
+      LEFT JOIN tags t ON p.tag_id = t.id
       WHERE p.slug = ?
       LIMIT 1
     ");

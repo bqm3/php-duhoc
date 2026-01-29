@@ -28,7 +28,9 @@ class AdminPostController
         $categoryId = isset($_GET['category_id']) ? (int) $_GET['category_id'] : 0;
         $countryId = isset($_GET['country_id']) ? (int) $_GET['country_id'] : 0;
         $schoolId = isset($_GET['school_id']) ? (int) $_GET['school_id'] : 0;
+        $tagId = isset($_GET['tag_id']) ? (int) $_GET['tag_id'] : 0;
         $date = isset($_GET['date']) ? trim($_GET['date']) : '';
+        $dateUpdated = isset($_GET['date_updated']) ? trim($_GET['date_updated']) : '';
 
         $limit = 10;
         $offset = ($page - 1) * $limit;
@@ -61,15 +63,26 @@ class AdminPostController
             $params[] = $schoolId;
         }
 
+        if ($tagId > 0) {
+            $whereClause .= " AND p.tag_id = ?";
+            $params[] = $tagId;
+        }
+
         if (!empty($date)) {
             $whereClause .= " AND DATE(p.created_at) = ?";
             $params[] = $date;
+        }
+
+        if (!empty($dateUpdated)) {
+            $whereClause .= " AND DATE(p.updated_at) = ?";
+            $params[] = $dateUpdated;
         }
 
         // Fetch filter data
         $categories = $db->query("SELECT id, name FROM categories ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
         $countries = $db->query("SELECT id, name FROM countries ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
         $schools = $db->query("SELECT id, name FROM schools ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
+        $tags = $db->query("SELECT id, name FROM tags ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
 
         // Count total records
         $countSql = "
@@ -86,12 +99,13 @@ class AdminPostController
 
         // Fetch records
         $sql = "
-            SELECT p.*, c.name as category_name, u.full_name as creator_name, ctry.name as country_name, s.name as school_name
+            SELECT p.*, c.name as category_name, u.full_name as creator_name, ctry.name as country_name, s.name as school_name, t.name as tag_name, t.icon as tag_icon
             FROM posts p 
             LEFT JOIN categories c ON p.category_id = c.id 
             LEFT JOIN users u ON p.user_id = u.id
             LEFT JOIN countries ctry ON p.country_id = ctry.id
             LEFT JOIN schools s ON p.school_id = s.id
+            LEFT JOIN tags t ON p.tag_id = t.id
             $whereClause
             ORDER BY p.created_at DESC
             LIMIT $limit OFFSET $offset
@@ -110,9 +124,12 @@ class AdminPostController
             'current_country_id' => $countryId,
             'current_school_id' => $schoolId,
             'current_date' => $date,
+            'current_date_updated' => $dateUpdated,
             'categories' => $categories,
             'countries' => $countries,
             'schools' => $schools,
+            'tags' => $tags,
+            'current_tag_id' => $tagId,
             'csrf' => Csrf::token()
         ]);
     }
@@ -134,10 +151,14 @@ class AdminPostController
         $stmt = $db->query("SELECT id, name FROM schools ORDER BY name");
         $schools = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+        $stmt = $db->query("SELECT id, name FROM tags ORDER BY name");
+        $tags = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
         view('admin', 'admin/posts/create', [
             'categories' => $categories,
             'countries' => $countries,
             'schools' => $schools,
+            'tags' => $tags,
             'selected_category_id' => $selectedCategoryId,
             'csrf' => Csrf::token()
         ]);
@@ -155,10 +176,11 @@ class AdminPostController
         $category_id = !empty($_POST['category_id']) ? (int) $_POST['category_id'] : null;
         $country_id = !empty($_POST['country_id']) ? (int) $_POST['country_id'] : null;
         $school_id = !empty($_POST['school_id']) ? (int) $_POST['school_id'] : null;
-        $is_popular = isset($_POST['is_popular']) ? 1 : 0;
+        $tag_id = !empty($_POST['tag_id']) ? (int) $_POST['tag_id'] : null;
         $is_hidden = isset($_POST['is_hidden']) ? 1 : 0;
         $content = $_POST['content'] ?? '';
         $created_at = !empty($_POST['created_at']) ? $_POST['created_at'] : date('Y-m-d H:i:s');
+        $updated_at = !empty($_POST['updated_at']) ? $_POST['updated_at'] : date('Y-m-d H:i:s');
 
         $user = Auth::user();
         $user_id = $user ? $user['id'] : null;
@@ -211,11 +233,11 @@ class AdminPostController
         }
 
         $stmt = $db->prepare("
-            INSERT INTO posts (slug, title, summary, category_id, country_id, school_id, is_popular, is_hidden, content, user_id, featured_image, created_at) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO posts (slug, title, summary, category_id, country_id, school_id, tag_id, is_hidden, content, user_id, featured_image, created_at, updated_at) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
 
-        if ($stmt->execute([$slug, $title, $summary, $category_id, $country_id, $school_id, $is_popular, $is_hidden, $content, $user_id, $featured_image, $created_at])) {
+        if ($stmt->execute([$slug, $title, $summary, $category_id, $country_id, $school_id, $tag_id, $is_hidden, $content, $user_id, $featured_image, $created_at, $updated_at])) {
             Response::redirect('/admin/posts');
         } else {
             Response::json(['error' => 'Failed to create post'], 500);
@@ -248,11 +270,15 @@ class AdminPostController
         $stmt = $db->query("SELECT id, name FROM schools ORDER BY name");
         $schools = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+        $stmt = $db->query("SELECT id, name FROM tags ORDER BY name");
+        $tags = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
         view('admin', 'admin/posts/edit', [
             'post' => $post,
             'categories' => $categories,
             'countries' => $countries,
             'schools' => $schools,
+            'tags' => $tags,
             'csrf' => Csrf::token()
         ]);
     }
@@ -273,10 +299,11 @@ class AdminPostController
         $category_id = !empty($_POST['category_id']) ? (int) $_POST['category_id'] : null;
         $country_id = !empty($_POST['country_id']) ? (int) $_POST['country_id'] : null;
         $school_id = !empty($_POST['school_id']) ? (int) $_POST['school_id'] : null;
-        $is_popular = isset($_POST['is_popular']) ? 1 : 0;
+        $tag_id = !empty($_POST['tag_id']) ? (int) $_POST['tag_id'] : null;
         $is_hidden = isset($_POST['is_hidden']) ? 1 : 0;
         $content = $_POST['content'] ?? '';
         $created_at = !empty($_POST['created_at']) ? $_POST['created_at'] : null;
+        $updated_at = !empty($_POST['updated_at']) ? $_POST['updated_at'] : null;
 
         // ADMIN chỉnh tay view/share
         $count_view = isset($_POST['count_view']) ? (int) $_POST['count_view'] : 0;
@@ -296,7 +323,7 @@ class AdminPostController
         $db = Db::getInstance()->pdo();
 
         // lấy post cũ để biết ảnh cũ
-        $stmt = $db->prepare("SELECT featured_image, created_at FROM posts WHERE id = ? LIMIT 1");
+        $stmt = $db->prepare("SELECT featured_image, created_at, updated_at FROM posts WHERE id = ? LIMIT 1");
         $stmt->execute([(int) $id]);
         $old = $stmt->fetch(PDO::FETCH_ASSOC);
         if (!$old) {
@@ -306,6 +333,8 @@ class AdminPostController
 
         if (!$created_at)
             $created_at = $old['created_at'];
+        if (!$updated_at)
+            $updated_at = $old['updated_at'];
 
         // Validation: Kiểm tra duplicate category_id + country_id hoặc category_id + school_id (trừ post hiện tại)
         // Chỉ kiểm tra khi có cả category_id và country_id, HOẶC cả category_id và school_id
@@ -358,11 +387,11 @@ class AdminPostController
 
         $stmt = $db->prepare("
             UPDATE posts 
-            SET slug = ?, title = ?, summary = ?, category_id = ?, country_id = ?, school_id = ?, is_popular = ?, is_hidden = ?, content = ?, featured_image = ?, count_view = ?, count_share = ?, created_at = ?
+            SET slug = ?, title = ?, summary = ?, category_id = ?, country_id = ?, school_id = ?, tag_id = ?, is_hidden = ?, content = ?, featured_image = ?, count_view = ?, count_share = ?, created_at = ?, updated_at = ?
             WHERE id = ?
         ");
 
-        if ($stmt->execute([$slug, $title, $summary, $category_id, $country_id, $school_id, $is_popular, $is_hidden, $content, $newFeatured, $count_view, $count_share, $created_at, $id])) {
+        if ($stmt->execute([$slug, $title, $summary, $category_id, $country_id, $school_id, $tag_id, $is_hidden, $content, $newFeatured, $count_view, $count_share, $created_at, $updated_at, $id])) {
             Response::redirect('/admin/posts');
         } else {
             Response::json(['error' => 'Failed to update post'], 500);
