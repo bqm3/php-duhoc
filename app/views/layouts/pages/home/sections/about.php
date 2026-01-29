@@ -65,7 +65,7 @@
         </p>
 
         <a
-          href="/gioi-thieu"
+          href="<?= $base ?>/gioi-thieu"
           class="btn vnpc-btn-primary d-inline-flex align-items-center gap-2"
           title="Giới thiệu trung tâm tư vấn du học VNPC"
         >

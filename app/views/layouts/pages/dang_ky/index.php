@@ -37,8 +37,32 @@ include __DIR__ . '/../base/base_hero.php';
 
                             <!-- Email -->
                             <div class="registration-input-wrapper">
-                                <input type="email" name="email" class="registration-input" placeholder="Email*"
-                                    required>
+                                <input type="email" name="email" class="registration-input" placeholder="Email">
+                            </div>
+
+                            <!-- Giới tính + Nước -->
+                            <div class="row mx-0">
+                                <div class="col-md-6 px-1">
+                                    <div class="registration-input-wrapper">
+                                        <select name="gender" class="registration-input">
+                                            <option value="">Giới tính</option>
+                                            <option value="male">Nam</option>
+                                            <option value="female">Nữ</option>
+                                            <option value="other">Khác</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 px-1">
+                                    <div class="registration-input-wrapper">
+                                        <select name="country_id" class="registration-input">
+                                            <option value="">Chọn nước</option>
+                                            <?php foreach ($countries as $country): ?>
+                                                <option value="<?= $country['id'] ?>">
+                                                    <?= htmlspecialchars($country['name']) ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- Mong muốn -->
@@ -75,65 +99,72 @@ include __DIR__ . '/../base/base_hero.php';
 </section>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('consultation-form-full');
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            const submitBtn = this.querySelector('button[type="submit"]');
-            const btnText = submitBtn.querySelector('span');
-            const originalText = btnText.innerText;
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('consultation-form-full');
+        if (form) {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
 
-            btnText.innerText = 'Đang xử lý...';
-            submitBtn.disabled = true;
+                const formData = new FormData(this);
+                const submitBtn = this.querySelector('button[type="submit"]');
+                const btnText = submitBtn.querySelector('span');
+                const originalText = btnText.innerText;
 
-            fetch(this.getAttribute('action'), {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    if (typeof alertify !== 'undefined') {
-                        alertify.success(data.message);
-                    } else {
-                        alert(data.message);
-                    }
-                    this.reset();
-                } else {
-                    if (typeof alertify !== 'undefined') {
-                        alertify.error(data.message || 'Có lỗi xảy ra, vui lòng thử lại.');
-                    } else {
-                        alert(data.message || 'Có lỗi xảy ra, vui lòng thử lại.');
-                    }
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                if (typeof alertify !== 'undefined') {
-                    alertify.error('Lỗi kết nối server.');
-                } else {
-                    alert('Lỗi kết nối server.');
-                }
-            })
-            .finally(() => {
-                btnText.innerText = originalText;
-                submitBtn.disabled = false;
+                btnText.innerText = 'Đang xử lý...';
+                submitBtn.disabled = true;
+
+                fetch(this.getAttribute('action'), {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            if (typeof alertify !== 'undefined') {
+                                alertify.success(data.message);
+                            } else {
+                                alert(data.message);
+                            }
+                            this.reset();
+                        } else {
+                            if (typeof alertify !== 'undefined') {
+                                alertify.error(data.message || 'Có lỗi xảy ra, vui lòng thử lại.');
+                            } else {
+                                alert(data.message || 'Có lỗi xảy ra, vui lòng thử lại.');
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        if (typeof alertify !== 'undefined') {
+                            alertify.error('Lỗi kết nối server.');
+                        } else {
+                            alert('Lỗi kết nối server.');
+                        }
+                    })
+                    .finally(() => {
+                        btnText.innerText = originalText;
+                        submitBtn.disabled = false;
+                    });
             });
-        });
-    }
-});
+        }
+    });
 </script>
 
 <style>
-.animate-fade-in {
-    animation: fadeIn 0.8s ease-out forwards;
-}
+    .animate-fade-in {
+        animation: fadeIn 0.8s ease-out forwards;
+    }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 </style>

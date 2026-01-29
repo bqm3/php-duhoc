@@ -20,9 +20,17 @@ if ($uri === "/consultation/register" && $method === "POST") {
 }
 
 if ($uri === "/dang-ky" && $method === "GET") {
+  $countries = [];
+  try {
+    $db = Db::getInstance()->pdo();
+    $countries = $db->query("SELECT id, name FROM countries ORDER BY name ASC")->fetchAll(PDO::FETCH_ASSOC);
+  } catch (Exception $e) {
+  }
+
   view('main', 'layouts/pages/dang_ky/index', [
     'title' => 'Đăng ký tư vấn',
     'pageCss' => ['dang_ky.css', 'about.css'],
+    'countries' => $countries
   ]);
 }
 
