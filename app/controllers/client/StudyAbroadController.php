@@ -37,8 +37,41 @@ class StudyAbroadController
       }
     }
 
-    view('main', 'layouts/pages/detail/index', [
+    $sidebarPosts = [];
+    $randomPosts = [];
+    if (($post['category_slug'] ?? '') === 'tin-tuc') {
+      // Get list of 3 most recent news posts (vertical sidebar)
+      $stmt = $pdo->prepare("
+        SELECT p.*, c.name AS category_name
+        FROM posts p
+        LEFT JOIN categories c ON p.category_id = c.id
+        WHERE c.slug = 'tin-tuc' AND p.is_hidden = 0
+        ORDER BY p.created_at DESC, p.id DESC
+        LIMIT 3
+      ");
+      $stmt->execute();
+      $sidebarPosts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+      // Get all news posts for the circular loop slider
+      $stmt = $pdo->prepare("
+        SELECT p.*, c.name AS category_name
+        FROM posts p
+        LEFT JOIN categories c ON p.category_id = c.id
+        WHERE c.slug = 'tin-tuc' AND p.is_hidden = 0
+        ORDER BY p.created_at DESC, p.id DESC
+      ");
+      $stmt->execute();
+      $randomPosts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    $viewPath = (($post['category_slug'] ?? '') === 'tin-tuc')
+      ? 'layouts/pages/tintuc/show'
+      : 'layouts/pages/detail/index';
+
+    view('main', $viewPath, [
       'post' => $post,
+      'sidebarPosts' => $sidebarPosts,
+      'randomPosts' => $randomPosts,
       'title' => $post['title'] ?? 'Chi tiết',
       'pageCss' => ['about.css']
     ]);

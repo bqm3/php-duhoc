@@ -57,6 +57,12 @@ if (preg_match('#^/hoc-bong$#', $uri, $m) && $method === 'GET') {
   exit;
 }
 
+if ($uri === "/tin-tuc" && $method === "GET") {
+  require_once __DIR__ . '/../controllers/client/NewsController.php';
+  (new NewsController())->index();
+  exit;
+}
+
 // Study Abroad Detail (General slug) - Phải để ở cuối các route GET 1 cấp
 if (preg_match('#^/([^/]+)$#', $uri, $m) && $method === 'GET') {
   require_once __DIR__ . '/../controllers/client/StudyAbroadController.php';

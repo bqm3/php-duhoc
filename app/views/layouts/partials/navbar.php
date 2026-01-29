@@ -11,7 +11,7 @@ if ($relative_path === '') $relative_path = '/';
 $menus = [
   ['Trang Chủ', $base . '/', $relative_path === '/'],
   ['Giới Thiệu', $base . '/gioi-thieu', $relative_path === '/gioi-thieu'],
-  ['Tin Tức & Sự kiện', $base . '/tin-tuc', strpos($relative_path, '/tin-tuc') === 0],
+  ['Tin tức', $base . '/tin-tuc', strpos($relative_path, '/tin-tuc') === 0],
   ['Du Học', $base . '/du-hoc', strpos($relative_path, '/du-hoc') === 0],
   ['Học bổng du học', $base . '/hoc-bong', strpos($relative_path, '/hoc-bong') === 0],
   ['Visa du học', $base . '/visa-du-hoc', strpos($relative_path, '/visa-du-hoc') === 0],

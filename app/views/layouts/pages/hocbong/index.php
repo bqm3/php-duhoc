@@ -145,14 +145,14 @@ partial('layouts/pages/base/base_hero', [
                             </a>
                         </div>
                         <div class="card-body p-4">
-                            <div class="rating-section d-flex align-items-center">
+                            <!-- <div class="rating-section d-flex align-items-center">
                                 <i class="fa fa-star"></i>
                                 <i class="fa fa-star"></i>
                                 <i class="fa fa-star"></i>
                                 <i class="fa fa-star"></i>
                                 <i class="fa fa-star"></i>
                                 <span class="score">(4.7)</span>
-                            </div>
+                            </div> -->
                             <h5 class="scholarship-title">
                                 <a href="<?= $base . '/' . $post['slug'] ?>" class="text-decoration-none text-dark">
                                     <?= htmlspecialchars($post['title']) ?>

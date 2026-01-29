@@ -29,6 +29,7 @@ mb_internal_encoding('UTF-8');
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="<?= $base ?>/assets/css/app.css" rel="stylesheet">
   <link href="<?= $base ?>/assets/css/home.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
   <script src="<?= $base ?>/assets/js/app.js"></script>
 
   <?php if (!empty($pageCss)): ?>
@@ -56,6 +57,7 @@ mb_internal_encoding('UTF-8');
   <?php include __DIR__ . '/partials/footer.php'; ?>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="<?= $base ?>/php-duhoc/public/assets/js/app.js"></script>
 
   <?php if (!empty($pageJs)): ?>
