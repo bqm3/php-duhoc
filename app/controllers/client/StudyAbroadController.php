@@ -7,7 +7,9 @@ class StudyAbroadController
     $pdo = Db::getInstance()->pdo();
 
     $stmt = $pdo->prepare("
-      SELECT p.*, c.name AS category_name, c.slug AS category_slug, u.full_name AS creator_name, ctry.name AS country_name, t.name AS tag_name, t.icon AS tag_icon
+      SELECT p.*, c.name AS category_name, c.slug AS category_slug, u.full_name AS creator_name, 
+             ctry.name AS country_name, ctry.flag_url AS country_flag, ctry.id AS country_id,
+             t.name AS tag_name, t.icon AS tag_icon
       FROM posts p
       LEFT JOIN categories c ON p.category_id = c.id
       LEFT JOIN users u ON p.user_id = u.id
@@ -24,6 +26,37 @@ class StudyAbroadController
       return;
     }
 
+    // Fetch related category posts for the country buttons
+    $countryLinks = [];
+    if (!empty($post['country_id'])) {
+      $categoriesMap = [
+        'tong-quan' => 'Tổng quan',
+        'chi-phi' => 'Chi phí',
+        'hoc-bong' => 'Học bổng',
+        'bao-hiem-va-phuc-loi' => 'Bảo hiểm & Phúc lợi',
+        'nganh-hoc-noi-tieng' => 'Ngành học nổi tiếng',
+        'visa' => 'Visa'
+      ];
+
+      foreach ($categoriesMap as $catSlug => $label) {
+        $stmt = $pdo->prepare("
+                SELECT p.slug 
+                FROM posts p 
+                JOIN categories c ON p.category_id = c.id 
+                WHERE p.country_id = ? AND c.slug = ? AND p.is_hidden = 0 
+                LIMIT 1
+            ");
+        $stmt->execute([$post['country_id'], $catSlug]);
+        $linkPost = $stmt->fetch();
+        $countryLinks[] = [
+          'label' => $label,
+          'slug' => $linkPost ? $linkPost['slug'] : null,
+          'cat_slug' => $catSlug
+        ];
+      }
+    }
+
+    // ... (rest of the increase view logic)
     // Chống tăng view liên tục
     $key = "viewed_post_" . $post['id'];
     if (empty($_SESSION[$key])) {
@@ -72,6 +105,7 @@ class StudyAbroadController
       'post' => $post,
       'sidebarPosts' => $sidebarPosts,
       'randomPosts' => $randomPosts,
+      'countryLinks' => $countryLinks,
       'title' => $post['title'] ?? 'Chi tiết',
       'pageCss' => ['about.css']
     ]);

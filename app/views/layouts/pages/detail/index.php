@@ -132,6 +132,101 @@ $breadcrumbs[] = ['label' => $post['title'] ?? 'Chi tiết', 'url' => ''];
     border-radius: 8px;
     margin: 20px 0;
   }
+
+  /* Country Quick Access Box */
+  .country-detail-box {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 24px;
+    gap: 24px;
+    width: 100%;
+    background: #FFFFFF;
+    border: 1px solid #D9D9D9;
+    border-radius: 12px;
+    margin-bottom: 40px;
+  }
+
+  .country-flag-large {
+    flex: 0 0 240px;
+    height: 160px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #eee;
+  }
+
+  .country-flag-large img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .country-category-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, auto);
+    gap: 12px;
+  }
+
+  .cat-link-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 12px 15px;
+    gap: 12px;
+    background: #FFFFFF;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    text-decoration: none !important;
+    color: #333 !important;
+    transition: all 0.2s ease;
+    min-height: 74px;
+  }
+
+  .cat-link-item:hover {
+    border-color: #007bff;
+    background: #f8f9ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  }
+
+  .cat-link-item i {
+    font-size: 24px;
+    color: #007bff;
+    width: 32px;
+    text-align: center;
+  }
+
+  .cat-link-item span {
+    font-weight: 600;
+    font-size: 0.95rem;
+    line-height: 1.2;
+  }
+
+  @media (max-width: 991px) {
+    .country-detail-box {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .country-flag-large {
+      flex: none;
+      height: 200px;
+      width: 100%;
+    }
+
+    .country-category-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 576px) {
+    .country-category-grid {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>
 
 <?php partial('layouts/pages/base/base_hero', [
@@ -141,16 +236,16 @@ $breadcrumbs[] = ['label' => $post['title'] ?? 'Chi tiết', 'url' => ''];
 
 <div class="container py-5">
   <div class="row">
-    <div class="col-lg-8 mx-auto">
+    <div class="col-lg-11 mx-auto">
 
       <!-- Breadcrumb -->
-      <nav aria-label="breadcrumb">
+      <!-- <nav aria-label="breadcrumb">
         <ol class="breadcrumb bg-transparent p-0">
           <li class="breadcrumb-item"><a href="<?= $base ?>/">Trang chủ</a></li>
 
           <li class="breadcrumb-item active" aria-current="page"><?= htmlspecialchars($title) ?></li>
         </ol>
-      </nav>
+      </nav> -->
 
       <!-- Post Header -->
       <!-- <h1 class="mb-3"><?= htmlspecialchars($title) ?></h1> -->
@@ -192,12 +287,68 @@ $breadcrumbs[] = ['label' => $post['title'] ?? 'Chi tiết', 'url' => ''];
       <?php endif; ?>
 
       <!-- Summary -->
-      <!-- <?php if (!empty($post['summary'])): ?>
-        <div class="alert alert-secondary border-0" role="alert">
-          <strong>Tóm tắt:</strong><br>
+      <?php if (!empty($post['summary'])): ?>
+        <div class="alert alert-secondary border-0 mb-4" role="alert">
+          <div class="d-flex align-items-center mb-2">
+            <?php if (!empty($post['country_flag'])): ?>
+              <img src="<?= $base . htmlspecialchars($post['country_flag']) ?>"
+                alt="<?= htmlspecialchars($post['country_name'] ?? '') ?>" class="me-3"
+                style="width: 48px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <?php endif; ?>
+            <strong>Tóm tắt:</strong>
+          </div>
           <?= $post['summary'] ?>
         </div>
-      <?php endif; ?> -->
+      <?php endif; ?>
+
+      <!-- Frame 427324326: Country Quick Access -->
+      <?php if (!empty($post['country_id']) && !empty($countryLinks)): ?>
+        <div class="country-detail-box">
+          <div class="country-flag-large">
+            <img src="<?= $base . htmlspecialchars($post['country_flag'] ?: '/assets/images/no-image.jpg') ?>"
+              alt="<?= htmlspecialchars($post['country_name'] ?? '') ?>">
+          </div>
+          <div class="country-category-grid">
+            <?php
+            $icons = [
+              'tong-quan' => $base . "/assets/svgs/clients/ic_home20.svg",
+              'chi-phi' => $base . "/assets/svgs/clients/ic_home21.svg",
+              'visa' => $base . "/assets/svgs/clients/ic_home22.svg",
+              'hoc-bong' => $base . "/assets/svgs/clients/ic_home23.svg",
+              'bao-hiem-va-phuc-loi' => $base . "/assets/svgs/clients/ic_home24.svg",
+              'nganh-hoc-noi-tieng' => $base . "/assets/svgs/clients/ic_home25.svg"
+            ];
+            // Order by specific sequence: Top row (Overview, Cost, Visa), Bottom row (Scholarship, Welfare, Majors)
+            $order = ['tong-quan', 'chi-phi', 'visa', 'hoc-bong', 'bao-hiem-va-phuc-loi', 'nganh-hoc-noi-tieng'];
+
+            // Sort current links by order
+            $sortedLinks = [];
+            foreach ($order as $slug) {
+              foreach ($countryLinks as $link) {
+                if ($link['cat_slug'] === $slug) {
+                  $sortedLinks[] = $link;
+                  break;
+                }
+              }
+            }
+
+            foreach ($sortedLinks as $link):
+              $finalUrl = $link['slug'] ? ($base . '/' . $link['slug']) : '#';
+              ?>
+              <a href="<?= $finalUrl ?>" class="cat-link-item <?= !$link['slug'] ? 'disabled' : '' ?>"
+                title="<?= $link['label'] ?>">
+                <?php if (isset($icons[$link['cat_slug']])): ?>
+                  <img src="<?= $icons[$link['cat_slug']] ?>" alt="icon"
+                    style="width: 32px; height: 32px; object-fit: contain;">
+                <?php else: ?>
+                  <i class="fa fa-chevron-right"></i>
+                <?php endif; ?>
+                <span><?= $link['label'] ?></span>
+              </a>
+            <?php endforeach; ?>
+          </div>
+        </div>
+      <?php endif; ?>
 
       <!-- Table of Contents -->
       <div id="toc-wrapper" class="toc-container d-none">
