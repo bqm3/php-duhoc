@@ -41,9 +41,9 @@ if (preg_match('#^/posts/([^/]+)$#', $uri, $matches) && $method === "GET") {
   exit;
 }
 
-// /api/study-abroad-menu  (Mega menu Du học)
-if ($uri === "/api/study-abroad-menu" && $method === "GET") {
-  (new NavbarController())->getStudyAbroadMenu();
+// /api/menu-content/:slug (Mega menu)
+if (preg_match('#^/api/menu-content/([a-z-]+)$#', $uri, $m) && $method === "GET") {
+  (new NavbarController())->getCategoryMenu($m[1]);
 }
 
 if ($uri === "/du-hoc" && $method === "GET") {

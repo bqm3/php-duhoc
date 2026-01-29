@@ -11,7 +11,7 @@
       <!-- CONTENT -->
       <div class="col-lg-7">
         <h1 class="vnpc-hero-title animate-fade-in-up">
-          Tư vấn du học miễn phí –<br>
+          Tư vấn du học miễn phí <br>
           Cơ hội vào các trường<br>
           hàng đầu thế giới
         </h1>

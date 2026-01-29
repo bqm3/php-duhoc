@@ -2,7 +2,7 @@
 
 class NavbarController
 {
-  public function getStudyAbroadMenu()
+  public function getCategoryMenu($slug = 'du-hoc')
   {
     if (ob_get_length())
       ob_clean();
@@ -11,9 +11,9 @@ class NavbarController
     try {
       $db = Db::getInstance()->pdo();
 
-      // 1) lấy category du-hoc
+      // 1) lấy category theo slug
       $stmt = $db->prepare("SELECT id FROM categories WHERE slug = ? LIMIT 1");
-      $stmt->execute(['du-hoc']);
+      $stmt->execute([$slug]);
       $catId = (int) $stmt->fetchColumn();
 
       if (!$catId) {
@@ -21,8 +21,7 @@ class NavbarController
         exit;
       }
 
-      // 2) lấy posts thuộc category du-hoc, join theo country -> continent
-      // mỗi country chỉ có 1 post du học theo country đó
+      // 2) lấy posts thuộc category, join theo country -> continent
       $sql = "
         SELECT
           p.id   AS post_id,
@@ -65,7 +64,7 @@ class NavbarController
           ];
         }
 
-        $postSlug = $r['post_slug']; // vd: du-hoc-viet-nam
+        $postSlug = $r['post_slug'];
         $map[$contId]['countries'][] = [
           'id' => (int) $r['country_id2'],
           'name' => $r['country_name'],
@@ -74,7 +73,7 @@ class NavbarController
             'id' => (int) $r['post_id'],
             'title' => $r['post_title'],
             'slug' => $postSlug,
-            'href' => '/' . $postSlug, // <<< LINK ĐÚNG theo yêu cầu
+            'href' => '/' . $postSlug,
           ]
         ];
       }

@@ -16,8 +16,17 @@ $menus = [
   ['Học bổng du học', $base . '/hoc-bong', strpos($relative_path, '/hoc-bong') === 0],
   ['Visa du học', $base . '/visa-du-hoc', strpos($relative_path, '/visa-du-hoc') === 0],
   ['Tìm trường', $base . '/tim-truong', strpos($relative_path, '/tim-truong') === 0],
-  ['Tuyển Dụng', $base . '/dang-ky', strpos($relative_path, '/dang-ky') === 0],
+  ['Đăng ký', $base . '/dang-ky', strpos($relative_path, '/dang-ky') === 0],
+  ['Tuyển Dụng', $base . '/tuyen-dung', strpos($relative_path, '/tuyen-dung') === 0],
   ['Liên hệ', $base . '/lien-he', strpos($relative_path, '/lien-he') === 0],
+];
+?>
+
+<?php
+$megaMenuLabels = [
+  'Du Học' => 'du-hoc',
+  'Học bổng du học' => 'hoc-bong',
+  'Visa du học' => 'visa'
 ];
 ?>
 
@@ -51,11 +60,11 @@ $menus = [
         <?php foreach ($menus as $m):
           [$label, $href, $active] = $m; ?>
 
-          <?php if ($label === 'Du Học'): ?>
-            <li class="nav-item dropdown vnpc-dropdown" role="none">
+          <?php if (isset($megaMenuLabels[$label])): ?>
+            <li class="nav-item dropdown vnpc-dropdown" role="none" data-slug="<?= $megaMenuLabels[$label] ?>">
               <a class="nav-link vnpc-navlink dropdown-toggle <?= $active ? 'active' : '' ?>"
                  href="<?= $href ?>"
-                 id="studyAbroadDropdown"
+                 id="dropdown-<?= $megaMenuLabels[$label] ?>"
                  role="menuitem"
                  aria-haspopup="true"
                  aria-expanded="false">
@@ -63,12 +72,12 @@ $menus = [
               </a>
 
               <div class="dropdown-menu vnpc-dropdown-menu shadow border-0 p-4"
-                   aria-labelledby="studyAbroadDropdown"
+                   aria-labelledby="dropdown-<?= $megaMenuLabels[$label] ?>"
                    style="width:600px;"
                    role="menu">
-                <div class="row" id="studyAbroadMenuContent">
+                <div class="row mega-menu-content">
                   <div class="col-12 text-center p-3">
-                    <span class="visually-hidden">Đang tải menu du học</span>
+                    <span class="visually-hidden">Đang tải menu...</span>
                     <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
                   </div>
                 </div>
@@ -93,31 +102,33 @@ $menus = [
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-  const dropdown = document.querySelector('.vnpc-dropdown');
-  const menuContent = document.getElementById('studyAbroadMenuContent');
-  let loaded = false;
+  const dropdowns = document.querySelectorAll('.vnpc-dropdown');
 
-  if (!dropdown) return;
+  dropdowns.forEach(dropdown => {
+    const slug = dropdown.getAttribute('data-slug');
+    const menuContent = dropdown.querySelector('.mega-menu-content');
+    let loaded = false;
 
-  dropdown.addEventListener('mouseenter', function () {
-    if (!loaded) {
-      fetch('<?= $base ?>/api/study-abroad-menu', { credentials: 'same-origin' })
-        .then(r => r.json())
-        .then(res => {
-          renderMenu(res);
-          loaded = true;
-        })
-        .catch(() => {
-          menuContent.innerHTML =
-            '<div class="col-12 text-danger text-center">Không thể tải menu</div>';
-        });
-    }
+    dropdown.addEventListener('mouseenter', function () {
+      if (!loaded) {
+        fetch('<?= $base ?>/api/menu-content/' + slug, { credentials: 'same-origin' })
+          .then(r => r.json())
+          .then(res => {
+            renderMenu(res, menuContent);
+            loaded = true;
+          })
+          .catch(() => {
+            menuContent.innerHTML =
+              '<div class="col-12 text-danger text-center">Không thể tải menu</div>';
+          });
+      }
+    });
   });
 
-  function renderMenu(res) {
-    if (!res || !res.ok || !Array.isArray(res.items)) {
-      menuContent.innerHTML =
-        '<div class="col-12 text-center">Chưa có nội dung du học</div>';
+  function renderMenu(res, container) {
+    if (!res || !res.ok || !Array.isArray(res.items) || res.items.length === 0) {
+      container.innerHTML =
+        '<div class="col-12 text-center">Chưa có nội dung cho mục này</div>';
       return;
     }
 
@@ -138,7 +149,7 @@ document.addEventListener('DOMContentLoaded', function () {
       `;
     });
 
-    menuContent.innerHTML = html;
+    container.innerHTML = html;
   }
 
   function escapeHtml(str) {
