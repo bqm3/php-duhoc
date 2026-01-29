@@ -166,6 +166,36 @@
     align-items: center;
     gap: 6px;
   }
+
+  /* Horizontal scroll on mobile */
+  @media (max-width: 991px) {
+    .scholar-row-scroll {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding-bottom: 20px;
+      -webkit-overflow-scrolling: touch;
+      margin-left: -12px;
+      margin-right: -12px;
+      padding-left: 12px;
+      padding-right: 12px;
+      scrollbar-width: thin;
+    }
+
+    .scholar-row-scroll>[class*="col-"] {
+      flex: 0 0 85%;
+      max-width: 85%;
+    }
+
+    .scholar-row-scroll::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    .scholar-row-scroll::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+  }
 </style>
 <section class="vnpc-section" aria-labelledby="scholarships-title">
   <section class="scholar-section" style="background-image:url('<?= $base ?>/assets/img/client/img_home13.png');"
@@ -180,7 +210,7 @@
           <p itemprop="description">Cập nhật thông tin học bổng du học hấp dẫn, chính xác nhất</p>
         </div>
 
-        <a href="<?= $base ?>/hoc-bong-du-hoc" class="scholar-btn">
+        <a href="<?= $base ?>/hoc-bong" class="scholar-btn">
           <span>Xem Thêm</span>
           <span class="scholar-btn-ico">
             <img src="<?= $base ?>/assets/svgs/clients/ic_home3.svg" width="18" height="18" alt="">
@@ -189,59 +219,53 @@
       </div>
 
       <!-- CARDS -->
-      <div class="row g-4">
+      <div class="row g-4 scholar-row-scroll">
 
-        <!-- CARD -->
-        <?php
-        $cards = [
-          [
-            'title' => 'Sẵn sàng trở thành chủ nhân học bổng vùng Regional của Úc lên đến 15000 AUD',
-            'link' => '/hoc-bong/hoc-bong-regional-uc-15000-aud',
-            'img' => 'https://placehold.co/640x420'
-          ],
-          [
-            'title' => 'Tham dự hội thảo du học: Cơ hội nhận học bổng 14.000 AUD/Năm tại La Trobe Sydney',
-            'link' => '/hoc-bong/hoc-bong-la-trobe-sydney-14000-aud',
-            'img' => 'https://placehold.co/640x420'
-          ],
-          [
-            'title' => 'Các loại học bổng du học THPT Mỹ và điều kiện xin học bổng',
-            'link' => '/hoc-bong/hoc-bong-thpt-my',
-            'img' => 'https://placehold.co/640x420'
-          ]
-        ];
-        foreach ($cards as $i => $c): ?>
-          <article class="col-lg-4 col-md-6" itemprop="itemListElement">
-            <div class="scholar-card">
+        <?php if (!empty($scholarshipPosts)): ?>
+          <?php foreach ($scholarshipPosts as $c): ?>
+            <article class="col-lg-4 col-md-6" itemprop="itemListElement">
+              <div class="scholar-card">
 
-              <div class="scholar-card-img">
-                <img src="<?= $c['img'] ?>" alt="<?= htmlspecialchars($c['title']) ?>">
-                <span class="scholar-badge">HOT</span>
-              </div>
-
-              <div class="scholar-card-body">
-
-                <div class="scholar-rating">
-                  <span class="scholar-rating-stars">★★★★★</span>
-                  <span>(4.7)</span>
+                <div class="scholar-card-img">
+                  <?php
+                  $img = !empty($c['featured_image']) ? $c['featured_image'] : '/assets/img/client/placeholder.png';
+                  if (strpos($img, 'http') !== 0 && strpos($img, '/') !== 0)
+                    $img = '/' . $img;
+                  ?>
+                  <img src="<?= $base . $img ?>" alt="<?= htmlspecialchars($c['title']) ?>">
+                  <?php if (!empty($c['tag_name'])): ?>
+                    <span class="scholar-badge"><?= htmlspecialchars($c['tag_name']) ?></span>
+                  <?php endif; ?>
                 </div>
 
-                <h3 class="scholar-title scholar-clamp">
-                  <a href="<?= $base . $c['link'] ?>">
-                    <?= $c['title'] ?>
-                  </a>
-                </h3>
+                <div class="scholar-card-body">
 
-                <div class="scholar-meta">
-                  <span>👁️ 10+</span>
-                  <span>📅 30/12/2025</span>
-                  <span>🔍 20+</span>
+                  <!-- <div class="scholar-rating">
+                    <span class="scholar-rating-stars">★★★★★</span>
+                    <span>(4.8)</span>
+                  </div> -->
+
+                  <h3 class="scholar-title scholar-clamp">
+                    <a href="<?= $base ?>/<?= htmlspecialchars($c['slug']) ?>">
+                      <?= htmlspecialchars($c['title']) ?>
+                    </a>
+                  </h3>
+
+                  <div class="scholar-meta">
+                    <span>👁️ <?= $c['count_view'] ?>+</span>
+                    <span>📅 <?= date('d/m/Y', strtotime($c['created_at'])) ?></span>
+                    <!-- <span>🔍 <?= $c['count_like'] ?>+</span> -->
+                  </div>
+
                 </div>
-
               </div>
-            </div>
-          </article>
-        <?php endforeach; ?>
+            </article>
+          <?php endforeach; ?>
+        <?php else: ?>
+          <div class="col-12 text-center py-5">
+            <p class="text-secondary">Đang cập nhật các chương trình học bổng mới nhất...</p>
+          </div>
+        <?php endif; ?>
 
       </div>
     </div>
