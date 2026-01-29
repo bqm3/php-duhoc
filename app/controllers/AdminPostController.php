@@ -23,17 +23,20 @@ class AdminPostController
         }
 
         // Pagination & Search Logic
-        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
         $keyword = isset($_GET['keyword']) ? trim($_GET['keyword']) : '';
-        $categoryId = isset($_GET['category_id']) ? (int)$_GET['category_id'] : 0;
-        
+        $categoryId = isset($_GET['category_id']) ? (int) $_GET['category_id'] : 0;
+        $countryId = isset($_GET['country_id']) ? (int) $_GET['country_id'] : 0;
+        $schoolId = isset($_GET['school_id']) ? (int) $_GET['school_id'] : 0;
+        $date = isset($_GET['date']) ? trim($_GET['date']) : '';
+
         $limit = 10;
         $offset = ($page - 1) * $limit;
 
         // Build query conditions
         $whereClause = "WHERE 1=1";
         $params = [];
-        
+
         if (!empty($keyword)) {
             $whereClause .= " AND (p.title LIKE ? OR p.slug LIKE ? OR c.name LIKE ? OR u.full_name LIKE ?)";
             $searchTerm = "%$keyword%";
@@ -42,11 +45,31 @@ class AdminPostController
             $params[] = $searchTerm;
             $params[] = $searchTerm;
         }
-        
+
         if ($categoryId > 0) {
             $whereClause .= " AND p.category_id = ?";
             $params[] = $categoryId;
         }
+
+        if ($countryId > 0) {
+            $whereClause .= " AND p.country_id = ?";
+            $params[] = $countryId;
+        }
+
+        if ($schoolId > 0) {
+            $whereClause .= " AND p.school_id = ?";
+            $params[] = $schoolId;
+        }
+
+        if (!empty($date)) {
+            $whereClause .= " AND DATE(p.created_at) = ?";
+            $params[] = $date;
+        }
+
+        // Fetch filter data
+        $categories = $db->query("SELECT id, name FROM categories ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
+        $countries = $db->query("SELECT id, name FROM countries ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
+        $schools = $db->query("SELECT id, name FROM schools ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
 
         // Count total records
         $countSql = "
@@ -73,7 +96,7 @@ class AdminPostController
             ORDER BY p.created_at DESC
             LIMIT $limit OFFSET $offset
         ";
-        
+
         $stmt = $db->prepare($sql);
         $stmt->execute($params);
         $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -83,7 +106,14 @@ class AdminPostController
             'total_pages' => $totalPages,
             'current_page' => $page,
             'keyword' => $keyword,
-            'current_category_id' => $categoryId
+            'current_category_id' => $categoryId,
+            'current_country_id' => $countryId,
+            'current_school_id' => $schoolId,
+            'current_date' => $date,
+            'categories' => $categories,
+            'countries' => $countries,
+            'schools' => $schools,
+            'csrf' => Csrf::token()
         ]);
     }
 
@@ -92,7 +122,7 @@ class AdminPostController
     {
         Auth::requireAdmin();
 
-        $selectedCategoryId = isset($_GET['category_id']) ? (int)$_GET['category_id'] : 0;
+        $selectedCategoryId = isset($_GET['category_id']) ? (int) $_GET['category_id'] : 0;
 
         $db = Db::getInstance()->pdo();
         $stmt = $db->query("SELECT * FROM categories ORDER BY name");
@@ -122,12 +152,13 @@ class AdminPostController
         $title = trim($_POST['title'] ?? '');
         $summary = $_POST['summary'] ?? '';
         $slug = self::generateSlug($_POST['slug'] ?? $title);
-        $category_id = !empty($_POST['category_id']) ? (int)$_POST['category_id'] : null;
-        $country_id = !empty($_POST['country_id']) ? (int)$_POST['country_id'] : null;
-        $school_id = !empty($_POST['school_id']) ? (int)$_POST['school_id'] : null;
+        $category_id = !empty($_POST['category_id']) ? (int) $_POST['category_id'] : null;
+        $country_id = !empty($_POST['country_id']) ? (int) $_POST['country_id'] : null;
+        $school_id = !empty($_POST['school_id']) ? (int) $_POST['school_id'] : null;
         $is_popular = isset($_POST['is_popular']) ? 1 : 0;
         $is_hidden = isset($_POST['is_hidden']) ? 1 : 0;
         $content = $_POST['content'] ?? '';
+        $created_at = !empty($_POST['created_at']) ? $_POST['created_at'] : date('Y-m-d H:i:s');
 
         $user = Auth::user();
         $user_id = $user ? $user['id'] : null;
@@ -160,7 +191,7 @@ class AdminPostController
                     return;
                 }
             }
-            
+
             // Kiểm tra duplicate với school_id
             if ($school_id) {
                 $checkStmt = $db->prepare("SELECT id FROM posts WHERE category_id = ? AND school_id = ? LIMIT 1");
@@ -180,11 +211,11 @@ class AdminPostController
         }
 
         $stmt = $db->prepare("
-            INSERT INTO posts (slug, title, summary, category_id, country_id, school_id, is_popular, is_hidden, content, user_id, featured_image) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO posts (slug, title, summary, category_id, country_id, school_id, is_popular, is_hidden, content, user_id, featured_image, created_at) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
 
-        if ($stmt->execute([$slug, $title, $summary, $category_id, $country_id, $school_id, $is_popular, $is_hidden, $content, $user_id, $featured_image])) {
+        if ($stmt->execute([$slug, $title, $summary, $category_id, $country_id, $school_id, $is_popular, $is_hidden, $content, $user_id, $featured_image, $created_at])) {
             Response::redirect('/admin/posts');
         } else {
             Response::json(['error' => 'Failed to create post'], 500);
@@ -239,20 +270,23 @@ class AdminPostController
         $title = trim($_POST['title'] ?? '');
         $summary = $_POST['summary'] ?? '';
         $slug = self::generateSlug($_POST['slug'] ?? $title);
-        $category_id = !empty($_POST['category_id']) ? (int)$_POST['category_id'] : null;
-        $country_id = !empty($_POST['country_id']) ? (int)$_POST['country_id'] : null;
-        $school_id = !empty($_POST['school_id']) ? (int)$_POST['school_id'] : null;
+        $category_id = !empty($_POST['category_id']) ? (int) $_POST['category_id'] : null;
+        $country_id = !empty($_POST['country_id']) ? (int) $_POST['country_id'] : null;
+        $school_id = !empty($_POST['school_id']) ? (int) $_POST['school_id'] : null;
         $is_popular = isset($_POST['is_popular']) ? 1 : 0;
         $is_hidden = isset($_POST['is_hidden']) ? 1 : 0;
         $content = $_POST['content'] ?? '';
+        $created_at = !empty($_POST['created_at']) ? $_POST['created_at'] : null;
 
         // ADMIN chỉnh tay view/share
-        $count_view  = isset($_POST['count_view']) ? (int)$_POST['count_view'] : 0;
-        $count_share = isset($_POST['count_share']) ? (int)$_POST['count_share'] : 0;
+        $count_view = isset($_POST['count_view']) ? (int) $_POST['count_view'] : 0;
+        $count_share = isset($_POST['count_share']) ? (int) $_POST['count_share'] : 0;
 
         // chặn âm
-        if ($count_view < 0) $count_view = 0;
-        if ($count_share < 0) $count_share = 0;
+        if ($count_view < 0)
+            $count_view = 0;
+        if ($count_share < 0)
+            $count_share = 0;
 
         if (empty($title)) {
             Response::json(['error' => 'Title is required'], 400);
@@ -262,13 +296,16 @@ class AdminPostController
         $db = Db::getInstance()->pdo();
 
         // lấy post cũ để biết ảnh cũ
-        $stmt = $db->prepare("SELECT featured_image FROM posts WHERE id = ? LIMIT 1");
-        $stmt->execute([(int)$id]);
+        $stmt = $db->prepare("SELECT featured_image, created_at FROM posts WHERE id = ? LIMIT 1");
+        $stmt->execute([(int) $id]);
         $old = $stmt->fetch(PDO::FETCH_ASSOC);
         if (!$old) {
             Response::notFound();
             return;
         }
+
+        if (!$created_at)
+            $created_at = $old['created_at'];
 
         // Validation: Kiểm tra duplicate category_id + country_id hoặc category_id + school_id (trừ post hiện tại)
         // Chỉ kiểm tra khi có cả category_id và country_id, HOẶC cả category_id và school_id
@@ -282,7 +319,7 @@ class AdminPostController
                     return;
                 }
             }
-            
+
             // Kiểm tra duplicate với school_id
             if ($school_id) {
                 $checkStmt = $db->prepare("SELECT id FROM posts WHERE category_id = ? AND school_id = ? AND id != ? LIMIT 1");
@@ -310,7 +347,8 @@ class AdminPostController
                 // (tuỳ chọn) xoá file cũ trên disk nếu thuộc uploads của mình
                 if (!empty($old['featured_image']) && str_contains($old['featured_image'], '/assets/uploads/')) {
                     $path = __DIR__ . '/../../public' . parse_url($old['featured_image'], PHP_URL_PATH);
-                    if (is_file($path)) @unlink($path);
+                    if (is_file($path))
+                        @unlink($path);
                 }
             }
         } catch (Exception $e) {
@@ -320,11 +358,11 @@ class AdminPostController
 
         $stmt = $db->prepare("
             UPDATE posts 
-            SET slug = ?, title = ?, summary = ?, category_id = ?, country_id = ?, school_id = ?, is_popular = ?, is_hidden = ?, content = ?, featured_image = ?, count_view = ?, count_share = ?
+            SET slug = ?, title = ?, summary = ?, category_id = ?, country_id = ?, school_id = ?, is_popular = ?, is_hidden = ?, content = ?, featured_image = ?, count_view = ?, count_share = ?, created_at = ?
             WHERE id = ?
         ");
 
-        if ($stmt->execute([$slug, $title, $summary, $category_id, $country_id, $school_id, $is_popular, $is_hidden, $content, $newFeatured, $count_view, $count_share, $id])) {
+        if ($stmt->execute([$slug, $title, $summary, $category_id, $country_id, $school_id, $is_popular, $is_hidden, $content, $newFeatured, $count_view, $count_share, $created_at, $id])) {
             Response::redirect('/admin/posts');
         } else {
             Response::json(['error' => 'Failed to update post'], 500);
@@ -399,10 +437,12 @@ class AdminPostController
             Response::json(['ok' => false, 'message' => 'Invalid CSRF token'], 403);
         }
 
-        $id = (int)$id;
-        if ($id <= 0) Response::json(['ok' => false, 'message' => 'Invalid post id'], 400);
+        $id = (int) $id;
+        if ($id <= 0)
+            Response::json(['ok' => false, 'message' => 'Invalid post id'], 400);
 
-        if (session_status() !== PHP_SESSION_ACTIVE) session_start();
+        if (session_status() !== PHP_SESSION_ACTIVE)
+            session_start();
         $key = "shared_post_" . $id;
         if (!empty($_SESSION[$key])) {
             // đã cộng rồi trong session này -> trả ok luôn (tránh spam)
@@ -422,7 +462,7 @@ class AdminPostController
         Response::json([
             'ok' => true,
             'counted' => true,
-            'count_share' => (int)($row['count_share'] ?? 0),
+            'count_share' => (int) ($row['count_share'] ?? 0),
         ]);
     }
 
@@ -463,7 +503,7 @@ class AdminPostController
         }
 
         if (!isset($file['tmp_name']) || empty($file['tmp_name'])) {
-             return null;
+            return null;
         }
 
         $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
@@ -478,7 +518,7 @@ class AdminPostController
         $uploadDir = realpath(__DIR__ . '/../../public') . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'uploads';
         if ($uploadDir === false) {
             // Try to create if realpath fails (dir doesnt exist)
-             $uploadDir = __DIR__ . '/../../public/assets/uploads';
+            $uploadDir = __DIR__ . '/../../public/assets/uploads';
         }
 
         if (!is_dir($uploadDir) && !mkdir($uploadDir, 0755, true)) {
@@ -662,18 +702,18 @@ class AdminPostController
     public static function toggleHidden($id)
     {
         Auth::requireAdmin();
-        
+
         if (!Csrf::verify($_POST['_csrf'] ?? '')) {
             Response::json(['error' => 'Invalid CSRF token'], 403);
             return;
         }
 
-        $is_hidden = isset($_POST['is_hidden']) ? (int)$_POST['is_hidden'] : 0;
+        $is_hidden = isset($_POST['is_hidden']) ? (int) $_POST['is_hidden'] : 0;
         $is_hidden = $is_hidden ? 1 : 0;
 
         $db = Db::getInstance()->pdo();
         $stmt = $db->prepare("UPDATE posts SET is_hidden = ? WHERE id = ?");
-        
+
         if ($stmt->execute([$is_hidden, $id])) {
             $message = $is_hidden ? 'Đã ẩn bài viết thành công!' : 'Đã hiện bài viết thành công!';
             Response::json(['success' => true, 'message' => $message, 'is_hidden' => $is_hidden]);
@@ -684,69 +724,73 @@ class AdminPostController
 
     // Upload image for CKEditor
     public static function uploadImage()
-{
-    Auth::requireAdmin();
+    {
+        Auth::requireAdmin();
 
-    if (!Csrf::verify($_POST['_csrf'] ?? '')) {
-        if (ob_get_length()) ob_clean();
-        header('Content-Type: application/json; charset=utf-8');
-        http_response_code(403);
-        echo json_encode(['error' => 'Invalid CSRF token']);
-        exit;
-    }
-
-    if (!isset($_FILES['upload'])) {
-        if (ob_get_length()) ob_clean();
-        header('Content-Type: application/json; charset=utf-8');
-        http_response_code(400);
-        echo json_encode(['error' => 'No file uploaded']);
-        exit;
-    }
-
-    if (($_FILES['upload']['error'] ?? UPLOAD_ERR_OK) !== UPLOAD_ERR_OK) {
-        if (ob_get_length()) ob_clean();
-        header('Content-Type: application/json; charset=utf-8');
-        http_response_code(400);
-        echo json_encode(['error' => 'Upload failed']);
-        exit;
-    }
-
-    try {
-        $file = $_FILES['upload'];
-        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-
-        if (!in_array($ext, $allowed, true)) {
-            throw new Exception('Invalid file type');
+        if (!Csrf::verify($_POST['_csrf'] ?? '')) {
+            if (ob_get_length())
+                ob_clean();
+            header('Content-Type: application/json; charset=utf-8');
+            http_response_code(403);
+            echo json_encode(['error' => 'Invalid CSRF token']);
+            exit;
         }
 
-        $filename = 'post_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
-
-        $uploadDir = __DIR__ . '/../../public/assets/uploads';
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
+        if (!isset($_FILES['upload'])) {
+            if (ob_get_length())
+                ob_clean();
+            header('Content-Type: application/json; charset=utf-8');
+            http_response_code(400);
+            echo json_encode(['error' => 'No file uploaded']);
+            exit;
         }
 
-        $destPath = $uploadDir . '/' . $filename;
-
-        if (!move_uploaded_file($file['tmp_name'], $destPath)) {
-            throw new Exception('Failed to move file');
+        if (($_FILES['upload']['error'] ?? UPLOAD_ERR_OK) !== UPLOAD_ERR_OK) {
+            if (ob_get_length())
+                ob_clean();
+            header('Content-Type: application/json; charset=utf-8');
+            http_response_code(400);
+            echo json_encode(['error' => 'Upload failed']);
+            exit;
         }
 
-        $url = '/assets/uploads/' . $filename;
-        if (ob_get_length()) ob_clean();
-        header('Content-Type: application/json; charset=utf-8');
-        echo json_encode([
-            'url' => $url,
-        ]);
-        exit;
+        try {
+            $file = $_FILES['upload'];
+            $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+            $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
 
-    } catch (Exception $e) {
-        header('Content-Type: application/json; charset=utf-8');
-        http_response_code(500);
-        echo json_encode(['error' => $e->getMessage()]);
-        exit;
+            if (!in_array($ext, $allowed, true)) {
+                throw new Exception('Invalid file type');
+            }
+
+            $filename = 'post_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
+
+            $uploadDir = __DIR__ . '/../../public/assets/uploads';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+
+            $destPath = $uploadDir . '/' . $filename;
+
+            if (!move_uploaded_file($file['tmp_name'], $destPath)) {
+                throw new Exception('Failed to move file');
+            }
+
+            $url = '/assets/uploads/' . $filename;
+            if (ob_get_length())
+                ob_clean();
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode([
+                'url' => $url,
+            ]);
+            exit;
+
+        } catch (Exception $e) {
+            header('Content-Type: application/json; charset=utf-8');
+            http_response_code(500);
+            echo json_encode(['error' => $e->getMessage()]);
+            exit;
+        }
     }
-}
 
 }

@@ -24,7 +24,8 @@
             <div class="col-sm-9 col-xs-12 content pt-3 pl-0">
                 <div class="mb-3">
                     <h5 class="mb-0"><strong>Tạo Bài Viết Mới</strong></h5>
-                    <span class="text-secondary">Bảng điều khiển <i class="fa fa-angle-right"></i> Bài viết <i class="fa fa-angle-right"></i> Tạo mới</span>
+                    <span class="text-secondary">Bảng điều khiển <i class="fa fa-angle-right"></i> Bài viết <i
+                            class="fa fa-angle-right"></i> Tạo mới</span>
                 </div>
 
                 <div class="row mt-3">
@@ -39,11 +40,13 @@
                                     </button>
                                 </div>
                             <?php endif; ?>
-                            <form id="createPostForm" method="POST" action="<?= $base ?>/admin/posts" enctype="multipart/form-data">
+                            <form id="createPostForm" method="POST" action="<?= $base ?>/admin/posts"
+                                enctype="multipart/form-data">
                                 <input type="hidden" name="_csrf" value="<?= $csrf ?>">
 
                                 <div class="form-group">
-                                    <label for="title"><strong>Tiêu đề</strong> <span class="text-danger">*</span></label>
+                                    <label for="title"><strong>Tiêu đề</strong> <span
+                                            class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="title" name="title" required
                                         placeholder="Nhập tiêu đề bài viết">
                                 </div>
@@ -52,7 +55,8 @@
                                     <label for="slug"><strong>Đường dẫn (Slug)</strong></label>
                                     <input type="text" class="form-control" id="slug" name="slug"
                                         placeholder="Để trống để tự động tạo từ tiêu đề">
-                                    <small class="form-text text-muted">Đường dẫn thân thiện URL. Tự động tạo nếu để trống.</small>
+                                    <small class="form-text text-muted">Đường dẫn thân thiện URL. Tự động tạo nếu để
+                                        trống.</small>
                                 </div>
 
                                 <div class="form-group">
@@ -72,7 +76,8 @@
                                     <select class="form-control" id="country_id" name="country_id">
                                         <option value="">-- Chọn quốc gia (Tùy chọn) --</option>
                                         <?php foreach ($countries as $country): ?>
-                                            <option value="<?= $country['id'] ?>"><?= htmlspecialchars($country['name']) ?></option>
+                                            <option value="<?= $country['id'] ?>"><?= htmlspecialchars($country['name']) ?>
+                                            </option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
@@ -82,25 +87,40 @@
                                     <select class="form-control" id="school_id" name="school_id">
                                         <option value="">-- Chọn trường học (Tùy chọn) --</option>
                                         <?php foreach ($schools as $school): ?>
-                                            <option value="<?= $school['id'] ?>"><?= htmlspecialchars($school['name']) ?></option>
+                                            <option value="<?= $school['id'] ?>"><?= htmlspecialchars($school['name']) ?>
+                                            </option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
 
                                 <div class="form-check mb-3">
-                                    <input type="checkbox" class="form-check-input" id="is_popular" name="is_popular" value="1">
-                                    <label class="form-check-label font-weight-bold" for="is_popular">Đánh dấu là bài viết nổi bật</label>
+                                    <input type="checkbox" class="form-check-input" id="is_popular" name="is_popular"
+                                        value="1">
+                                    <label class="form-check-label font-weight-bold" for="is_popular">Đánh dấu là bài
+                                        viết nổi bật</label>
                                 </div>
 
                                 <div class="form-check mb-3">
-                                    <input type="checkbox" class="form-check-input" id="is_hidden" name="is_hidden" value="1">
-                                    <label class="form-check-label font-weight-bold" for="is_hidden">Ẩn bài viết (không hiển thị)</label>
+                                    <input type="checkbox" class="form-check-input" id="is_hidden" name="is_hidden"
+                                        value="1">
+                                    <label class="form-check-label font-weight-bold" for="is_hidden">Ẩn bài viết (không
+                                        hiển thị)</label>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="created_at"><strong>Ngày tạo</strong></label>
+                                    <input type="datetime-local" class="form-control" id="created_at" name="created_at"
+                                        value="<?= date('Y-m-d\TH:i') ?>">
+                                    <small class="form-text text-muted">Để trống bộ chọn để sử dụng thời gian hiện
+                                        tại.</small>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="featured_image"><strong>Ảnh chính</strong></label>
-                                    <input type="file" class="form-control" id="featured_image" name="featured_image" accept="image/*">
-                                    <small class="form-text text-muted">Ảnh đại diện hiển thị ngoài danh sách/chi tiết bài viết.</small>
+                                    <input type="file" class="form-control" id="featured_image" name="featured_image"
+                                        accept="image/*">
+                                    <small class="form-text text-muted">Ảnh đại diện hiển thị ngoài danh sách/chi tiết
+                                        bài viết.</small>
                                 </div>
 
                                 <div class="form-group">
@@ -126,7 +146,7 @@
                     </div>
                 </div>
 
-                
+
             </div>
         </div>
     </div>
@@ -141,11 +161,11 @@
     <link rel="stylesheet" href="<?= $base ?>/assets/css/toastr.min.css">
 
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#summernote').summernote({
                 height: 400,
                 callbacks: {
-                    onImageUpload: function(files) {
+                    onImageUpload: function (files) {
                         uploadImage(files[0], '#summernote');
                     }
                 }
@@ -154,14 +174,14 @@
             $('#summernote_summary').summernote({
                 height: 150,
                 callbacks: {
-                    onImageUpload: function(files) {
+                    onImageUpload: function (files) {
                         uploadImage(files[0], '#summernote_summary');
                     }
                 }
             });
         });
 
-       
+
         function uploadImage(file, editorId) {
             var data = new FormData();
             data.append("upload", file);
@@ -176,13 +196,13 @@
                 processData: false,
                 dataType: "json",
 
-                success: function(response) {
+                success: function (response) {
                     console.log("Phản hồi thành công:", response);
 
                     if (response && response.url) {
                         const fullUrl = "<?= $base ?>" + response.url;
 
-                        $(editorId).summernote('insertImage', fullUrl, function($image) {
+                        $(editorId).summernote('insertImage', fullUrl, function ($image) {
                             $image.css('width', '100%');
                         });
                     } else {
@@ -190,7 +210,7 @@
                     }
                 },
 
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error("Lỗi tải lên:", {
                         status: xhr.status,
                         statusText: xhr.statusText,
@@ -203,7 +223,7 @@
         }
 
         // Tự động tạo slug từ tiêu đề
-        document.getElementById('title').addEventListener('keyup', function() {
+        document.getElementById('title').addEventListener('keyup', function () {
             var title = this.value;
             var slug = title.toLowerCase();
 
@@ -225,74 +245,74 @@
         });
 
         // Submit form với AJAX để hiển thị lỗi đẹp
-        document.getElementById('createPostForm').addEventListener('submit', function(e) {
+        document.getElementById('createPostForm').addEventListener('submit', function (e) {
             e.preventDefault();
-            
+
             // Summernote tự động đồng bộ với textarea
             $('#summernote').summernote('code');
             $('#summernote_summary').summernote('code');
-            
+
             const form = this;
             const formData = new FormData(form);
             const submitBtn = form.querySelector('button[type="submit"]');
             const originalBtnText = submitBtn.innerHTML;
-            
+
             // Disable button và hiển thị loading
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Đang tạo...';
-            
+
             fetch(form.action, {
                 method: 'POST',
                 body: formData
             })
-            .then(response => {
-                // Kiểm tra content-type để biết response là JSON hay HTML
-                const contentType = response.headers.get('content-type') || '';
-                
-                if (contentType.includes('application/json')) {
-                    // Nếu là JSON, parse và kiểm tra
-                    return response.json().then(data => {
-                        if (data.error) {
-                            // Có lỗi, throw để catch xử lý
-                            throw new Error(data.error);
-                        }
-                        // Nếu không có error, có thể là success
-                        if (data.success) {
-                            window.location.href = '<?= $base ?>/admin/posts';
-                            return;
-                        }
-                        throw new Error('Có lỗi xảy ra');
-                    });
-                }
-                
-                // Nếu không phải JSON, kiểm tra status
-                if (response.status >= 200 && response.status < 300) {
-                    // Thành công, redirect về danh sách
-                    window.location.href = '<?= $base ?>/admin/posts';
-                    return;
-                }
-                
-                // Nếu có lỗi HTTP
-                throw new Error('HTTP Error: ' + response.status);
-            })
-            .catch(error => {
-                // Hiển thị lỗi bằng toastr hoặc sweetalert
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalBtnText;
-                
-                const errorMessage = error.message || 'Có lỗi xảy ra khi tạo bài viết';
-                
-                if (typeof toastr !== 'undefined') {
-                    toastr.error(errorMessage, 'Lỗi', {
-                        timeOut: 5000,
-                        closeButton: true
-                    });
-                } else if (typeof swal !== 'undefined') {
-                    swal("Lỗi!", errorMessage, "error");
-                } else {
-                    alert('Lỗi: ' + errorMessage);
-                }
-            });
+                .then(response => {
+                    // Kiểm tra content-type để biết response là JSON hay HTML
+                    const contentType = response.headers.get('content-type') || '';
+
+                    if (contentType.includes('application/json')) {
+                        // Nếu là JSON, parse và kiểm tra
+                        return response.json().then(data => {
+                            if (data.error) {
+                                // Có lỗi, throw để catch xử lý
+                                throw new Error(data.error);
+                            }
+                            // Nếu không có error, có thể là success
+                            if (data.success) {
+                                window.location.href = '<?= $base ?>/admin/posts';
+                                return;
+                            }
+                            throw new Error('Có lỗi xảy ra');
+                        });
+                    }
+
+                    // Nếu không phải JSON, kiểm tra status
+                    if (response.status >= 200 && response.status < 300) {
+                        // Thành công, redirect về danh sách
+                        window.location.href = '<?= $base ?>/admin/posts';
+                        return;
+                    }
+
+                    // Nếu có lỗi HTTP
+                    throw new Error('HTTP Error: ' + response.status);
+                })
+                .catch(error => {
+                    // Hiển thị lỗi bằng toastr hoặc sweetalert
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+
+                    const errorMessage = error.message || 'Có lỗi xảy ra khi tạo bài viết';
+
+                    if (typeof toastr !== 'undefined') {
+                        toastr.error(errorMessage, 'Lỗi', {
+                            timeOut: 5000,
+                            closeButton: true
+                        });
+                    } else if (typeof swal !== 'undefined') {
+                        swal("Lỗi!", errorMessage, "error");
+                    } else {
+                        alert('Lỗi: ' + errorMessage);
+                    }
+                });
         });
     </script>
 </body>
