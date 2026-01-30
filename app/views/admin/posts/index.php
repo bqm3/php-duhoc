@@ -97,9 +97,13 @@
                                     <input type="date" name="date_updated" class="form-control"
                                         value="<?= htmlspecialchars($current_date_updated ?? '') ?>">
                                 </div>
-                                <div class="col-md-1 mb-2">
-                                    <button class="btn btn-block btn-info" type="submit"><i
-                                            class="fa fa-filter"></i></button>
+                                <div class="col-md-2 mb-2 d-flex">
+                                    <button class="btn btn-info btn-sm flex-grow-1 mr-2" type="submit">
+                                        <i class="fa fa-filter"></i> Lọc
+                                    </button>
+                                    <a href="<?= $base ?>/admin/posts" class="btn btn-outline-secondary btn-sm flex-grow-1" title="Xóa tất cả bộ lọc">
+                                        <i class="fa fa-refresh"></i> Xóa lọc
+                                    </a>
                                 </div>
                             </div>
                         </form>

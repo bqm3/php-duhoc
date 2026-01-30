@@ -39,7 +39,7 @@
                         <!-- Multi-filter Form -->
                         <div class="p-3 bg-white border shadow-sm mb-4">
                             <form method="GET" action="" class="row g-3 align-items-end">
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <label class="form-label small font-weight-bold">Từ khóa</label>
                                     <input type="text" name="keyword" class="form-control form-control-sm"
                                         placeholder="Tên, email, sđt..."
@@ -51,8 +51,10 @@
                                         <option value="">-- Tất cả --</option>
                                         <option value="new" <?= ($status ?? '') == 'new' ? 'selected' : '' ?>>Mới</option>
                                         <option value="processing" <?= ($status ?? '') == 'processing' ? 'selected' : '' ?>>Đang xử lý</option>
-                                        <option value="completed" <?= ($status ?? '') == 'completed' ? 'selected' : '' ?>>Hoàn thành</option>
-                                        <option value="cancelled" <?= ($status ?? '') == 'cancelled' ? 'selected' : '' ?>>Đã hủy</option>
+                                        <option value="completed" <?= ($status ?? '') == 'completed' ? 'selected' : '' ?>>
+                                            Hoàn thành</option>
+                                        <option value="cancelled" <?= ($status ?? '') == 'cancelled' ? 'selected' : '' ?>>
+                                            Đã hủy</option>
                                     </select>
                                 </div>
                                 <div class="col-md-2">
@@ -68,26 +70,23 @@
                                 </div>
                                 <div class="col-md-2">
                                     <label class="form-label small font-weight-bold">Từ ngày</label>
-                                    <input type="date" name="date_from" class="form-control form-control-sm" 
-                                           value="<?= htmlspecialchars($date_from ?? '') ?>">
+                                    <input type="date" name="date_from" class="form-control form-control-sm"
+                                        value="<?= htmlspecialchars($date_from ?? '') ?>">
                                 </div>
                                 <div class="col-md-2">
                                     <label class="form-label small font-weight-bold">Đến ngày</label>
                                     <input type="date" name="date_to" class="form-control form-control-sm"
-                                           value="<?= htmlspecialchars($date_to ?? '') ?>">
+                                        value="<?= htmlspecialchars($date_to ?? '') ?>">
                                 </div>
-                                <div class="col-md-1">
-                                    <button class="btn btn-primary btn-sm btn-block" type="submit">
+                                <div class="col-md-2 d-flex">
+                                    <button class="btn btn-primary btn-sm flex-grow-1 mr-2" type="submit">
                                         <i class="fa fa-filter"></i> Lọc
                                     </button>
-                                </div>
-                                <?php if (!empty($keyword) || !empty($status) || ($country_id ?? 0) > 0 || !empty($date_from) || !empty($date_to)): ?>
-                                <div class="col-12 mt-2">
-                                    <a href="?" class="btn btn-link btn-sm p-0 text-danger text-decoration-none">
-                                        <i class="fa fa-times-circle"></i> Xóa bộ lọc
+                                    <a href="<?= $base ?>/admin/consultations"
+                                        class="btn btn-outline-secondary btn-sm flex-grow-1" title="Xóa tất cả bộ lọc">
+                                        <i class="fa fa-refresh"></i> Xóa lọc
                                     </a>
                                 </div>
-                                <?php endif; ?>
                             </form>
                         </div>
 
@@ -116,14 +115,18 @@
                                                     <td><strong><?= htmlspecialchars($item['full_name']) ?></strong></td>
                                                     <td>
                                                         <div class="small">
-                                                            <strong>GT:</strong> <?= ($item['gender'] ?? '') == 'male' ? 'Nam' : (($item['gender'] ?? '') == 'female' ? 'Nữ' : 'Khác') ?><br>
-                                                            <strong>Quốc gia:</strong> <?= htmlspecialchars($item['country_name'] ?? 'Chưa chọn') ?>
+                                                            <strong>GT:</strong>
+                                                            <?= ($item['gender'] ?? '') == 'male' ? 'Nam' : (($item['gender'] ?? '') == 'female' ? 'Nữ' : 'Khác') ?><br>
+                                                            <strong>Quốc gia:</strong>
+                                                            <?= htmlspecialchars($item['country_name'] ?? 'Chưa chọn') ?>
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="small">
-                                                            <i class="fa fa-phone mr-1"></i><?= htmlspecialchars($item['phone']) ?><br>
-                                                            <i class="fa fa-envelope mr-1"></i><?= htmlspecialchars($item['email'] ?: 'N/A') ?>
+                                                            <i
+                                                                class="fa fa-phone mr-1"></i><?= htmlspecialchars($item['phone']) ?><br>
+                                                            <i
+                                                                class="fa fa-envelope mr-1"></i><?= htmlspecialchars($item['email'] ?: 'N/A') ?>
                                                         </div>
                                                     </td>
                                                     <td><?= nl2br(htmlspecialchars($item['message'])) ?></td>
@@ -170,7 +173,7 @@
                                 </div>
 
                                 <!-- Pagination -->
-                                <?php if (isset($total_pages) && $total_pages > 1): 
+                                <?php if (isset($total_pages) && $total_pages > 1):
                                     $queryParams = http_build_query([
                                         'keyword' => $keyword ?? '',
                                         'status' => $status ?? '',
@@ -178,18 +181,16 @@
                                         'date_from' => $date_from ?? '',
                                         'date_to' => $date_to ?? ''
                                     ]);
-                                ?>
+                                    ?>
                                     <nav aria-label="Page navigation" class="mt-3">
                                         <ul class="pagination justify-content-end">
                                             <li class="page-item <?= ($current_page <= 1) ? 'disabled' : '' ?>">
-                                                <a class="page-link"
-                                                    href="?page=<?= $current_page - 1 ?>&<?= $queryParams ?>"
+                                                <a class="page-link" href="?page=<?= $current_page - 1 ?>&<?= $queryParams ?>"
                                                     tabindex="-1">Trước</a>
                                             </li>
                                             <?php for ($i = 1; $i <= $total_pages; $i++): ?>
                                                 <li class="page-item <?= ($i == $current_page) ? 'active' : '' ?>">
-                                                    <a class="page-link"
-                                                        href="?page=<?= $i ?>&<?= $queryParams ?>"><?= $i ?></a>
+                                                    <a class="page-link" href="?page=<?= $i ?>&<?= $queryParams ?>"><?= $i ?></a>
                                                 </li>
                                             <?php endfor; ?>
                                             <li class="page-item <?= ($current_page >= $total_pages) ? 'disabled' : '' ?>">
