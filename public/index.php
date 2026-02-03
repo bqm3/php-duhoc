@@ -10,7 +10,7 @@ header('Content-Type: text/html; charset=UTF-8');
 mb_internal_encoding('UTF-8');
 
 // ✅ đường dẫn gốc project nằm ngoài public_html
-$ROOT = realpath(__DIR__ . '/../php-duhoc');
+$ROOT = realpath(__DIR__ . '../');
 if (!$ROOT) {
     die('Project root not found');
 }

@@ -41,7 +41,7 @@
                         </div>
                         <div class="dropdown-divider m-0"></div>
                         <a class="dropdown-item text-center py-2 link-all font-weight-bold text-primary small"
-                            href="/php-duhoc/public/admin/consultations">
+                            href="/public/admin/consultations">
                             XEM TẤT CẢ TƯ VẤN <i class="fa fa-angle-right ml-1"></i>
                         </a>
                     </div>
@@ -75,7 +75,7 @@
             <div class="modal-body" id="notificationModalBody"></div>
             <div class="modal-footer bg-light">
                 <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Đóng</button>
-                <a href="/php-duhoc/public/admin/consultations" class="btn btn-success btn-sm">Xem chi tiết</a>
+                <a href="/public/admin/consultations" class="btn btn-success btn-sm">Xem chi tiết</a>
             </div>
         </div>
     </div>
@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const html = `
             <div class="notification-item ${isRead ? 'read' : 'unread'}" data-key="${key}">
-                <a href="/php-duhoc/public/admin/consultations" class="dropdown-item" onclick="markAsRead('${key}')">
+                <a href="/public/admin/consultations" class="dropdown-item" onclick="markAsRead('${key}')">
                     <div class="media align-items-center">
                         <div class="mr-3">
                             <div class="rounded-circle notify-icon ${isRead ? 'bg-light text-muted' : 'bg-success-light'}">
