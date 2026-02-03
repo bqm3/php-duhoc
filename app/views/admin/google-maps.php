@@ -12,16 +12,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!--Bootstrap CSS-->
-    <link rel="stylesheet" href="/php-duhoc/public/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
     <!--Custom style.css-->
-    <link rel="stylesheet" href="/php-duhoc/public/assets/css/quicksand.css">
-    <link rel="stylesheet" href="/php-duhoc/public/assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/quicksand.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
     <!--Font Awesome-->
-    <link rel="stylesheet" href="/php-duhoc/public/assets/css/fontawesome.css">
+    <link rel="stylesheet" href="/assets/css/fontawesome.css">
     <!--Chartist CSS-->
-    <link rel="stylesheet" href="/php-duhoc/public/assets/css/chartist.min.css">
+    <link rel="stylesheet" href="/assets/css/chartist.min.css">
     <!--Bootstrap Calendar-->
-    <link rel="stylesheet" href="/php-duhoc/public/assets/js/calendar/bootstrap_calendar.css">
+    <link rel="stylesheet" href="/assets/js/calendar/bootstrap_calendar.css">
 
     <!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -116,26 +116,26 @@
     <!--Page Wrapper-->
 
     <!-- Page JavaScript Files-->
-    <script src="/php-duhoc/public/assets/js/jquery.min.js"></script>
-    <script src="/php-duhoc/public/assets/js/jquery-1.12.4.min.js"></script>
+    <script src="/assets/js/jquery.min.js"></script>
+    <script src="/assets/js/jquery-1.12.4.min.js"></script>
     <!--Popper JS-->
-    <script src="/php-duhoc/public/assets/js/popper.min.js"></script>
+    <script src="/assets/js/popper.min.js"></script>
     <!--Bootstrap-->
-    <script src="/php-duhoc/public/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
     <!--Sweet alert JS-->
-    <script src="/php-duhoc/public/assets/js/sweetalert.js"></script>
+    <script src="/assets/js/sweetalert.js"></script>
     <!--Progressbar JS-->
-    <script src="/php-duhoc/public/assets/js/progressbar.min.js"></script>
+    <script src="/assets/js/progressbar.min.js"></script>
     <!--Maps-->
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places"></script>
-    <script src="/php-duhoc/public/assets/js/maps/google-map-data.js"></script>
+    <script src="/assets/js/maps/google-map-data.js"></script>
     <!--Bootstrap Calendar JS-->
-    <script src="/php-duhoc/public/assets/js/calendar/bootstrap_calendar.js"></script>
-    <script src="/php-duhoc/public/assets/js/calendar/demo.js"></script>
+    <script src="/assets/js/calendar/bootstrap_calendar.js"></script>
+    <script src="/assets/js/calendar/demo.js"></script>
     <!--Bootstrap Calendar-->
 
     <!--Custom Js Script-->
-    <script src="/php-duhoc/public/assets/js/custom.js"></script>
+    <script src="/assets/js/custom.js"></script>
     <!--Custom Js Script-->
   </body>
 </html>

@@ -58,11 +58,11 @@ mb_internal_encoding('UTF-8');
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-  <script src="<?= $base ?>/php-duhoc/public/assets/js/app.js"></script>
+  <script src="<?= $base ?>/assets/js/app.js"></script>
 
   <?php if (!empty($pageJs)): ?>
     <?php foreach ((array) $pageJs as $js): ?>
-      <script src="<?= $base ?>/php-duhoc/public/assets/js/<?= ltrim($js, '/') ?>"></script>
+      <script src="<?= $base ?>/assets/js/<?= ltrim($js, '/') ?>"></script>
     <?php endforeach; ?>
   <?php endif; ?>
 </body>
