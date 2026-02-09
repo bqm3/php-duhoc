@@ -32,7 +32,8 @@ include __DIR__ . '/../base/base_hero.php';
 
                             <!-- Phone -->
                             <div class="registration-input-wrapper">
-                                <input type="tel" name="phone" class="registration-input" placeholder="Phone*" required>
+                                <input type="tel" name="phone" class="registration-input" placeholder="Số điện thoại*" required
+                                    pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                             </div>
 
                             <!-- Email -->
