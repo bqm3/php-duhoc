@@ -81,6 +81,12 @@ if ($uri === "/su-kien" && $method === "GET") {
   exit;
 }
 
+if (preg_match('#^/truong/([^/]+)$#', $uri, $m) && $method === 'GET') {
+  require_once __DIR__ . '/../controllers/client/SchoolController.php';
+  (new SchoolController())->detail($m[1]);
+  exit;
+}
+
 // Study Abroad Detail (General slug) - Phải để ở cuối các route GET 1 cấp
 if (preg_match('#^/([^/]+)$#', $uri, $m) && $method === 'GET') {
   require_once __DIR__ . '/../controllers/client/StudyAbroadController.php';

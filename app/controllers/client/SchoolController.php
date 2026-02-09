@@ -81,7 +81,7 @@ class SchoolController
 
         $eduLevels = $pdo->query("SELECT id, name FROM education_levels ORDER BY display_order ASC")->fetchAll(PDO::FETCH_ASSOC);
 
-        view('main', 'client/schools/index', [
+        view('main', 'layouts/pages/schools/index', [
             'title' => 'Tìm trường',
             'schools' => $schools,
             'totalPages' => $totalPages,
@@ -98,6 +98,64 @@ class SchoolController
                 'cities' => $citiesList,
                 'eduLevels' => $eduLevels
             ]
+        ]);
+    }
+
+    public function detail(string $slug)
+    {
+        $pdo = Db::getInstance()->pdo();
+
+        // 1. Fetch school details
+        $stmt = $pdo->prepare("
+            SELECT s.*, co.name as country_name, ci.name as city_name, el.name as education_level_name
+            FROM schools s
+            LEFT JOIN countries co ON s.country_id = co.id
+            LEFT JOIN cities ci ON s.city_id = ci.id
+            LEFT JOIN education_levels el ON s.education_level_id = el.id
+            WHERE s.slug = ?
+            LIMIT 1
+        ");
+        $stmt->execute([$slug]);
+        $school = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$school) {
+            Response::notFound();
+            return;
+        }
+
+        // 2. Fetch related category posts for the school buttons
+        $schoolLinks = [];
+        $categoriesMap = [
+            'tong-quan' => 'Tổng quan',
+            'chi-phi' => 'Chi phí',
+            'hoc-bong' => 'Học bổng',
+            'bao-hiem-va-phuc-loi' => 'Bảo hiểm & Phúc lợi',
+            'nganh-hoc-noi-tieng' => 'Ngành học nổi tiếng',
+            'visa' => 'Visa'
+        ];
+
+        foreach ($categoriesMap as $catSlug => $label) {
+            $stmt = $pdo->prepare("
+                SELECT p.slug 
+                FROM posts p 
+                JOIN categories c ON p.category_id = c.id 
+                WHERE p.school_id = ? AND c.slug = ? AND p.is_hidden = 0 
+                LIMIT 1
+            ");
+            $stmt->execute([$school['id'], $catSlug]);
+            $linkPost = $stmt->fetch();
+            $schoolLinks[] = [
+                'label' => $label,
+                'slug' => $linkPost ? $linkPost['slug'] : null,
+                'cat_slug' => $catSlug
+            ];
+        }
+
+        view('main', 'layouts/pages/schools/detail', [
+            'school' => $school,
+            'schoolLinks' => $schoolLinks,
+            'title' => $school['name'] ?? 'Chi tiết trường',
+            'pageCss' => ['about.css']
         ]);
     }
 }

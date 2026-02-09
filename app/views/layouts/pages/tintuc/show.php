@@ -57,10 +57,10 @@ $base = $base ?? '';
             <div id="toc-wrapper" class="toc-container d-none">
                 <div class="toc-header" id="toc-header">
                     <div class="toc-title mb-0" style="border-bottom:0;padding-bottom:0;">
-                        <i class="fa fa-list-ul mr-2"></i>Mục lục bài viết
+                        Mục lục
                     </div>
                     <button type="button" class="toc-toggle" id="toc-toggle" aria-label="Toggle TOC">
-                        <i class="fa fa-chevron-down"></i>
+                        <i class="fa fa-bars"></i>
                     </button>
                 </div>
                 <div class="toc-body" id="toc-body">

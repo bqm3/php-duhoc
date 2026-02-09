@@ -1,5 +1,5 @@
 <?php
-// app/views/client/schools/index.php
+// app/views//schools/index.php
 ?>
 
 <?php partial('layouts/pages/base/base_hero', [
