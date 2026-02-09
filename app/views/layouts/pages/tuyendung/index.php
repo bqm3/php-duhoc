@@ -50,13 +50,13 @@ $base_url = $base ?? '';
         margin-bottom: 30px;
         border: 1px solid #f0f0f0;
     }
-    
+
     .career-card:hover {
         box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.12);
         transform: translateY(-5px);
         border-color: #2777C4;
     }
-    
+
     .career-card-image {
         width: 100%;
         height: 250px;
@@ -67,13 +67,13 @@ $base_url = $base ?? '';
     .career-card:hover .career-card-image {
         transform: scale(1.05);
     }
-    
+
     .career-card-body {
         padding: 24px;
         display: flex;
         flex-direction: column;
     }
-    
+
     .career-card-title {
         font-family: 'Farro', sans-serif;
         font-size: 22px;
@@ -82,13 +82,13 @@ $base_url = $base ?? '';
         margin-bottom: 12px;
         line-height: 1.4;
     }
-    
+
     .career-card-title a {
         color: inherit;
         text-decoration: none;
         transition: color 0.3s ease;
     }
-    
+
     .career-card-title a:hover {
         color: #2777C4;
     }
@@ -101,7 +101,8 @@ $base_url = $base ?? '';
         color: #666;
     }
 
-    .career-card-date, .career-card-category {
+    .career-card-date,
+    .career-card-category {
         display: flex;
         align-items: center;
     }
@@ -109,7 +110,7 @@ $base_url = $base ?? '';
     .career-card-meta i {
         color: #2777C4;
     }
-    
+
     .career-card-excerpt {
         font-family: 'Inter', sans-serif;
         font-size: 16px;
@@ -119,52 +120,25 @@ $base_url = $base ?? '';
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
         overflow: hidden;
-        margin-bottom: 20px;
     }
 
-    .career-card-btn-wrapper {
-        margin-top: auto;
-    }
-
-    .career-readmore {
-        display: inline-flex;
-        align-items: center;
-        padding: 10px 24px;
-        background: #2777C4;
-        color: #FFFFFF;
-        border-radius: 50px;
-        font-weight: 600;
-        font-size: 14px;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-
-    .career-readmore:hover {
-        background: #1e60a3;
-        color: #FFFFFF;
-        box-shadow: 0 4px 12px rgba(39, 119, 196, 0.3);
-        padding-right: 30px;
-    }
-    
     @media (min-width: 992px) {
         .career-card {
             display: flex;
             flex-direction: row;
         }
-        
+
         .career-card-image-wrapper {
             flex: 0 0 350px;
             max-width: 350px;
             overflow: hidden;
         }
-        
+
         .career-card-image {
             height: 100%;
             min-height: 280px;
         }
-        
+
         .career-card-body {
             flex: 1;
             padding: 30px 40px;

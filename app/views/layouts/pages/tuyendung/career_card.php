@@ -15,16 +15,14 @@ if (strpos($post_image, 'http') !== 0 && strpos($post_image, '/') !== 0) {
 }
 ?>
 
-<div class="career-card">
+<div class="career-card position-relative">
     <div class="career-card-image-wrapper">
-        <a href="<?php echo htmlspecialchars($post_url); ?>">
-            <img src="<?php echo ($base ?? '') . htmlspecialchars($post_image); ?>"
-                alt="<?php echo htmlspecialchars($post_title); ?>" class="career-card-image">
-        </a>
+        <img src="<?php echo ($base ?? '') . htmlspecialchars($post_image); ?>"
+            alt="<?php echo htmlspecialchars($post_title); ?>" class="career-card-image">
     </div>
     <div class="career-card-body">
         <h3 class="career-card-title">
-            <a href="<?php echo htmlspecialchars($post_url); ?>">
+            <a href="<?php echo htmlspecialchars($post_url); ?>" class="stretched-link">
                 <?php echo htmlspecialchars($post_title); ?>
             </a>
         </h3>
@@ -45,13 +43,7 @@ if (strpos($post_image, 'http') !== 0 && strpos($post_image, '/') !== 0) {
         <?php if ($post_excerpt): ?>
             <div class="career-card-excerpt">
                 <?= $post_excerpt ?>
-                    </div>
-        <?php endif; ?>
-
-             <div    class="career-card-btn-wrapper">
-             <a h   ref="<?php echo htmlspecialchars($post_url); ?>" class="career-readmore">
-                    Xem chi tiết <i class="fa-solid fa-arrow-right-long ms-1"></i>
-                </a>
             </div>
-        </div>
+        <?php endif; ?>
+    </div>
 </div>
