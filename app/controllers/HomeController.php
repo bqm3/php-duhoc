@@ -18,6 +18,15 @@ class HomeController
 
         $posts = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
 
+        // Fetch slides
+        $slides = [];
+        try {
+            $stmt = $pdo->prepare("SELECT * FROM slides WHERE is_hidden = 0 AND is_dele = 0 ORDER BY stt ASC, created_at DESC");
+            $stmt->execute();
+            $slides = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+        }
+
         // Fetch countries for consult form
         $countries = [];
         try {
@@ -77,6 +86,7 @@ class HomeController
             'countries' => $countries,
             'popularCountries' => $popularCountries,
             'scholarshipPosts' => $scholarshipPosts,
+            'slides' => $slides,
             'pageCss' => ['home.css'],
         ]);
     }
