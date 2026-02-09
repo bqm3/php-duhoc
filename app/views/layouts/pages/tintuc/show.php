@@ -101,45 +101,101 @@ $base = $base ?? '';
 
             <style>
                 .news-swiper {
-                    padding-bottom: 50px !important;
+                    padding-bottom: 60px !important;
+                    position: static !important;
                 }
 
-                .news-random-card {
-                    height: 100%;
+                /* Container for navigation to allow absolute positioning relative to the section */
+                .swiper-nav-wrapper {
+                    position: relative;
+                }
+
+                .news-swiper .swiper-button-next,
+                .news-swiper .swiper-button-prev {
+                    width: 40px !important;
+                    height: 40px !important;
+                    background: rgba(27, 153, 212, 0.15) !important;
+                    border-radius: 30px !important;
+                    margin-top: 0;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    z-index: 10;
+                    display: flex !important;
+                    align-items: center;
+                    justify-content: center;
+                    transition: all 0.3s ease;
+                }
+
+                /* Inner circle */
+                .news-swiper .swiper-button-next::before,
+                .news-swiper .swiper-button-prev::before {
+                    content: '';
+                    position: absolute;
+                    width: 33.33px;
+                    height: 33.33px;
+                    background: #31A5DE;
+                    border-radius: 30px;
+                    z-index: -1;
+                    transition: all 0.3s ease;
+                }
+
+                .news-swiper .swiper-button-next::after,
+                .news-swiper .swiper-button-prev::after {
+                    font-family: "Font Awesome 6 Free", "Font Awesome 5 Free";
+                    font-weight: 900;
+                    font-size: 12px !important;
+                    color: #FFFFFF !important;
+                }
+
+                .news-swiper .swiper-button-next::after {
+                    content: '\f054' !important;
+                    /* fa-chevron-right */
+                }
+
+                .news-swiper .swiper-button-prev::after {
+                    content: '\f053' !important;
+                    /* fa-chevron-left */
+                }
+
+                .news-swiper .swiper-button-next:hover::before,
+                .news-swiper .swiper-button-prev:hover::before {
+                    background: #1B99D4;
+                    transform: scale(1.1);
+                }
+
+                .news-swiper .swiper-button-next {
+                    right: -20px !important;
+                }
+
+                .news-swiper .swiper-button-prev {
+                    left: -20px !important;
+                }
+
+                @media (max-width: 1200px) {
+                    .news-swiper .swiper-button-next {
+                        right: 5px !important;
+                    }
+
+                    .news-swiper .swiper-button-prev {
+                        left: 5px !important;
+                    }
                 }
             </style>
 
-            <div class="position-relative">
+            <div class="swiper-nav-wrapper mt-3">
                 <div class="swiper news-swiper">
                     <div class="swiper-wrapper">
                         <?php foreach ($randomPosts as $rp): ?>
-                            <div class="swiper-slide h-auto">
-                                <div class="card border-0 shadow-sm h-100 rounded-4 overflow-hidden"
-                                    style="transition: all 0.3s ease;">
-                                    <a href="<?= $base . '/' . $rp['slug'] ?>"
-                                        class="text-decoration-none h-100 d-flex flex-column text-dark">
-                                        <img src="<?= $base . ($rp['featured_image'] ?: '/assets/images/no-image.jpg') ?>"
-                                            class="card-img-top" alt="<?= htmlspecialchars($rp['title']) ?>"
-                                            style="height: 180px; object-fit: cover;">
-                                        <div class="card-body p-4">
-                                            <h6 class="fw-bold mb-2"
-                                                style="font-size: 1rem; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                                                <?= htmlspecialchars($rp['title']) ?>
-                                            </h6>
-                                            <p class="text-muted small mb-0">
-                                                <?= date('d/m/Y', strtotime($rp['created_at'])) ?>
-                                            </p>
-                                        </div>
-                                    </a>
-                                </div>
+                            <div class="swiper-slide h-auto p-2">
+                                <?php partial('layouts/partials/post_card', ['post' => $rp, 'base' => $base]); ?>
                             </div>
                         <?php endforeach; ?>
                     </div>
                     <!-- Pagination -->
                     <div class="swiper-pagination"></div>
                     <!-- Navigation -->
-                    <div class="swiper-button-next" style="transform: scale(0.6); right: -10px;"></div>
-                    <div class="swiper-button-prev" style="transform: scale(0.6); left: -10px;"></div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
                 </div>
             </div>
         </div>
@@ -339,5 +395,4 @@ $base = $base ?? '';
         border-radius: 8px;
         margin: 20px 0;
     }
-
 </style>

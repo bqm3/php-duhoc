@@ -87,9 +87,10 @@ class StudyAbroadController
 
       // Get all news posts for the circular loop slider
       $stmt = $pdo->prepare("
-        SELECT p.*, c.name AS category_name
+        SELECT p.*, c.name AS category_name, t.name AS tag_name, t.icon AS tag_icon
         FROM posts p
         LEFT JOIN categories c ON p.category_id = c.id
+        LEFT JOIN tags t ON p.tag_id = t.id
         WHERE c.slug = 'tin-tuc' AND p.is_hidden = 0
         ORDER BY p.created_at DESC, p.id DESC
       ");
