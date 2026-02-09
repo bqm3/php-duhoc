@@ -94,7 +94,7 @@ $base = $base ?? '';
         <!-- Random Posts Section -->
         <div class="mt-5 pt-5 border-top">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h3 class="fw-bold mb-0">Các tin liên quan khác</h3>
+                <h3 class="fw-bold mb-0">Tin tức liên quan khác</h3>
                 <a href="<?= $base ?>/tin-tuc" class="text-primary text-decoration-none fw-bold">Xem tất cả <i
                         class="fa fa-angle-right ms-1"></i></a>
             </div>

@@ -16,10 +16,15 @@ $views = $post['count_view'] ?? 0;
 $date = isset($post['created_at']) ? date('d/m/Y', strtotime($post['created_at'])) : '';
 $rating = $post['rating'] ?? '4.7';
 $search_count = $post['search_count'] ?? '20+';
+$link = $base_url . '/' . $slug;
+// Ensure no double slashes except protocol
+if (strpos($link, '//') === 0) {
+    $link = '/' . ltrim($link, '/');
+}
 ?>
 
 <div class="vnpc-post-card">
-    <div class="card-image-wrapper">
+    <a href="<?= $link ?>" class="card-image-wrapper">
         <img src="<?= $base_url . $img ?>" alt="<?= htmlspecialchars($title) ?>" class="card-main-img">
         <?php if (!empty($tag_name)):
             $tag_icon = $post['tag_icon'] ?? '';
@@ -42,7 +47,7 @@ $search_count = $post['search_count'] ?? '20+';
                 <?= htmlspecialchars($tag_name) ?>
             </div>
         <?php endif; ?>
-    </div>
+    </a>
 
     <div class="card-content">
         <div class="card-rating">
@@ -53,7 +58,7 @@ $search_count = $post['search_count'] ?? '20+';
         </div>
 
         <h3 class="card-title">
-            <a href="<?= $base_url ?>/<?= htmlspecialchars($slug) ?>">
+            <a href="<?= $link ?>" class="stretched-link">
                 <?= htmlspecialchars($title) ?>
             </a>
         </h3>
@@ -83,6 +88,7 @@ $search_count = $post['search_count'] ?? '20+';
 
 <style>
     .vnpc-post-card {
+        position: relative;
         display: flex;
         flex-direction: column;
         align-items: flex-start;

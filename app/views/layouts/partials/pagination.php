@@ -1,115 +1,161 @@
 <?php
 /**
  * Pagination Component
- * @param int $currentPage
- * @param int $totalPages
- * @param string $baseUrl
+ * @param int $currentPage Current page number
+ * @param int $totalPages Total number of pages
+ * @param string $baseUrl Base URL for pagination links
  */
-if (!isset($totalPages) || $totalPages <= 1)
+
+// Early return if pagination not needed
+if (!isset($totalPages) || $totalPages <= 1) {
     return;
+}
+
 $currentPage = $currentPage ?? 1;
 $baseUrl = $baseUrl ?? '';
+
+// Calculate page range
+$start = max(1, $currentPage - 2);
+$end = min($totalPages, $currentPage + 2);
 ?>
+
+
 
 <div class="vnpc-pagination">
     <div class="pagination-list">
+        <!-- Previous Button -->
         <?php if ($currentPage > 1): ?>
             <a href="<?= $baseUrl ?>?page=<?= $currentPage - 1 ?>" class="pagination-item prev">
                 <i class="fa fa-chevron-left"></i>
             </a>
+        <?php else: ?>
+            <span class="pagination-item prev disabled">
+                <i class="fa fa-chevron-left"></i>
+            </span>
         <?php endif; ?>
 
-        <?php
-        $start = max(1, $currentPage - 2);
-        $end = min($totalPages, $currentPage + 2);
+        <!-- First Page + Dots -->
+        <?php if ($start > 1): ?>
+            <a href="<?= $baseUrl ?>?page=1" class="pagination-item">1</a>
+            <?php if ($start > 2): ?>
+                <span class="pagination-item dots">...</span>
+            <?php endif; ?>
+        <?php endif; ?>
 
-        if ($start > 1) {
-            echo '<a href="' . $baseUrl . '?page=1" class="pagination-item">1</a>';
-            if ($start > 2)
-                echo '<span class="pagination-item dots">...</span>';
-        }
-
-        for ($i = $start; $i <= $end; $i++): ?>
-            <a href="<?= $baseUrl ?>?page=<?= $i ?>" class="pagination-item <?= ($i == $currentPage) ? 'active' : '' ?>">
+        <!-- Page Numbers -->
+        <?php for ($i = $start; $i <= $end; $i++): ?>
+            <a href="<?= $baseUrl ?>?page=<?= $i ?>" 
+               class="pagination-item <?= $i == $currentPage ? 'active' : '' ?>">
                 <?= $i ?>
             </a>
         <?php endfor; ?>
 
-        <?php
-        if ($end < $totalPages) {
-            if ($end < $totalPages - 1)
-                echo '<span class="pagination-item dots">...</span>';
-            echo '<a href="' . $baseUrl . '?page=' . $totalPages . '" class="pagination-item">' . $totalPages . '</a>';
-        }
-        ?>
+        <!-- Dots + Last Page -->
+        <?php if ($end < $totalPages): ?>
+            <?php if ($end < $totalPages - 1): ?>
+                <span class="pagination-item dots">...</span>
+            <?php endif; ?>
+            <a href="<?= $baseUrl ?>?page=<?= $totalPages ?>" class="pagination-item">
+                <?= $totalPages ?>
+            </a>
+        <?php endif; ?>
 
+        <!-- Next Button -->
         <?php if ($currentPage < $totalPages): ?>
             <a href="<?= $baseUrl ?>?page=<?= $currentPage + 1 ?>" class="pagination-item next">
                 <i class="fa fa-chevron-right"></i>
             </a>
+        <?php else: ?>
+            <span class="pagination-item next disabled">
+                <i class="fa fa-chevron-right"></i>
+            </span>
         <?php endif; ?>
     </div>
 </div>
 
 <style>
-    .vnpc-pagination {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: 40px;
-        width: 100%;
-    }
+.vnpc-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 40px;
+    width: 100%;
+}
 
-    .pagination-list {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        padding: 0px;
-        gap: 10px;
-    }
+.pagination-list {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 
-    .pagination-item {
-        box-sizing: border-box;
-        width: 35px;
-        height: 35px;
-        background: #FFFFFF;
-        border: 1px solid #CCCCCC;
-        border-radius: 5px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-decoration: none;
-        color: #888888;
-        font-family: 'Inter';
-        font-style: normal;
-        font-weight: 500;
-        font-size: 16px;
-        transition: all 0.2s ease;
-    }
+.pagination-item {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #FFFFFF;
+    border: 1px solid #CCCCCC;
+    border-radius: 5px;
+    text-decoration: none;
+    color: #666666;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    transition: all 0.2s ease;
+}
 
-    .pagination-item:hover {
-        border-color: #1B99D4;
-        color: #1B99D4;
-    }
+.pagination-item:hover {
+    border-color: #1B99D4;
+    color: #1B99D4;
+    background: #F5FBFF;
+}
 
-    .pagination-item.active {
-        background: #1B99D4;
-        border-color: #1B99D4;
-        color: #FFFFFF;
-    }
+.pagination-item.active {
+    background: #1B99D4;
+    border-color: #1B99D4;
+    color: #FFFFFF;
+}
 
-    .pagination-item.dots {
-        border: none;
-        background: transparent;
-        cursor: default;
-    }
+.pagination-item.dots {
+    border: none;
+    background: transparent;
+    cursor: default;
+    pointer-events: none;
+    color: #CCCCCC;
+}
 
-    .pagination-item.prev,
-    .pagination-item.next {
-        background: rgba(233, 233, 233, 0.9);
-    }
+.pagination-item.dots:hover {
+    border: none;
+    background: transparent;
+    color: #CCCCCC;
+}
 
-    .pagination-item i {
-        font-size: 14px;
-    }
+/* Previous & Next Buttons - Nổi bật hơn */
+.pagination-item.prev,
+.pagination-item.next {
+    background: #FFFFFF;
+    border: 1.5px solid #1B99D4;
+    color: #1B99D4;
+    font-weight: 600;
+}
+
+.pagination-item.prev:hover,
+.pagination-item.next:hover {
+    background: #1B99D4;
+    color: #FFFFFF;
+}
+
+/* Disabled state */
+.pagination-item.disabled {
+    background: #F5F5F5;
+    border-color: #E0E0E0;
+    color: #CCCCCC;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.pagination-item i {
+    font-size: 14px;
+}
 </style>
