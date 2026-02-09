@@ -74,6 +74,7 @@ $testimonials = [
 <?php include __DIR__ . '/sections/process.php'; ?>
 <?php include __DIR__ . '/sections/consult.php'; ?>
 <?php include __DIR__ . '/sections/testimonials.php'; ?>
+<?php include __DIR__ . '/sections/blogs.php'; ?>
 
 <?php
 include __DIR__ . '/sections/partners.php';
