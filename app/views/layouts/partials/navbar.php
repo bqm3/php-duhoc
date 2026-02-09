@@ -10,22 +10,8 @@ if ($base && strpos($current_uri, $base) === 0) {
 if ($relative_path === '')
   $relative_path = '/';
 
-// The navigation menu based on design specs
-$nav_items = [
-  ['Trang chủ', $base . '/', $relative_path === '/', 'home'],
-  ['Giới thiệu', $base . '/gioi-thieu', $relative_path === '/gioi-thieu', 'about'],
-  ['Du học', $base . '/du-hoc', strpos($relative_path, '/du-hoc') === 0, 'study'],
-  ['Học bổng', $base . '/hoc-bong', strpos($relative_path, '/hoc-bong') === 0, 'scholarship'],
-  ['Dịch vụ', $base . '/dich-vu', strpos($relative_path, '/dich-vu') === 0, 'service'],
-  ['Tìm trường', $base . '/tim-truong', strpos($relative_path, '/tim-truong') === 0, 'school'],
-  ['Ngoại ngữ du học', $base . '/ngoai-ngu', strpos($relative_path, '/ngoai-ngu') === 0, 'language'],
-  ['Tin tức', $base . '/tin-tuc', strpos($relative_path, '/tin-tuc') === 0, 'news'],
-  // Mobile only items (from topbar)
-  ['Sự kiện', $base . '/su-kien', $relative_path === '/su-kien', 'event', true],
-  ['Đăng ký', $base . '/dang-ky', $relative_path === '/dang-ky', 'register', true],
-  ['Tuyển dụng', $base . '/tuyen-dung', $relative_path === '/tuyen-dung', 'career', true],
-  ['Liên hệ', $base . '/lien-he', $relative_path === '/lien-he', 'contact', true],
-];
+// The navigation menu based on NavbarController
+$nav_items = NavbarController::getNavItems($base, $relative_path);
 
 $megaMenuSlugs = [
   'Du học' => 'du-hoc',
