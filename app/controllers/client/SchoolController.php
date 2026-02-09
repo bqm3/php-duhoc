@@ -136,7 +136,7 @@ class SchoolController
 
         foreach ($categoriesMap as $catSlug => $label) {
             $stmt = $pdo->prepare("
-                SELECT p.slug 
+                SELECT p.slug, p.title, p.content
                 FROM posts p 
                 JOIN categories c ON p.category_id = c.id 
                 WHERE p.school_id = ? AND c.slug = ? AND p.is_hidden = 0 
@@ -147,6 +147,8 @@ class SchoolController
             $schoolLinks[] = [
                 'label' => $label,
                 'slug' => $linkPost ? $linkPost['slug'] : null,
+                'title' => $linkPost ? $linkPost['title'] : null,
+                'content' => $linkPost ? $linkPost['content'] : null,
                 'cat_slug' => $catSlug
             ];
         }

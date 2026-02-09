@@ -174,6 +174,7 @@ $breadcrumbs = [
         color: #333 !important;
         transition: all 0.2s ease;
         min-height: 74px;
+        cursor: pointer;
     }
 
     .cat-link-item:hover {
@@ -210,6 +211,46 @@ $breadcrumbs = [
         .country-category-grid {
             grid-template-columns: 1fr;
         }
+    }
+
+    /* Modal Styling */
+    .school-modal-content {
+        border-radius: 15px;
+        overflow: hidden;
+        border: none;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .school-modal-header {
+        background: #f8f9fa;
+        border-bottom: 1px solid #eee;
+        padding: 20px 30px;
+    }
+
+    .school-modal-title {
+        color: #0E2A46;
+        font-weight: 700;
+        font-family: 'Farro', sans-serif;
+    }
+
+    .school-modal-body {
+        padding: 30px;
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+
+    .school-modal-body h2,
+    .school-modal-body h3 {
+        color: #007bff;
+        margin-top: 25px;
+        margin-bottom: 15px;
+    }
+
+    .school-modal-body img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin: 15px 0;
     }
 </style>
 
@@ -289,10 +330,9 @@ $breadcrumbs = [
                         }
 
                         foreach ($sortedLinks as $link):
-                            $finalUrl = $link['slug'] ? ($base . '/' . $link['slug']) : '#';
                             ?>
-                            <a href="<?= $finalUrl ?>" class="cat-link-item <?= !$link['slug'] ? 'disabled' : '' ?>"
-                                title="<?= $link['label'] ?>">
+                            <div class="cat-link-item <?= !$link['slug'] ? 'disabled opacity-50' : '' ?>"
+                                onclick="showSchoolPost('<?= $link['slug'] ?>')" title="<?= $link['label'] ?>">
                                 <?php if (isset($icons[$link['cat_slug']])): ?>
                                     <img src="<?= $icons[$link['cat_slug']] ?>" alt="icon"
                                         style="width: 32px; height: 32px; object-fit: contain;">
@@ -302,7 +342,7 @@ $breadcrumbs = [
                                 <span>
                                     <?= $link['label'] ?>
                                 </span>
-                            </a>
+                            </div>
                         <?php endforeach; ?>
                     </div>
                 </div>
@@ -336,7 +376,42 @@ $breadcrumbs = [
     </div>
 </div>
 
+<!-- Modal show Post Content -->
+<div class="modal fade" id="schoolPostModal" tabindex="-1" aria-labelledby="schoolPostModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content school-modal-content">
+            <div class="school-modal-header d-flex justify-content-between align-items-center">
+                <h5 class="modal-title school-modal-title" id="schoolPostModalLabel">Chi tiết</h5>
+                <button type="button" class="border-0 bg-transparent" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fa fa-times fa-lg"></i>
+                </button>
+            </div>
+            <div class="modal-body school-modal-body">
+                <div id="school-post-render-content" class="post-content">
+                    <!-- Content will be rendered here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+    // Data for modal
+    const schoolPosts = <?= json_encode($schoolLinks) ?>;
+
+    function showSchoolPost(slug) {
+        if (!slug) return;
+        const post = schoolPosts.find(p => p.slug === slug);
+        if (post) {
+            document.getElementById('schoolPostModalLabel').textContent = post.title || post.label;
+            document.getElementById('school-post-render-content').innerHTML = post.content || '<p class="text-center py-5">Đang cập nhật nội dung...</p>';
+
+            // Show modal using Bootstrap 5
+            const myModal = new bootstrap.Modal(document.getElementById('schoolPostModal'));
+            myModal.show();
+        }
+    }
+
     document.addEventListener("DOMContentLoaded", function () {
         const content = document.getElementById('post-content');
         const tocList = document.getElementById('toc-list');
