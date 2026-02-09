@@ -75,6 +75,12 @@ if ($uri === "/tuyen-dung" && $method === "GET") {
   exit;
 }
 
+if ($uri === "/su-kien" && $method === "GET") {
+  require_once __DIR__ . '/../controllers/client/EventController.php';
+  (new EventController())->index();
+  exit;
+}
+
 // Study Abroad Detail (General slug) - Phải để ở cuối các route GET 1 cấp
 if (preg_match('#^/([^/]+)$#', $uri, $m) && $method === 'GET') {
   require_once __DIR__ . '/../controllers/client/StudyAbroadController.php';
