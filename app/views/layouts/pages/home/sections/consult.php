@@ -23,7 +23,8 @@
 
           <form id="consultation-form" action="<?= $base ?>/consultation/register" method="post">
             <input type="text" name="full_name" class="form-control vnpc-input mb-3" placeholder="Họ Tên *" required>
-            <input type="tel" name="phone" class="form-control vnpc-input mb-3" placeholder="Phone *" required>
+            <input type="tel" name="phone" class="form-control vnpc-input mb-3" placeholder="Số điện thoại *" required
+              pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
             <input type="email" name="email" class="form-control vnpc-input mb-3" placeholder="Email (Không bắt buộc)">
 
             <div class="row g-2 mb-3">
@@ -81,6 +82,22 @@
                   .then(response => response.json())
                   .then(data => {
                     if (data.success) {
+                      // Push to Firebase Realtime Database
+                      if (typeof firebase !== 'undefined') {
+                        const db = firebase.database();
+                        db.ref('notifications').push({
+                          type: 'new_consultation',
+                          data: {
+                            name: formData.get('full_name'),
+                            phone: formData.get('phone'),
+                            email: formData.get('email'),
+                            message: formData.get('message')
+                          },
+                          timestamp: Date.now(),
+                          read: false
+                        });
+                      }
+
                       alert(data.message);
                       this.reset();
                     } else {

@@ -19,6 +19,12 @@ if ($uri === "/consultation/register" && $method === "POST") {
   (new ConsultationController())->register();
 }
 
+if ($uri === "/tim-truong" && $method === "GET") {
+  require_once __DIR__ . '/../controllers/client/SchoolController.php';
+  (new SchoolController())->index();
+  exit;
+}
+
 if ($uri === "/dang-ky" && $method === "GET") {
   $countries = [];
   try {
@@ -46,7 +52,7 @@ if (preg_match('#^/api/menu-content/([a-z-]+)$#', $uri, $m) && $method === "GET"
   (new NavbarController())->getCategoryMenu($m[1]);
 }
 
-if ($uri === "/du-hoc" || $uri === "/visa-du-hoc" && $method === "GET") {
+if ($uri === "/du-hoc" || $uri === "/visa-du-hoc" || $uri === "/ngoai-ngu-du-hoc" && $method === "GET") {
   (new HomeController())->index();
   exit;
 }
@@ -60,6 +66,24 @@ if (preg_match('#^/hoc-bong$#', $uri, $m) && $method === 'GET') {
 if ($uri === "/tin-tuc" && $method === "GET") {
   require_once __DIR__ . '/../controllers/client/NewsController.php';
   (new NewsController())->index();
+  exit;
+}
+
+if ($uri === "/tuyen-dung" && $method === "GET") {
+  require_once __DIR__ . '/../controllers/client/CareerController.php';
+  (new CareerController())->index();
+  exit;
+}
+
+if ($uri === "/su-kien" && $method === "GET") {
+  require_once __DIR__ . '/../controllers/client/EventController.php';
+  (new EventController())->index();
+  exit;
+}
+
+if (preg_match('#^/truong/([^/]+)$#', $uri, $m) && $method === 'GET') {
+  require_once __DIR__ . '/../controllers/client/SchoolController.php';
+  (new SchoolController())->detail($m[1]);
   exit;
 }
 

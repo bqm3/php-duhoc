@@ -1,0 +1,377 @@
+/* Find Schools Page CSS */
+
+.schools-filter-section {
+    max-width: 1280px;
+    margin: -72px auto 40px; /* Overlap with hero slightly if possible, or just below */
+    padding: 20px;
+    background: #FFFFFF;
+    box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.25);
+    border-radius: 12px;
+    position: relative;
+    z-index: 10;
+}
+
+.filter-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+.filter-row:last-child {
+    margin-bottom: 0;
+}
+
+.search-input-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 12px;
+    gap: 12px;
+    flex: 1;
+    height: 42px;
+    background: #FFFFFF;
+    border: 1px solid #CCCCCC;
+    border-radius: 5px;
+}
+
+.search-input-group input {
+    border: none;
+    outline: none;
+    width: 100%;
+    font-family: 'Inter';
+    font-size: 16px;
+    color: #222222;
+}
+
+.search-input-group input::placeholder {
+    color: #999999;
+}
+
+.search-btn {
+    width: 300px;
+    height: 42px;
+    background: #1B99D4;
+    border-radius: 5px;
+    border: none;
+    font-family: 'Inter';
+    font-weight: 600;
+    font-size: 18px;
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: capitalize;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.search-btn:hover {
+    background: #157fb1;
+}
+
+.reset-btn {
+    width: 42px;
+    height: 42px;
+    background: #f8f9fa;
+    border: 1px solid #CCCCCC;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666666;
+    text-decoration: none;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.reset-btn:hover {
+    background: #eeeeee;
+    color: #333333;
+    border-color: #999999;
+}
+
+.filter-select-group {
+    flex: 1;
+    height: 42px;
+}
+
+.filter-select-group select {
+    width: 100%;
+    height: 100%;
+    padding: 0 12px;
+    background: #FFFFFF;
+    border: 1px solid #CCCCCC;
+    border-radius: 5px;
+    font-family: 'Inter';
+    font-size: 16px;
+    color: #222222;
+    outline: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234C4C4C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .schools-filter-section {
+        max-width: 95%;
+    }
+}
+
+@media (max-width: 991px) {
+    .filter-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .search-btn {
+        width: 100%;
+    }
+    .schools-filter-section {
+        margin-top: 20px;
+    }
+}
+
+.schools-container {
+    max-width: 1300px;
+    margin: 40px auto;
+    padding: 0 15px;
+}
+
+.schools-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+}
+
+/* School Card based on Figma Export */
+.school-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+    gap: 12px;
+    isolation: isolate;
+    position: relative;
+    background: #FFFFFF;
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    flex: none;
+    order: 0;
+    flex-grow: 1;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-decoration: none;
+    color: inherit;
+    width: 100%;
+    min-height: 184px;
+}
+
+.school-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Top Frame (Logo + Info) */
+.school-top-row {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 0px;
+    gap: 8px;
+    width: 100%;
+    z-index: 0;
+}
+
+.school-logo-wrapper {
+    box-sizing: border-box;
+    width: 100px;
+    height: 100px;
+    border: 1px solid #CCCCCC;
+    border-radius: 4px;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+    overflow: hidden;
+    position: relative;
+    background: #f9f9f9;
+}
+
+.school-logo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.school-info-col {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0px;
+    gap: 4px;
+    flex: 1;
+}
+
+.school-name {
+    font-family: 'Farro', sans-serif;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 32px;
+    letter-spacing: 0.05em;
+    text-transform: capitalize;
+    color: #222222;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.school-meta-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0px;
+    gap: 8px;
+    width: 100%;
+}
+
+.meta-row {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 0px;
+    gap: 20px;
+    width: 100%;
+}
+
+.meta-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0px;
+    gap: 4px;
+}
+
+.meta-label {
+    font-family: 'Inter', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 16px;
+    display: flex;
+    align-items: center;
+    color: #333931;
+}
+
+.meta-value {
+    font-family: 'Inter', sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 16px;
+    display: flex;
+    align-items: center;
+    text-transform: capitalize;
+    color: #2777C4;
+}
+
+/* Bottom Row (Tuition + Date) */
+.school-bottom-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px;
+    gap: 4px;
+    width: 100%;
+    z-index: 1;
+}
+
+.tuition-badge {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 4px 12px;
+    gap: 4px;
+    background: #0063B4;
+    border-radius: 4px;
+}
+
+.tuition-label {
+    font-family: 'Inter', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: #FFFFFF;
+}
+
+.tuition-value {
+    font-family: 'Inter', sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 20px;
+    color: #FFFFFF;
+}
+
+.school-date {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0px;
+    gap: 4px;
+}
+
+.school-date-icon {
+    width: 20px;
+    height: 20px;
+    color: #585858;
+}
+
+.date-text {
+    font-family: 'Inter', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 16px;
+    color: #000000;
+}
+
+/* Floating Badge */
+.new-badge {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 4px 8px;
+    gap: 10px;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    background: #F05A24;
+    border-radius: 0px 12px 0px 8px;
+    z-index: 2;
+}
+
+.new-text {
+    font-family: 'Inter', sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+    color: #FFFFFF;
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+    .schools-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,84 +1,193 @@
-<?php if (!isset($base)) $base = ''; ?>
-<div class="vnpc-topbar" itemscope itemtype="https://schema.org/Organization">
-  <meta itemprop="name" content="VNPC">
-  <meta itemprop="url" content="<?= $base ?>/">
-  <meta itemprop="logo" content="<?= $base ?>/assets/images/logo.png">
+<?php if (!isset($base))
+  $base = ''; ?>
+<div class="vnpc-header-top d-none d-lg-flex">
+  <div class="header-top-container">
+    <!-- Logo -->
+    <a class="header-logo" href="<?= $base ?: '/' ?>">
+      <img src="<?= $base ?>/assets/svgs/clients/ic_traidat.svg" alt="Logo">
+    </a>
 
-  <div class="container-xxl">
-    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 py-2">
+    <!-- Search Box -->
+    <div class="header-search-box">
+      <form action="<?= $base ?>/tim-kiem" method="GET" class="search-form">
+        <input type="text" name="q" class="search-input" placeholder="Nhập từ khóa">
+        <button type="submit" class="search-button">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </form>
+    </div>
 
-      <div class="d-flex flex-wrap align-items-center gap-4">
-        <div class="d-flex align-items-center gap-2" itemprop="openingHoursSpecification" itemscope itemtype="https://schema.org/OpeningHoursSpecification">
-          <img src="<?= $base ?>/assets/svgs/clients/ic_clock.svg" width="18" height="18" alt="Giờ làm việc">
-          <span>
-            <time itemprop="dayOfWeek" datetime="Mo-Sa">Thứ 2 - Thứ 7</time> /
-            <time itemprop="opens" datetime="08:30">8:30</time> -
-            <time itemprop="closes" datetime="17:30">17:30</time>
-          </span>
-        </div>
-
-        <div class="d-flex align-items-center gap-2" itemprop="address" itemscope itemtype="https://schema.org/PostalAddress">
-          <img src="<?= $base ?>/assets/svgs/clients/ic_location.svg" width="18" height="18" alt="Địa chỉ">
-          <span itemprop="streetAddress">Số 85 Vũ Tông Phan, Phường Khương Trung, Quận Thanh Xuân, Hà Nội</span>
-        </div>
-      </div>
-
-      <div class="d-flex flex-wrap align-items-center gap-3">
-        <div class="d-flex align-items-center gap-2">
-          <img src="<?= $base ?>/assets/svgs/clients/ic_person.svg" width="18" height="18" alt="Tài khoản">
-          <a
-  href="<?= $base ?>/login"
-  title="Đăng nhập hoặc đăng ký"
-  class="vnpc-link-auth"
->
-  Đăng nhập / Đăng ký
-</a>
-        </div>
-
-        <span class="vnpc-divider"></span>
-
-        <div class="d-flex align-items-center gap-2">
-          <a href="https://www.instagram.com/" target="_blank" rel="nofollow noopener" itemprop="sameAs">
-            <img src="<?= $base ?>/assets/svgs/clients/ic_instagram.svg" width="18" height="18" alt="Instagram">
-          </a>
-          <a href="https://www.facebook.com/" target="_blank" rel="nofollow noopener" itemprop="sameAs">
-            <img src="<?= $base ?>/assets/svgs/clients/ic_facebook.svg" width="18" height="18" alt="Facebook">
-          </a>
-          <a href="https://www.linkedin.com/" target="_blank" rel="nofollow noopener" itemprop="sameAs">
-            <img src="<?= $base ?>/assets/svgs/clients/ic_linkedin.svg" width="18" height="18" alt="LinkedIn">
-          </a>
-          <a href="https://www.youtube.com/" target="_blank" rel="nofollow noopener" itemprop="sameAs">
-            <img src="<?= $base ?>/assets/svgs/clients/ic_youtube.svg" width="18" height="18" alt="YouTube">
-          </a>
-        </div>
-      </div>
-
+    <!-- Action Links -->
+    <?php
+    $current_uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    $rel_path = $current_uri;
+    if ($base && strpos($current_uri, $base) === 0) {
+      $rel_path = substr($current_uri, strlen($base));
+    }
+    if ($rel_path === '')
+      $rel_path = '/';
+    ?>
+    <div class="header-action-links">
+      <a href="<?= $base ?>/su-kien" class="<?= $rel_path === '/su-kien' ? 'active' : '' ?>">Sự kiện</a>
+      <a href="<?= $base ?>/dang-ky" class="<?= $rel_path === '/dang-ky' ? 'active' : '' ?>">Đăng ký</a>
+      <a href="<?= $base ?>/tuyen-dung" class="<?= $rel_path === '/tuyen-dung' ? 'active' : '' ?>">Tuyển dụng</a>
+      <a href="<?= $base ?>/lien-he" class="<?= $rel_path === '/lien-he' ? 'active' : '' ?>">Liên hệ</a>
     </div>
   </div>
 </div>
 
-
 <style>
-.vnpc-link-auth{
-  text-decoration: none;
-  color: #fff;            /* xám đậm, sang hơn xanh mặc định */
-  font-weight: 500;
-  line-height: 1;
-  transition: color .2s ease, opacity .2s ease;
-}
+  .vnpc-header-top {
+    width: 100%;
+    height: 80px;
+    background: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: drop-shadow(0px 0px 8px rgba(0, 0, 0, 0.25));
+    position: relative;
+    z-index: 1001;
+  }
 
-.vnpc-link-auth:hover{
-  color: #2563eb;            /* xanh brand khi hover */
-  text-decoration: none;
-}
+  .header-top-container {
+    width: 100%;
+    max-width: 1300px;
+    height: 100%;
+    padding: 0 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+  }
 
-.vnpc-link-auth:focus{
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(37,99,235,.25);
-  border-radius: 4px;
-}
+  .header-logo img {
+    width: 47px;
+    height: 32px;
+    object-fit: contain;
+  }
 
-.vnpc-link-auth:active{
-  opacity: .8;
-}
+  .header-search-box {
+    width: 400px;
+    height: 40px;
+    position: relative;
+  }
+
+  .search-form {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+
+  .search-input {
+    width: 100%;
+    height: 100%;
+    background: #FFFFFF;
+    border: 1px solid #D9D9D9;
+    border-radius: 50px;
+    padding: 0 20px;
+    padding-right: 90px;
+    font-family: 'Inter';
+    font-size: 16px;
+    color: #000;
+  }
+
+  .search-input::placeholder {
+    color: #A6A6A6;
+  }
+
+  .search-button {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 81px;
+    height: 40px;
+    background: #2777C4;
+    border: none;
+    border-radius: 50px;
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .search-button i {
+    font-size: 18px;
+  }
+
+  .header-action-links {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 60px;
+  }
+
+  .header-action-links a {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 30px;
+    color: #000000;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .header-action-links a:hover,
+  .header-action-links a.active {
+    color: #2777C4;
+    font-weight: 600;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 1600px) {
+    .header-top-container {
+      padding: 0 100px;
+    }
+  }
+
+  @media (max-width: 1200px) {
+    .header-top-container {
+      padding: 0 40px;
+    }
+
+    .header-action-links {
+      gap: 30px;
+    }
+  }
+
+  @media (max-width: 992px) {
+    .header-search-box {
+      width: 250px;
+    }
+
+    .header-action-links {
+      gap: 15px;
+      font-size: 16px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .vnpc-header-top {
+      height: auto;
+      padding: 10px 0;
+    }
+
+    .header-top-container {
+      flex-direction: column;
+      padding: 0 20px;
+      gap: 15px;
+    }
+
+    .header-search-box {
+      width: 100%;
+    }
+
+    .header-action-links {
+      display: none;
+      /* Hide top links on mobile or move to menu */
+    }
+  }
 </style>

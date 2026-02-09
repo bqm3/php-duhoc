@@ -18,7 +18,20 @@ class NewsController
 
     $categoryId = $category['id'];
 
-    // 2. Get the most recent post in this category
+    // Pagination Logic
+    $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+    if ($page < 1)
+      $page = 1;
+    $limit = 12;
+    $offset = ($page - 1) * $limit;
+
+    // Count total posts
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM posts WHERE category_id = ? AND is_hidden = 0");
+    $stmt->execute([$categoryId]);
+    $totalPosts = (int) $stmt->fetchColumn();
+    $totalPages = ceil($totalPosts / $limit);
+
+    // Get list of posts for grid
     $stmt = $pdo->prepare("
       SELECT p.*, c.name AS category_name, u.full_name AS creator_name, t.name AS tag_name, t.icon AS tag_icon
       FROM posts p
@@ -27,40 +40,28 @@ class NewsController
       LEFT JOIN tags t ON p.tag_id = t.id
       WHERE p.category_id = ? AND p.is_hidden = 0
       ORDER BY p.created_at DESC, p.id DESC
-      LIMIT 1
+      LIMIT ? OFFSET ?
     ");
-    $stmt->execute([$categoryId]);
-    $latestPost = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt->bindValue(1, $categoryId, PDO::PARAM_INT);
+    $stmt->bindValue(2, $limit, PDO::PARAM_INT);
+    $stmt->bindValue(3, $offset, PDO::PARAM_INT);
+    $stmt->execute();
+    $newsPosts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // 3. Get list of 3 most recent posts (vertical sidebar)
+    // Get sidebar posts (optional, keeping for design)
     $stmt = $pdo->prepare("
-      SELECT p.*, c.name AS category_name
-      FROM posts p
-      LEFT JOIN categories c ON p.category_id = c.id
-      WHERE p.category_id = ? AND p.is_hidden = 0
-      ORDER BY p.created_at DESC, p.id DESC
-      LIMIT 3
+      SELECT p.* FROM posts p WHERE p.category_id = ? AND p.is_hidden = 0 ORDER BY created_at DESC LIMIT 5
     ");
     $stmt->execute([$categoryId]);
     $sidebarPosts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // 4. Get all news posts for the circular loop slider
-    $stmt = $pdo->prepare("
-      SELECT p.*, c.name AS category_name
-      FROM posts p
-      LEFT JOIN categories c ON p.category_id = c.id
-      WHERE p.category_id = ? AND p.is_hidden = 0
-      ORDER BY p.created_at DESC, p.id DESC
-    ");
-    $stmt->execute([$categoryId]);
-    $randomPosts = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
     view('main', 'layouts/pages/tintuc/index', [
       'title' => $category['name'],
-      'latestPost' => $latestPost,
+      'newsPosts' => $newsPosts,
       'sidebarPosts' => $sidebarPosts,
-      'randomPosts' => $randomPosts,
-      'pageCss' => ['about.css'] // Using about.css for consistent base styles if needed
+      'totalPages' => $totalPages,
+      'currentPage' => $page,
+      'pageCss' => ['home.css', 'about.css']
     ]);
   }
 }

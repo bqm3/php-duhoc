@@ -43,6 +43,8 @@ function activeClass($targetPath)
         return 'text-primary font-weight-bold';
     if (strpos($targetPath, '/admin/schools') !== false && strpos($currentPath, '/schools') !== false)
         return 'text-primary font-weight-bold';
+    if (strpos($targetPath, '/admin/slides') !== false && strpos($currentPath, '/slides') !== false)
+        return 'text-primary font-weight-bold';
 
 
     return '';
@@ -147,6 +149,14 @@ $open_pages = isGroupActive(['email', 'login', 'register', 'lockscreen', 'forgot
                     <a href="<?= $base ?>/admin/categories" class="<?= activeClass('/admin/categories') ?>">
                         <i class="fa fa-tags mr-3"></i>
                         <span class="none"> Quản lý danh mục </span>
+                    </a>
+                </li>
+
+                <!-- SLIDES -->
+                <li class="parent">
+                    <a href="<?= $base ?>/admin/slides" class="<?= activeClass('/admin/slides') ?>">
+                        <i class="fa fa-sliders mr-3"></i>
+                        <span class="none"> Quản lý Slide </span>
                     </a>
                 </li>
 
