@@ -1,0 +1,103 @@
+<?php
+
+class SchoolController
+{
+    public function index()
+    {
+        $pdo = Db::getInstance()->pdo();
+
+        // 1. Get filter parameters
+        $keyword = isset($_GET['keyword']) ? trim($_GET['keyword']) : '';
+        $countryId = isset($_GET['country_id']) ? (int) $_GET['country_id'] : 0;
+        $cityId = isset($_GET['city_id']) ? (int) $_GET['city_id'] : 0;
+        $eduLevelId = isset($_GET['edu_level_id']) ? (int) $_GET['edu_level_id'] : 0;
+
+        // 2. Pagination Logic
+        $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+        if ($page < 1)
+            $page = 1;
+        $limit = 10;
+        $offset = ($page - 1) * $limit;
+
+        // 3. Build WHERE clause
+        $where = ["1=1"];
+        $params = [];
+
+        if ($keyword !== '') {
+            $where[] = "s.name LIKE ?";
+            $params[] = "%$keyword%";
+        }
+        if ($countryId > 0) {
+            $where[] = "s.country_id = ?";
+            $params[] = $countryId;
+        }
+        if ($cityId > 0) {
+            $where[] = "s.city_id = ?";
+            $params[] = $cityId;
+        }
+        if ($eduLevelId > 0) {
+            $where[] = "s.education_level_id = ?";
+            $params[] = $eduLevelId;
+        }
+
+        $whereClause = implode(" AND ", $where);
+
+        // 4. Count total schools
+        $countSql = "SELECT COUNT(*) FROM schools s WHERE $whereClause";
+        $stmt = $pdo->prepare($countSql);
+        $stmt->execute($params);
+        $totalSchools = (int) $stmt->fetchColumn();
+        $totalPages = ceil($totalSchools / $limit);
+
+        // 5. Fetch schools with relations
+        $sql = "
+            SELECT 
+                s.*, 
+                co.name as country_name, 
+                ci.name as city_name, 
+                el.name as education_level_name
+            FROM schools s
+            LEFT JOIN countries co ON s.country_id = co.id
+            LEFT JOIN cities ci ON s.city_id = ci.id
+            LEFT JOIN education_levels el ON s.education_level_id = el.id
+            WHERE $whereClause
+            ORDER BY s.created_at DESC
+            LIMIT ? OFFSET ?
+        ";
+
+        $executionParams = array_merge($params, [$limit, $offset]);
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($executionParams);
+        $schools = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // 6. Fetch filter data
+        $countries = $pdo->query("SELECT id, name FROM countries ORDER BY name ASC")->fetchAll(PDO::FETCH_ASSOC);
+        $cities = $countryId > 0
+            ? $pdo->prepare("SELECT id, name FROM cities WHERE country_id = ? ORDER BY name ASC")
+            : null;
+        if ($cities)
+            $cities->execute([$countryId]);
+        $citiesList = $cities ? $cities->fetchAll(PDO::FETCH_ASSOC) : [];
+
+        $eduLevels = $pdo->query("SELECT id, name FROM education_levels ORDER BY display_order ASC")->fetchAll(PDO::FETCH_ASSOC);
+
+        view('main', 'client/schools/index', [
+            'title' => 'Tìm trường',
+            'schools' => $schools,
+            'totalPages' => $totalPages,
+            'currentPage' => $page,
+            'pageCss' => ['schools.css', 'about.css'],
+            'filters' => [
+                'keyword' => $keyword,
+                'country_id' => $countryId,
+                'city_id' => $cityId,
+                'edu_level_id' => $eduLevelId
+            ],
+            'filterData' => [
+                'countries' => $countries,
+                'cities' => $citiesList,
+                'eduLevels' => $eduLevels
+            ]
+        ]);
+    }
+}

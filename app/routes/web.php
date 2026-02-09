@@ -19,6 +19,12 @@ if ($uri === "/consultation/register" && $method === "POST") {
   (new ConsultationController())->register();
 }
 
+if ($uri === "/tim-truong" && $method === "GET") {
+  require_once __DIR__ . '/../controllers/client/SchoolController.php';
+  (new SchoolController())->index();
+  exit;
+}
+
 if ($uri === "/dang-ky" && $method === "GET") {
   $countries = [];
   try {
