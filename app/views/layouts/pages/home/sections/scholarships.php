@@ -224,41 +224,7 @@
         <?php if (!empty($scholarshipPosts)): ?>
           <?php foreach ($scholarshipPosts as $c): ?>
             <article class="col-lg-4 col-md-6" itemprop="itemListElement">
-              <div class="scholar-card">
-
-                <div class="scholar-card-img">
-                  <?php
-                  $img = !empty($c['featured_image']) ? $c['featured_image'] : '/assets/img/client/placeholder.png';
-                  if (strpos($img, 'http') !== 0 && strpos($img, '/') !== 0)
-                    $img = '/' . $img;
-                  ?>
-                  <img src="<?= $base . $img ?>" alt="<?= htmlspecialchars($c['title']) ?>">
-                  <?php if (!empty($c['tag_name'])): ?>
-                    <span class="scholar-badge"><?= htmlspecialchars($c['tag_name']) ?></span>
-                  <?php endif; ?>
-                </div>
-
-                <div class="scholar-card-body">
-
-                  <!-- <div class="scholar-rating">
-                    <span class="scholar-rating-stars">★★★★★</span>
-                    <span>(4.8)</span>
-                  </div> -->
-
-                  <h3 class="scholar-title scholar-clamp">
-                    <a href="<?= $base ?>/<?= htmlspecialchars($c['slug']) ?>">
-                      <?= htmlspecialchars($c['title']) ?>
-                    </a>
-                  </h3>
-
-                  <div class="scholar-meta">
-                    <span>👁️ <?= $c['count_view'] ?>+</span>
-                    <span>📅 <?= date('d/m/Y', strtotime($c['created_at'])) ?></span>
-                    <!-- <span>🔍 <?= $c['count_like'] ?>+</span> -->
-                  </div>
-
-                </div>
-              </div>
+              <?php partial('layouts/partials/post_card', ['post' => $c, 'base' => $base]); ?>
             </article>
           <?php endforeach; ?>
         <?php else: ?>
