@@ -139,7 +139,7 @@ $megaMenuSlugs = [
     padding: 0 15px;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     position: relative;
   }
 
@@ -147,7 +147,7 @@ $megaMenuSlugs = [
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 50px;
+    gap: 84px;
     height: 100%;
   }
 

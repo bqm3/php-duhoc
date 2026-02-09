@@ -212,9 +212,9 @@
 
         <a href="<?= $base ?>/hoc-bong" class="scholar-btn">
           <span>Xem Thêm</span>
-          <span class="scholar-btn-ico">
+          <!-- <span class="scholar-btn-ico">
             <img src="<?= $base ?>/assets/svgs/clients/ic_home3.svg" width="18" height="18" alt="">
-          </span>
+          </span> -->
         </a>
       </div>
 

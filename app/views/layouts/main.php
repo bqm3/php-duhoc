@@ -36,6 +36,9 @@ mb_internal_encoding('UTF-8');
       <link href="<?= $base ?>/assets/css/<?= ltrim($css, '/') ?>" rel="stylesheet">
     <?php endforeach; ?>
   <?php endif; ?>
+  <link rel="icon" type="image/png" href="<?= $base ?>/assets/img/client/favicon.png">
+  <link rel="apple-touch-icon" href="<?= $base ?>/assets/img/client/favicon.png">
+
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
