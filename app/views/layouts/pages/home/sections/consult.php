@@ -81,6 +81,22 @@
                   .then(response => response.json())
                   .then(data => {
                     if (data.success) {
+                      // Push to Firebase Realtime Database
+                      if (typeof firebase !== 'undefined') {
+                        const db = firebase.database();
+                        db.ref('notifications').push({
+                          type: 'new_consultation',
+                          data: {
+                            name: formData.get('full_name'),
+                            phone: formData.get('phone'),
+                            email: formData.get('email'),
+                            message: formData.get('message')
+                          },
+                          timestamp: Date.now(),
+                          read: false
+                        });
+                      }
+
                       alert(data.message);
                       this.reset();
                     } else {

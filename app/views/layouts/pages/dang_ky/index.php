@@ -58,7 +58,8 @@ include __DIR__ . '/../base/base_hero.php';
                                             <option value="">Chọn nước</option>
                                             <?php foreach ($countries as $country): ?>
                                                 <option value="<?= $country['id'] ?>">
-                                                    <?= htmlspecialchars($country['name']) ?></option>
+                                                    <?= htmlspecialchars($country['name']) ?>
+                                                </option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>
@@ -120,6 +121,22 @@ include __DIR__ . '/../base/base_hero.php';
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
+                            // Push to Firebase Realtime Database
+                            if (typeof firebase !== 'undefined') {
+                                const db = firebase.database();
+                                db.ref('notifications').push({
+                                    type: 'new_consultation',
+                                    data: {
+                                        name: formData.get('full_name'),
+                                        phone: formData.get('phone'),
+                                        email: formData.get('email'),
+                                        message: formData.get('message')
+                                    },
+                                    timestamp: Date.now(),
+                                    read: false
+                                });
+                            }
+
                             if (typeof alertify !== 'undefined') {
                                 alertify.success(data.message);
                             } else {
