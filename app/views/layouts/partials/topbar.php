@@ -18,11 +18,20 @@
     </div>
 
     <!-- Action Links -->
+    <?php
+    $current_uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    $rel_path = $current_uri;
+    if ($base && strpos($current_uri, $base) === 0) {
+      $rel_path = substr($current_uri, strlen($base));
+    }
+    if ($rel_path === '')
+      $rel_path = '/';
+    ?>
     <div class="header-action-links">
-      <a href="<?= $base ?>/su-kien">Sự kiện</a>
-      <a href="<?= $base ?>/dang-ky">Đăng ký</a>
-      <a href="<?= $base ?>/tuyen-dung">Tuyển dụng</a>
-      <a href="<?= $base ?>/lien-he">Liên hệ</a>
+      <a href="<?= $base ?>/su-kien" class="<?= $rel_path === '/su-kien' ? 'active' : '' ?>">Sự kiện</a>
+      <a href="<?= $base ?>/dang-ky" class="<?= $rel_path === '/dang-ky' ? 'active' : '' ?>">Đăng ký</a>
+      <a href="<?= $base ?>/tuyen-dung" class="<?= $rel_path === '/tuyen-dung' ? 'active' : '' ?>">Tuyển dụng</a>
+      <a href="<?= $base ?>/lien-he" class="<?= $rel_path === '/lien-he' ? 'active' : '' ?>">Liên hệ</a>
     </div>
   </div>
 </div>
@@ -126,8 +135,10 @@
     transition: color 0.3s;
   }
 
-  .header-action-links a:hover {
+  .header-action-links a:hover,
+  .header-action-links a.active {
     color: #2777C4;
+    font-weight: 600;
   }
 
   /* Responsive adjustments */

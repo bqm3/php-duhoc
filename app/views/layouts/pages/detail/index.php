@@ -287,7 +287,7 @@ $breadcrumbs[] = ['label' => $post['title'] ?? 'Chi tiết', 'url' => ''];
       <?php endif; ?>
 
       <!-- Summary -->
-      <?php if (!empty($post['summary'])): ?>
+      <!-- <?php if (!empty($post['summary'])): ?>
         <div class="alert alert-secondary border-0 mb-4" role="alert">
           <div class="d-flex align-items-center mb-2">
             <?php if (!empty($post['country_flag'])): ?>
@@ -299,7 +299,7 @@ $breadcrumbs[] = ['label' => $post['title'] ?? 'Chi tiết', 'url' => ''];
           </div>
           <?= $post['summary'] ?>
         </div>
-      <?php endif; ?>
+      <?php endif; ?> -->
 
       <!-- Frame 427324326: Country Quick Access -->
       <?php if (!empty($post['country_id']) && !empty($countryLinks)): ?>

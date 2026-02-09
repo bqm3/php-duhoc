@@ -69,6 +69,12 @@ if ($uri === "/tin-tuc" && $method === "GET") {
   exit;
 }
 
+if ($uri === "/tuyen-dung" && $method === "GET") {
+  require_once __DIR__ . '/../controllers/client/CareerController.php';
+  (new CareerController())->index();
+  exit;
+}
+
 // Study Abroad Detail (General slug) - Phải để ở cuối các route GET 1 cấp
 if (preg_match('#^/([^/]+)$#', $uri, $m) && $method === 'GET') {
   require_once __DIR__ . '/../controllers/client/StudyAbroadController.php';
