@@ -52,7 +52,7 @@ if (preg_match('#^/api/menu-content/([a-z-]+)$#', $uri, $m) && $method === "GET"
   (new NavbarController())->getCategoryMenu($m[1]);
 }
 
-if ($uri === "/du-hoc" || $uri === "/visa-du-hoc" && $method === "GET") {
+if ($uri === "/du-hoc" || $uri === "/visa-du-hoc" || $uri === "/ngoai-ngu-du-hoc" && $method === "GET") {
   (new HomeController())->index();
   exit;
 }
