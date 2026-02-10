@@ -132,10 +132,8 @@
     line-height: 30px;
     color: #000000;
     text-decoration: none;
-    transition: color 0.3s;
   }
 
-  .header-action-links a:hover,
   .header-action-links a.active {
     color: #2777C4;
     font-weight: 600;
