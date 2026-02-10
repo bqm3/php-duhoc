@@ -218,12 +218,12 @@ $open_pages = isGroupActive(['email', 'login', 'register', 'lockscreen', 'forgot
                 <!-- PARTNERS -->
                 <li class="parent">
                     <a href="<?= $base ?>/admin/partners" class="<?= activeClass('/admin/partners') ?>">
-                        <i class="fa fa-handshake-o mr-3"></i>
+                        <i class="fa fa-briefcase mr-3"></i>
                         <span class="none"> Danh sách đối tác </span>
                     </a>
                 </li>
 
-                
+
                 <!-- FILES -->
                 <li class="parent">
                     <a href="<?= $base ?>/admin/files" class="<?= activeClass('/admin/files') ?>">
