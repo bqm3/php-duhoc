@@ -162,14 +162,6 @@ $open_pages = isGroupActive(['email', 'login', 'register', 'lockscreen', 'forgot
                     </a>
                 </li>
 
-                <!-- PARTNERS -->
-                <li class="parent">
-                    <a href="<?= $base ?>/admin/partners" class="<?= activeClass('/admin/partners') ?>">
-                        <i class="fa fa-handshake-o mr-3"></i>
-                        <span class="none"> Quản lý Đối tác </span>
-                    </a>
-                </li>
-
                 <!-- TAGS -->
                 <li class="parent">
                     <a href="<?= $base ?>/admin/tags" class="<?= activeClass('/admin/tags') ?>">
@@ -223,6 +215,15 @@ $open_pages = isGroupActive(['email', 'login', 'register', 'lockscreen', 'forgot
                     </a>
                 </li>
 
+                <!-- PARTNERS -->
+                <li class="parent">
+                    <a href="<?= $base ?>/admin/partners" class="<?= activeClass('/admin/partners') ?>">
+                        <i class="fa fa-handshake-o mr-3"></i>
+                        <span class="none"> Danh sách đối tác </span>
+                    </a>
+                </li>
+
+                
                 <!-- FILES -->
                 <li class="parent">
                     <a href="<?= $base ?>/admin/files" class="<?= activeClass('/admin/files') ?>">

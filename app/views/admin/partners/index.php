@@ -28,7 +28,7 @@
             <div class="col-sm-9 col-xs-12 content pt-3 pl-0">
                 <div class="mb-3 d-flex justify-content-between align-items-center">
                     <div>
-                        <h5 class="mb-0"><strong>Quản lý Đối tác</strong></h5>
+                        <h5 class="mb-0"><strong>Danh sách đối tác</strong></h5>
                         <span class="text-secondary">Dashboard <i class="fa fa-angle-right"></i> Partners</span>
                     </div>
                     <a href="<?= $base ?>/admin/partners/create" class="btn btn-primary">

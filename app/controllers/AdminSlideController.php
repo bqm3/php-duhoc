@@ -13,14 +13,14 @@ class AdminSlideController
         $limit = 10;
         $offset = ($page - 1) * $limit;
 
-        $whereClause = "WHERE is_delete = 0";
+        $whereClause = "WHERE s.is_delete = 0";
         $params = [];
         if (!empty($keyword)) {
-            $whereClause .= " AND name LIKE ?";
+            $whereClause .= " AND s.name LIKE ?";
             $params[] = "%$keyword%";
         }
 
-        $countStmt = $db->prepare("SELECT COUNT(*) FROM slides $whereClause");
+        $countStmt = $db->prepare("SELECT COUNT(*) FROM slides s $whereClause");
         $countStmt->execute($params);
         $totalRecords = $countStmt->fetchColumn();
         $totalPages = ceil($totalRecords / $limit);
