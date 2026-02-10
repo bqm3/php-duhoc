@@ -561,7 +561,7 @@ $megaMenuSlugs = [
       font-size: 13px;
       margin: 0;
       border-bottom: none;
-      color: #999;
+      color: #333;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       font-weight: 700;
