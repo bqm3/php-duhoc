@@ -328,7 +328,7 @@ class AdminContinentController
 
     private static function saveUploadedImage($file, $prefix)
     {
-        $uploadDir = __DIR__ . '/../../public/assets/uploads/locations';
+        $uploadDir = __DIR__ . '/assets/uploads/locations';
         if (!is_dir($uploadDir))
             mkdir($uploadDir, 0755, true);
 

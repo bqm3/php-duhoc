@@ -324,7 +324,7 @@ class AdminFileController
 
         $uploadDir = realpath(__DIR__ . '/../../public') . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'files';
         if ($uploadDir === false) {
-            $uploadDir = __DIR__ . '/../../public/assets/uploads/files';
+            $uploadDir = __DIR__ . '/assets/uploads/files';
         }
         if (!is_dir($uploadDir) && !mkdir($uploadDir, 0755, true)) {
             throw new Exception('Failed to create upload directory');

@@ -1,11 +1,14 @@
 RewriteEngine On
-
-# Nếu chạy ngay tại public_html (domain.com/)
 RewriteBase /
 
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
+# 🔴 QUAN TRỌNG: cho file & folder thật đi thẳng
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Route vào index.php
 RewriteRule ^ index.php [QSA,L]
 
+# Charset chỉ cho HTML / PHP
 AddDefaultCharset UTF-8
-AddCharset UTF-8 .php .html .htm .css .js
+AddCharset UTF-8 .php .html .htm

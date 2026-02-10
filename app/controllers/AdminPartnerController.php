@@ -190,7 +190,7 @@ class AdminPartnerController
 
     private static function saveUploadedImage($file, $prefix)
     {
-        $uploadDir = __DIR__ . '/../../public/assets/uploads/partners';
+        $uploadDir = __DIR__ . '/assets/uploads/partners';
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true);
         }
