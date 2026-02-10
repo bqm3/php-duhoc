@@ -1,6 +1,3 @@
-<!-- <?php if (!isset($base))
-  $base = ''; ?> -->
-
 <style>
   .vnpc-countries {
     padding: 72px 0;
