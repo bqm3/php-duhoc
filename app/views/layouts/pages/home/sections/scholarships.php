@@ -77,6 +77,27 @@
     .scholar-swiper .swiper-pagination-bullet-active {
       background: #1d76d3;
     }
+
+    .scholar-header {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 16px;
+    }
+
+    .scholar-header h2 {
+      font-size: 24px;
+    }
+
+    .scholar-header p {
+      font-size: 14px;
+    }
+
+    .scholar-btn {
+      padding: 8px 16px;
+      font-size: 14px;
+      gap: 8px;
+    }
   }
 
   /* Desktop Grid simulation since we removed Bootstrap classes to avoid Swiper conflict */
