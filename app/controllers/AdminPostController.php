@@ -498,70 +498,40 @@ class AdminPostController
     // Save uploaded image
     private static function saveUploadedImage($file, $prefix)
     {
-        // Check if file array structure is valid
-        if (!isset($file) || !isset($file['error'])) {
-            return null;
-        }
-
-        // Check specifically for no file uploaded
-        if ($file['error'] === UPLOAD_ERR_NO_FILE) {
+        if (!isset($file['error']) || $file['error'] === UPLOAD_ERR_NO_FILE) {
             return null;
         }
 
         if ($file['error'] !== UPLOAD_ERR_OK) {
-            $msg = 'Upload failed.';
-            switch ($file['error']) {
-                case UPLOAD_ERR_INI_SIZE:
-                case UPLOAD_ERR_FORM_SIZE:
-                    $msg = 'File is too large (exceeds server limits).';
-                    break;
-                case UPLOAD_ERR_PARTIAL:
-                    $msg = 'File was only partially uploaded.';
-                    break;
-                case UPLOAD_ERR_NO_TMP_DIR:
-                    $msg = 'Missing a temporary folder.';
-                    break;
-                case UPLOAD_ERR_CANT_WRITE:
-                    $msg = 'Failed to write file to disk.';
-                    break;
-                case UPLOAD_ERR_EXTENSION:
-                    $msg = 'File upload stopped by extension.';
-                    break;
+            throw new Exception("File upload error: " . $file['error']);
+        }
+
+        if (!isset($file['tmp_name']) || !is_uploaded_file($file['tmp_name'])) {
+            throw new Exception("File upload không hợp lệ");
+        }
+
+        $uploadDir = rtrim($_SERVER['DOCUMENT_ROOT'], '/') . '/assets/uploads/posts';
+
+        if (!is_dir($uploadDir)) {
+            if (!mkdir($uploadDir, 0755, true) && !is_dir($uploadDir)) {
+                throw new Exception("Không tạo được thư mục upload: " . $uploadDir);
             }
-            throw new Exception($msg);
         }
 
-        if (!isset($file['tmp_name']) || empty($file['tmp_name'])) {
-            return null;
-        }
-
-        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        $ext = strtolower(pathinfo($file['name'] ?? '', PATHINFO_EXTENSION));
+        $allowed = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
         if (!in_array($ext, $allowed, true)) {
-            throw new Exception('Invalid file type. Only JPG, PNG, GIF, WEBP allowed.');
+            throw new Exception("Định dạng ảnh không hỗ trợ: " . $ext);
         }
 
         $filename = $prefix . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
+        $dest = $uploadDir . '/' . $filename;
 
-        // Lưu file vào public/assets/uploads
-        $uploadDir = realpath(__DIR__ . '/../../public') . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'uploads';
-        if ($uploadDir === false) {
-            // Try to create if realpath fails (dir doesnt exist)
-            $uploadDir = __DIR__ . '/../../public/assets/uploads';
+        if (!move_uploaded_file($file['tmp_name'], $dest)) {
+            throw new Exception("Upload failed (move_uploaded_file). Kiểm tra quyền ghi folder assets/uploads/posts.");
         }
 
-        if (!is_dir($uploadDir) && !mkdir($uploadDir, 0755, true)) {
-            throw new Exception('Failed to create upload directory.');
-        }
-
-        $destPath = $uploadDir . DIRECTORY_SEPARATOR . $filename;
-
-        if (!move_uploaded_file($file['tmp_name'], $destPath)) {
-            throw new Exception('Failed to move uploaded file. Check permissions.');
-        }
-
-        // Khi render: echo $base . $featured_image
-        return '/assets/uploads/' . $filename;
+        return '/assets/uploads/posts/' . $filename;
     }
 
 
@@ -794,9 +764,11 @@ class AdminPostController
 
             $filename = 'post_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
 
-            $uploadDir = __DIR__ . '/../../public/assets/uploads';
+            $uploadDir = rtrim($_SERVER['DOCUMENT_ROOT'], '/') . '/assets/uploads/posts';
             if (!is_dir($uploadDir)) {
-                mkdir($uploadDir, 0755, true);
+                if (!mkdir($uploadDir, 0755, true) && !is_dir($uploadDir)) {
+                    throw new Exception("Không tạo được thư mục upload: " . $uploadDir);
+                }
             }
 
             $destPath = $uploadDir . '/' . $filename;
@@ -805,7 +777,7 @@ class AdminPostController
                 throw new Exception('Failed to move file');
             }
 
-            $url = '/assets/uploads/' . $filename;
+            $url = '/assets/uploads/posts/' . $filename;
             if (ob_get_length())
                 ob_clean();
             header('Content-Type: application/json; charset=utf-8');

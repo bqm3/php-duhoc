@@ -272,27 +272,24 @@ class AdminFileController
     // Save ANY file (image or other) -> /public/assets/uploads
     private static function saveUploadedAny($file, $prefix)
     {
-        if (!isset($file) || !isset($file['error'])) {
-            throw new Exception('Invalid upload payload');
+        if (!isset($file['error']) || $file['error'] === UPLOAD_ERR_NO_FILE) {
+            throw new Exception("Vui lòng chọn file");
         }
-        if ($file['error'] === UPLOAD_ERR_NO_FILE) {
-            throw new Exception('No file uploaded');
-        }
+
         if ($file['error'] !== UPLOAD_ERR_OK) {
-            throw new Exception('Upload failed');
-        }
-        if (!isset($file['tmp_name']) || empty($file['tmp_name'])) {
-            throw new Exception('Missing tmp file');
+            throw new Exception("File upload error: " . $file['error']);
         }
 
-        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        if (!isset($file['tmp_name']) || !is_uploaded_file($file['tmp_name'])) {
+            throw new Exception("File upload không hợp lệ");
+        }
+
+        $ext = strtolower(pathinfo($file['name'] ?? '', PATHINFO_EXTENSION));
         if ($ext === '') {
-            throw new Exception('File extension is missing');
+            throw new Exception('File không có phần mở rộng');
         }
 
-        // Allow images + documents common
         $allowed = [
-            // images
             'jpg',
             'jpeg',
             'png',
@@ -300,7 +297,6 @@ class AdminFileController
             'webp',
             'bmp',
             'svg',
-            // docs
             'pdf',
             'doc',
             'docx',
@@ -308,31 +304,28 @@ class AdminFileController
             'xlsx',
             'ppt',
             'pptx',
-            // archives
             'zip',
             'rar',
-            // text
             'txt',
             'csv'
         ];
 
         if (!in_array($ext, $allowed, true)) {
-            throw new Exception('Invalid file type');
+            throw new Exception('Định dạng file không hỗ trợ: ' . $ext);
+        }
+
+        $uploadDir = rtrim($_SERVER['DOCUMENT_ROOT'], '/') . '/assets/uploads/files';
+        if (!is_dir($uploadDir)) {
+            if (!mkdir($uploadDir, 0755, true) && !is_dir($uploadDir)) {
+                throw new Exception("Không tạo được thư mục upload: " . $uploadDir);
+            }
         }
 
         $filename = $prefix . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
+        $destPath = $uploadDir . '/' . $filename;
 
-        $uploadDir = realpath(__DIR__ . '/../../public') . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'files';
-        if ($uploadDir === false) {
-            $uploadDir = __DIR__ . '/assets/uploads/files';
-        }
-        if (!is_dir($uploadDir) && !mkdir($uploadDir, 0755, true)) {
-            throw new Exception('Failed to create upload directory');
-        }
-
-        $destPath = $uploadDir . DIRECTORY_SEPARATOR . $filename;
         if (!move_uploaded_file($file['tmp_name'], $destPath)) {
-            throw new Exception('Failed to move uploaded file');
+            throw new Exception('Upload failed (move_uploaded_file). Kiểm tra quyền ghi folder assets/uploads/files.');
         }
 
         $url = '/assets/uploads/files/' . $filename;
