@@ -48,10 +48,10 @@ $base = $base ?? '';
             </div>
 
             <!-- Featured Image -->
-            <?php if (!empty($post['featured_image'])): ?>
+            <!-- <?php if (!empty($post['featured_image'])): ?>
                 <img src="<?= $base . htmlspecialchars($post['featured_image']) ?>"
                     class="img-fluid w-100 rounded mb-4 shadow-sm" alt="<?= htmlspecialchars($title) ?>">
-            <?php endif; ?>
+            <?php endif; ?> -->
 
             <!-- Table of Contents -->
             <div id="toc-wrapper" class="toc-container d-none">

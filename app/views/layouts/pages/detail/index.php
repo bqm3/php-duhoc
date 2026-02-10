@@ -281,10 +281,10 @@ $breadcrumbs[] = ['label' => $post['title'] ?? 'Chi tiết', 'url' => ''];
       </div>
 
       <!-- Featured Image -->
-      <?php if (!empty($post['featured_image'])): ?>
+      <!-- <?php if (!empty($post['featured_image'])): ?>
         <img src="<?= $base . htmlspecialchars($post['featured_image']) ?>" class="img-fluid w-100 rounded mb-4"
           alt="<?= htmlspecialchars($title) ?>">
-      <?php endif; ?>
+      <?php endif; ?> -->
 
       <!-- Summary -->
       <!-- <?php if (!empty($post['summary'])): ?>
