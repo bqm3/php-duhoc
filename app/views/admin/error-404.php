@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
   <title>404 - Không tìm thấy trang | VNPC</title>
 
@@ -27,7 +27,7 @@
     }
 
     body {
-      font-family: 'Inter', sans-serif;
+        font-family: 'Be Vietnam Pro', 'Inter', sans-serif;
       background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
       min-height: 100vh;
       display: flex;
