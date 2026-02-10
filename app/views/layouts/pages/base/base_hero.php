@@ -98,4 +98,53 @@
         width: 20px;
         height: 20px;
     }
+
+    /* Mobile Responsive Styles */
+    @media (max-width: 768px) {
+        .vnpc-about-hero {
+            height: auto;
+            min-height: 280px;
+            padding: 60px 0 40px;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-deco {
+            display: none !important;
+        }
+
+        .vnpc-about-hero-title {
+            font-size: 28px;
+            margin-bottom: 25px;
+        }
+
+        .vnpc-hero-search {
+            margin-bottom: 20px;
+            border-radius: 12px;
+            height: auto;
+        }
+
+        .vnpc-hero-search input {
+            padding: 12px 20px;
+            font-size: 14px;
+        }
+
+        .vnpc-hero-search button {
+            width: 60px;
+            height: 50px;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .vnpc-breadcrumb {
+            font-size: 14px;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .vnpc-about-hero-title {
+            font-size: 24px;
+        }
+    }
 </style>
