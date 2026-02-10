@@ -19,11 +19,11 @@ class AdminConsultationController
         $offset = ($page - 1) * $limit;
 
         // Build query conditions
-        $whereClause = "WHERE 1=1";
+        $whereClause = "WHERE c.is_delete = 0";
         $params = [];
 
         if (!empty($keyword)) {
-            $whereClause .= " AND (full_name LIKE ? OR email LIKE ? OR phone LIKE ?)";
+            $whereClause .= " AND (c.full_name LIKE ? OR c.email LIKE ? OR c.phone LIKE ?)";
             $searchTerm = "%$keyword%";
             $params[] = $searchTerm;
             $params[] = $searchTerm;
@@ -31,22 +31,22 @@ class AdminConsultationController
         }
 
         if (!empty($status)) {
-            $whereClause .= " AND status = ?";
+            $whereClause .= " AND c.status = ?";
             $params[] = $status;
         }
 
         if ($country_id > 0) {
-            $whereClause .= " AND country_id = ?";
+            $whereClause .= " AND c.country_id = ?";
             $params[] = $country_id;
         }
 
         if (!empty($date_from)) {
-            $whereClause .= " AND created_at >= ?";
+            $whereClause .= " AND c.created_at >= ?";
             $params[] = $date_from . ' 00:00:00';
         }
 
         if (!empty($date_to)) {
-            $whereClause .= " AND created_at <= ?";
+            $whereClause .= " AND c.created_at <= ?";
             $params[] = $date_to . ' 23:59:59';
         }
 
@@ -54,7 +54,7 @@ class AdminConsultationController
         $countries = $db->query("SELECT id, name FROM countries ORDER BY name ASC")->fetchAll();
 
         // Count total
-        $countStmt = $db->prepare("SELECT COUNT(*) FROM consultations $whereClause");
+        $countStmt = $db->prepare("SELECT COUNT(*) FROM consultations c $whereClause");
         $countStmt->execute($params);
         $totalRecords = $countStmt->fetchColumn();
         $totalPages = ceil($totalRecords / $limit);
@@ -88,7 +88,7 @@ class AdminConsultationController
     {
         Auth::requireAdmin();
         $db = Db::getInstance()->pdo();
-        $stmt = $db->prepare("SELECT * FROM consultations WHERE id = ?");
+        $stmt = $db->prepare("SELECT * FROM consultations WHERE id = ? AND is_delete = 0");
         $stmt->execute([$id]);
         $consultation = $stmt->fetch();
 
@@ -132,7 +132,7 @@ class AdminConsultationController
         Csrf::verify($_POST['_csrf'] ?? '');
         $db = Db::getInstance()->pdo();
 
-        $stmt = $db->prepare("DELETE FROM consultations WHERE id = ?");
+        $stmt = $db->prepare("UPDATE consultations SET is_delete = 1 WHERE id = ?");
 
         if ($stmt->execute([$id])) {
             ob_clean();

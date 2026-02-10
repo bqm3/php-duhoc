@@ -18,7 +18,7 @@ class AdminSchoolController
         $limit = 10;
         $offset = ($page - 1) * $limit;
 
-        $whereClause = "WHERE 1=1";
+        $whereClause = "WHERE s.is_delete = 0";
         $params = [];
         if (!empty($keyword)) {
             $whereClause .= " AND (s.name LIKE ? OR s.slug LIKE ?)";
@@ -157,7 +157,7 @@ class AdminSchoolController
         Auth::requireAdmin();
         $db = Db::getInstance()->pdo();
 
-        $school = $db->prepare("SELECT * FROM schools WHERE id = ?");
+        $school = $db->prepare("SELECT * FROM schools WHERE id = ? AND is_delete = 0");
         $school->execute([$id]);
         $school = $school->fetch(PDO::FETCH_ASSOC);
 
@@ -232,7 +232,7 @@ class AdminSchoolController
         Csrf::verify($_POST['_csrf'] ?? '');
         $db = Db::getInstance()->pdo();
 
-        $stmt = $db->prepare("DELETE FROM schools WHERE id = ?");
+        $stmt = $db->prepare("UPDATE schools SET is_delete = 1 WHERE id = ?");
         if ($stmt->execute([$id])) {
             ob_clean();
             Response::json(['success' => true]);

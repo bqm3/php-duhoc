@@ -12,7 +12,7 @@ class NavbarController
       $db = Db::getInstance()->pdo();
 
       // 1) lấy category theo slug
-      $stmt = $db->prepare("SELECT id FROM categories WHERE slug = ? LIMIT 1");
+      $stmt = $db->prepare("SELECT id FROM categories WHERE slug = ? AND is_delete = 0 LIMIT 1");
       $stmt->execute([$slug]);
       $catId = (int) $stmt->fetchColumn();
 
@@ -43,7 +43,7 @@ class NavbarController
         FROM posts p
         JOIN countries co   ON co.id = p.country_id
         JOIN continents ct  ON ct.id = co.continent_id
-        WHERE p.category_id = ? AND p.is_hidden = 0
+        WHERE p.category_id = ? AND p.is_hidden = 0 AND p.is_delete = 0 AND co.is_delete = 0 AND ct.is_delete = 0
         ORDER BY ct.display_order ASC, co.display_order ASC, co.name ASC
       ";
       $stmt = $db->prepare($sql);
@@ -91,4 +91,46 @@ class NavbarController
     }
   }
 
+  public static function getNavItems($base, $relative_path)
+  {
+    $service_href = $base . '/dich-vu';
+    $is_service_active = strpos($relative_path, '/dich-vu') === 0;
+
+    try {
+      $db = Db::getInstance()->pdo();
+      $svc_stmt = $db->prepare("
+        SELECT slug FROM posts 
+        WHERE category_id = (SELECT id FROM categories WHERE slug = 'dich-vu' AND is_delete = 0 LIMIT 1)
+        AND is_hidden = 0 AND is_delete = 0
+        ORDER BY updated_at DESC, created_at DESC 
+        LIMIT 1
+      ");
+      $svc_stmt->execute();
+      $latest_svc_slug = $svc_stmt->fetchColumn();
+
+      if ($latest_svc_slug) {
+        $service_href = $base . '/' . $latest_svc_slug;
+        if ($relative_path === '/' . $latest_svc_slug) {
+          $is_service_active = true;
+        }
+      }
+    } catch (Throwable $e) {
+    }
+
+    return [
+      ['Trang chủ', $base . '/', $relative_path === '/', 'home'],
+      ['Giới thiệu', $base . '/gioi-thieu', $relative_path === '/gioi-thieu', 'about'],
+      ['Du học', $base . '/du-hoc', strpos($relative_path, '/du-hoc') === 0, 'study'],
+      ['Học bổng', $base . '/hoc-bong', strpos($relative_path, '/hoc-bong') === 0, 'scholarship'],
+      ['Dịch vụ', $service_href, $is_service_active, 'service'],
+      ['Tìm trường', $base . '/tim-truong', strpos($relative_path, '/tim-truong') === 0, 'school'],
+      ['Ngoại ngữ du học', $base . '/ngoai-ngu-du-hoc', strpos($relative_path, '/ngoai-ngu-du-hoc') === 0, 'language'],
+      ['Tin tức', $base . '/tin-tuc', strpos($relative_path, '/tin-tuc') === 0, 'news'],
+      // Mobile only items (from topbar)
+      ['Sự kiện', $base . '/su-kien', $relative_path === '/su-kien', 'event', true],
+      ['Đăng ký', $base . '/dang-ky', $relative_path === '/dang-ky', 'register', true],
+      ['Tuyển dụng', $base . '/tuyen-dung', $relative_path === '/tuyen-dung', 'career', true],
+      ['Liên hệ', $base . '/lien-he', $relative_path === '/lien-he', 'contact', true],
+    ];
+  }
 }

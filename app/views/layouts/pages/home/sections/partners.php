@@ -1,4 +1,44 @@
-<?php if (!isset($base)) $base = ''; ?>
+<style>
+  .partner-logo {
+    height: 85px;
+    width: auto;
+    object-fit: contain;
+    transition: transform .25s ease;
+    will-change: transform;
+  }
+
+  .partner-logo:hover {
+    transform: scale(1.06);
+  }
+
+  .partner-swiper {
+    padding: 20px 0;
+  }
+
+  .partner-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  @media (max-width: 768px) {
+    .partner-logo {
+      height: 55px;
+    }
+  }
+
+  .visually-hidden {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>
 
 <section class="vnpc-section" aria-labelledby="partners-title">
   <div class="container-xxl text-center">
@@ -9,78 +49,65 @@
       </p>
     </header>
 
-    <?php
-      /**
-       * NÊN: lưu thêm name + country để alt/title có ý nghĩa.
-       * Nếu chưa có tên trường thật, bạn có thể đặt tạm theo quốc gia.
-       */
-      $partners = [
-        ['file' => 'img_main1.png', 'name' => 'Đối tác đại học tại Úc', 'country' => 'Úc'],
-        ['file' => 'img_main2.png', 'name' => 'Đối tác đại học tại Canada', 'country' => 'Canada'],
-        ['file' => 'img_main3.png', 'name' => 'Đối tác đại học tại Mỹ', 'country' => 'Mỹ'],
-        ['file' => 'img_main4.png', 'name' => 'Đối tác đại học tại Anh', 'country' => 'Anh'],
-        ['file' => 'img_main5.png', 'name' => 'Đối tác đại học tại Nhật Bản', 'country' => 'Nhật Bản'],
-        ['file' => 'img_main6.png', 'name' => 'Đối tác đại học tại Hàn Quốc', 'country' => 'Hàn Quốc'],
-      ];
+    <?php if (empty($partners)): ?>
+      <!-- No partners found -->
+    <?php else: ?>
+      <?php $orgName = 'VNPC'; ?>
+      <div itemscope itemtype="https://schema.org/Organization" class="visually-hidden">
+        <meta itemprop="name" content="<?= htmlspecialchars($orgName) ?>">
+        <?php foreach ($partners as $p): ?>
+          <div itemprop="brand" itemscope itemtype="https://schema.org/Brand">
+            <meta itemprop="name" content="<?= htmlspecialchars($p['name']) ?>">
+            <meta itemprop="logo" content="<?= htmlspecialchars($base . $p['image_url']) ?>">
+          </div>
+        <?php endforeach; ?>
+      </div>
 
-      // Schema: Organization + partners (sameAs không bắt buộc nếu chưa có link)
-      $orgName = 'VNPC';
-    ?>
-
-    <!-- Schema.org: Organization + brand/partner logos -->
-    <div itemscope itemtype="https://schema.org/Organization" class="visually-hidden">
-      <meta itemprop="name" content="<?= htmlspecialchars($orgName) ?>">
-      <?php foreach ($partners as $p): ?>
-        <div itemprop="brand" itemscope itemtype="https://schema.org/Brand">
-          <meta itemprop="name" content="<?= htmlspecialchars($p['name']) ?>">
-          <meta itemprop="logo" content="<?= htmlspecialchars($base . '/assets/img/client/' . $p['file']) ?>">
+      <div class="swiper partner-swiper">
+        <div class="swiper-wrapper" role="list" aria-label="Logo đối tác tiêu biểu">
+          <?php foreach ($partners as $p): ?>
+            <div class="swiper-slide partner-item" role="listitem">
+              <a href="<?= htmlspecialchars($p['link_href'] ?: '#') ?>" target="_blank" rel="noopener">
+                <img src="<?= $base . htmlspecialchars($p['image_url']) ?>" alt="Logo <?= htmlspecialchars($p['name']) ?>"
+                  title="<?= htmlspecialchars($p['name']) ?>" class="partner-logo" width="160" height="60" loading="lazy"
+                  decoding="async" />
+              </a>
+            </div>
+          <?php endforeach; ?>
         </div>
-      <?php endforeach; ?>
-    </div>
+      </div>
 
-    <div
-      class="d-flex flex-wrap justify-content-center align-items-center gap-5"
-      role="list"
-      aria-label="Logo đối tác tiêu biểu"
-    >
-      <?php foreach ($partners as $i => $p): ?>
-        <figure class="m-0 partner-item" role="listitem">
-          <img
-            src="<?= $base ?>/assets/img/client/<?= htmlspecialchars($p['file']) ?>"
-            alt="Logo <?= htmlspecialchars($p['name']) ?>"
-            title="<?= htmlspecialchars($p['name']) ?>"
-            class="partner-logo"
-            width="160"
-            height="60"
-            loading="lazy"
-            decoding="async"
-            fetchpriority="<?= $i < 2 ? 'high' : 'low' ?>"
-          />
-          <!-- Nếu muốn SEO/UX tốt hơn, bạn có thể bật caption -->
-          <!-- <figcaption class="visually-hidden"><?= htmlspecialchars($p['name']) ?></figcaption> -->
-        </figure>
-      <?php endforeach; ?>
-    </div>
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          new Swiper(".partner-swiper", {
+            slidesPerView: 2,
+            spaceBetween: 30,
+            loop: true,
+            autoplay: {
+              delay: 3000,
+              disableOnInteraction: false,
+            },
+            breakpoints: {
+              576: {
+                slidesPerView: 3,
+                spaceBetween: 30,
+              },
+              768: {
+                slidesPerView: 4,
+                spaceBetween: 40,
+              },
+              1024: {
+                slidesPerView: 5,
+                spaceBetween: 50,
+              },
+              1200: {
+                slidesPerView: 7,
+                spaceBetween: 50,
+              },
+            },
+          });
+        });
+      </script>
+    <?php endif; ?>
   </div>
 </section>
-
-<style>
-.partner-logo{
-  height:60px;
-  width:auto;
-  object-fit:contain;
-  transition:transform .25s ease, opacity .25s ease;
-  will-change:transform;
-}
-.partner-logo:hover{ transform:scale(1.06); opacity:.85; }
-.partner-logo:focus{ outline:2px solid rgba(99,102,241,.7); outline-offset:4px; }
-
-/* Nếu project bạn chưa có class visually-hidden */
-.visually-hidden{
-  position:absolute !important;
-  width:1px; height:1px;
-  padding:0; margin:-1px;
-  overflow:hidden; clip:rect(0,0,0,0);
-  white-space:nowrap; border:0;
-}
-</style>

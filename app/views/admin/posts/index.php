@@ -126,8 +126,7 @@
                                                 <th>Category</th>
                                                 <th>Country / School</th>
                                                 <th>Views</th>
-                                                <th>Created</th>
-                                                <th>Updated</th>
+                                                <th>Timeline</th>
                                                 <th>Actions</th>
                                             </tr>
                                         </thead>
@@ -168,8 +167,14 @@
                                                     <td>
                                                         <span class="badge badge-info"><?= $post['count_view'] ?></span>
                                                     </td>
-                                                    <td><?= date('d/m/Y', strtotime($post['created_at'])) ?></td>
-                                                    <td><?= date('d/m/Y', strtotime($post['updated_at'])) ?></td>
+                                                    <td class="small" style="white-space: nowrap;">
+                                                        <div class="mb-1" title="Created At">
+                                                            <i class="fa fa-clock-o text-muted"></i> <?= date('d/m/Y H:i', strtotime($post['created_at'])) ?>
+                                                        </div>
+                                                        <div title="Updated At">
+                                                            <i class="fa fa-history text-info"></i> <?= date('d/m/Y H:i', strtotime($post['updated_at'])) ?>
+                                                        </div>
+                                                    </td>
                                                     <td>
                                                         <?php $isHidden = isset($post['is_hidden']) ? (int) $post['is_hidden'] : 0; ?>
                                                         <button

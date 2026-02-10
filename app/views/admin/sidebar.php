@@ -43,6 +43,10 @@ function activeClass($targetPath)
         return 'text-primary font-weight-bold';
     if (strpos($targetPath, '/admin/schools') !== false && strpos($currentPath, '/schools') !== false)
         return 'text-primary font-weight-bold';
+    if (strpos($targetPath, '/admin/slides') !== false && strpos($currentPath, '/slides') !== false)
+        return 'text-primary font-weight-bold';
+    if (strpos($targetPath, '/admin/partners') !== false && strpos($currentPath, '/partners') !== false)
+        return 'text-primary font-weight-bold';
 
 
     return '';
@@ -150,6 +154,14 @@ $open_pages = isGroupActive(['email', 'login', 'register', 'lockscreen', 'forgot
                     </a>
                 </li>
 
+                <!-- SLIDES -->
+                <li class="parent">
+                    <a href="<?= $base ?>/admin/slides" class="<?= activeClass('/admin/slides') ?>">
+                        <i class="fa fa-sliders mr-3"></i>
+                        <span class="none"> Quản lý Slide </span>
+                    </a>
+                </li>
+
                 <!-- TAGS -->
                 <li class="parent">
                     <a href="<?= $base ?>/admin/tags" class="<?= activeClass('/admin/tags') ?>">
@@ -202,6 +214,15 @@ $open_pages = isGroupActive(['email', 'login', 'register', 'lockscreen', 'forgot
                         <span class="none"> Danh sách tư vấn </span>
                     </a>
                 </li>
+
+                <!-- PARTNERS -->
+                <li class="parent">
+                    <a href="<?= $base ?>/admin/partners" class="<?= activeClass('/admin/partners') ?>">
+                        <i class="fa fa-briefcase mr-3"></i>
+                        <span class="none"> Danh sách đối tác </span>
+                    </a>
+                </li>
+
 
                 <!-- FILES -->
                 <li class="parent">
@@ -430,7 +451,8 @@ $open_pages = isGroupActive(['email', 'login', 'register', 'lockscreen', 'forgot
         // Nhóm các trang độc lập (Users, Categories) -> Xóa trạng thái để đóng hết
         else if (currentUrl.indexOf('/admin/users') > -1 ||
             currentUrl.indexOf('/admin/categories') > -1 ||
-            currentUrl.indexOf('/admin/tags') > -1) {
+            currentUrl.indexOf('/admin/tags') > -1 ||
+            currentUrl.indexOf('/admin/partners') > -1) {
 
             localStorage.removeItem('lastTab');
 

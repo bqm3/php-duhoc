@@ -24,6 +24,12 @@ if ($uri === "/consultation/register" && $method === "POST") {
   exit;
 }
 
+if ($uri === "/tim-truong" && $method === "GET") {
+  require_once __DIR__ . '/../controllers/client/SchoolController.php';
+  (new SchoolController())->index();
+  exit;
+}
+
 if ($uri === "/dang-ky" && $method === "GET") {
   $countries = [];
   try {
@@ -54,7 +60,7 @@ if ($method === "GET" && preg_match('#^/api/menu-content/([a-z-]+)$#', $uri, $m)
   exit;
 }
 
-if ($method === "GET" && ($uri === "/du-hoc" || $uri === "/visa-du-hoc")) {
+if ($uri === "/du-hoc" || $uri === "/visa-du-hoc" || $uri === "/ngoai-ngu-du-hoc" && $method === "GET") {
   (new HomeController())->index();
   exit;
 }
@@ -71,8 +77,26 @@ if ($uri === "/tin-tuc" && $method === "GET") {
   exit;
 }
 
-// Study Abroad Detail (General slug) - để cuối cùng
-if ($method === 'GET' && preg_match('#^/([^/]+)$#', $uri, $m)) {
+if ($uri === "/tuyen-dung" && $method === "GET") {
+  require_once __DIR__ . '/../controllers/client/CareerController.php';
+  (new CareerController())->index();
+  exit;
+}
+
+if ($uri === "/su-kien" && $method === "GET") {
+  require_once __DIR__ . '/../controllers/client/EventController.php';
+  (new EventController())->index();
+  exit;
+}
+
+if (preg_match('#^/truong/([^/]+)$#', $uri, $m) && $method === 'GET') {
+  require_once __DIR__ . '/../controllers/client/SchoolController.php';
+  (new SchoolController())->detail($m[1]);
+  exit;
+}
+
+// Study Abroad Detail (General slug) - Phải để ở cuối các route GET 1 cấp
+if (preg_match('#^/([^/]+)$#', $uri, $m) && $method === 'GET') {
   require_once __DIR__ . '/../controllers/client/StudyAbroadController.php';
   (new StudyAbroadController())->detail($m[1]);
   exit;

@@ -18,6 +18,15 @@ class HomeController
 
         $posts = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
 
+        // Fetch slides
+        $slides = [];
+        try {
+            $stmt = $pdo->prepare("SELECT * FROM slides WHERE is_hidden = 0 AND is_delete = 0 ORDER BY stt ASC, created_at DESC");
+            $stmt->execute();
+            $slides = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+        }
+
         // Fetch countries for consult form
         $countries = [];
         try {
@@ -71,12 +80,44 @@ class HomeController
         } catch (Exception $e) {
         }
 
+        // Fetch 4 random international info posts (cat: du-hoc)
+        $internationalInfoPosts = [];
+        try {
+            $stmt = $pdo->prepare("SELECT id FROM categories WHERE slug = ? LIMIT 1");
+            $stmt->execute(['du-hoc']);
+            $duhocCatId = (int) $stmt->fetchColumn();
+
+            if ($duhocCatId) {
+                $sql = "SELECT p.title, p.slug, p.featured_image, p.summary, p.created_at, p.count_view, t.name as tag_name 
+                        FROM posts p 
+                        LEFT JOIN tags t ON p.tag_id = t.id
+                        WHERE p.category_id = ? AND p.is_hidden = 0 
+                        ORDER BY RAND() LIMIT 4";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute([$duhocCatId]);
+                $internationalInfoPosts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            }
+        } catch (Exception $e) {
+        }
+
+        // Fetch active partners
+        $partners = [];
+        try {
+            $stmt = $pdo->prepare("SELECT * FROM partners WHERE is_hidden = 0 AND is_delete = 0 ORDER BY stt ASC, created_at DESC");
+            $stmt->execute();
+            $partners = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+        }
+
         view('main', 'layouts/pages/home/index', [
             'title' => 'Trang chủ',
             'posts' => $posts,
             'countries' => $countries,
             'popularCountries' => $popularCountries,
             'scholarshipPosts' => $scholarshipPosts,
+            'internationalInfoPosts' => $internationalInfoPosts,
+            'slides' => $slides,
+            'partners' => $partners,
             'pageCss' => ['home.css'],
         ]);
     }
