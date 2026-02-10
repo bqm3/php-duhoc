@@ -1,43 +1,29 @@
 <style>
   .partner-logo {
-    height: 60px;
+    height: 85px;
     width: auto;
     object-fit: contain;
-    transition: transform .25s ease, opacity .25s ease;
+    transition: transform .25s ease;
     will-change: transform;
   }
 
   .partner-logo:hover {
     transform: scale(1.06);
-    opacity: .85;
   }
 
-  .partner-logo:focus {
-    outline: 2px solid rgba(99, 102, 241, .7);
-    outline-offset: 4px;
+  .partner-swiper {
+    padding: 20px 0;
+  }
+
+  .partner-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   @media (max-width: 768px) {
-    .partner-row-scroll {
-      display: flex !important;
-      flex-wrap: nowrap !important;
-      overflow-x: auto !important;
-      padding-bottom: 20px;
-      gap: 30px !important;
-      justify-content: flex-start !important;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .partner-item {
-      flex: 0 0 auto;
-    }
-
     .partner-logo {
-      height: 40px;
-    }
-
-    .vnpc-section {
-      padding: 40px 0;
+      height: 55px;
     }
   }
 
@@ -77,18 +63,51 @@
         <?php endforeach; ?>
       </div>
 
-      <div class="d-flex flex-wrap justify-content-center align-items-center gap-5 partner-row-scroll" role="list"
-        aria-label="Logo đối tác tiêu biểu">
-        <?php foreach ($partners as $i => $p): ?>
-          <figure class="m-0 partner-item" role="listitem">
-            <a href="<?= htmlspecialchars($p['link_href'] ?: '#') ?>" target="_blank" rel="noopener">
-              <img src="<?= $base . htmlspecialchars($p['image_url']) ?>" alt="Logo <?= htmlspecialchars($p['name']) ?>"
-                title="<?= htmlspecialchars($p['name']) ?>" class="partner-logo" width="160" height="60" loading="lazy"
-                decoding="async" style="height: 60px; object-fit: contain;" />
-            </a>
-          </figure>
-        <?php endforeach; ?>
+      <div class="swiper partner-swiper">
+        <div class="swiper-wrapper" role="list" aria-label="Logo đối tác tiêu biểu">
+          <?php foreach ($partners as $p): ?>
+            <div class="swiper-slide partner-item" role="listitem">
+              <a href="<?= htmlspecialchars($p['link_href'] ?: '#') ?>" target="_blank" rel="noopener">
+                <img src="<?= $base . htmlspecialchars($p['image_url']) ?>" alt="Logo <?= htmlspecialchars($p['name']) ?>"
+                  title="<?= htmlspecialchars($p['name']) ?>" class="partner-logo" width="160" height="60" loading="lazy"
+                  decoding="async" />
+              </a>
+            </div>
+          <?php endforeach; ?>
+        </div>
       </div>
+
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          new Swiper(".partner-swiper", {
+            slidesPerView: 2,
+            spaceBetween: 30,
+            loop: true,
+            autoplay: {
+              delay: 3000,
+              disableOnInteraction: false,
+            },
+            breakpoints: {
+              576: {
+                slidesPerView: 3,
+                spaceBetween: 30,
+              },
+              768: {
+                slidesPerView: 4,
+                spaceBetween: 40,
+              },
+              1024: {
+                slidesPerView: 5,
+                spaceBetween: 50,
+              },
+              1200: {
+                slidesPerView: 7,
+                spaceBetween: 50,
+              },
+            },
+          });
+        });
+      </script>
     <?php endif; ?>
   </div>
 </section>
