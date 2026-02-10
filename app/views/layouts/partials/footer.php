@@ -16,7 +16,7 @@ $siteUrl = $base ?: '';
 
 <!-- Newsletter Section (Only show on homepage) -->
 <?php if ($relative_path === '/'): ?>
-  <section class="vnpc-newsletter" aria-labelledby="newsletter-title"
+  <section class="vnpc-newsletter d-none d-md-block" aria-labelledby="newsletter-title"
     style="position: relative; z-index: 10; margin-bottom: -100px; padding: 0 20px;">
     <div class="container-xxl">
       <div class="newsletter-section"
@@ -54,9 +54,8 @@ $siteUrl = $base ?: '';
 <?php endif; ?>
 
 <!-- Footer -->
-<footer class="vnpc-footer"
-  style="width: 100%; background: #0C4073; color: white; padding-top: <?= ($relative_path === '/') ? '140px' : '60px' ?>; padding-bottom: 40px;"
-  aria-labelledby="footer-title">
+<footer class="vnpc-footer <?= ($relative_path === '/') ? 'vnpc-footer-home' : '' ?>"
+  style="width: 100%; background: #0C4073; color: white; padding-bottom: 40px;" aria-labelledby="footer-title">
   <div class="container-xxl">
 
     <!-- Schema.org: LocalBusiness (SEO local + Knowledge Panel) -->
@@ -218,6 +217,24 @@ $siteUrl = $base ?: '';
   .social-btn:focus {
     outline: 2px solid rgba(255, 255, 255, .55);
     outline-offset: 3px;
+  }
+
+  .vnpc-footer {
+    padding-top: 60px;
+  }
+
+  .vnpc-footer-home {
+    padding-top: 140px;
+  }
+
+  @media (max-width: 767px) {
+    .vnpc-footer-home {
+      padding-top: 40px;
+    }
+
+    .vnpc-footer {
+      padding-top: 40px;
+    }
   }
 </style>
 
