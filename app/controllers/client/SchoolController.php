@@ -20,7 +20,7 @@ class SchoolController
         $offset = ($page - 1) * $limit;
 
         // 3. Build WHERE clause
-        $where = ["1=1"];
+        $where = ["s.is_delete = 0"];
         $params = [];
 
         if ($keyword !== '') {
@@ -71,15 +71,15 @@ class SchoolController
         $schools = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         // 6. Fetch filter data
-        $countries = $pdo->query("SELECT id, name FROM countries ORDER BY name ASC")->fetchAll(PDO::FETCH_ASSOC);
+        $countries = $pdo->query("SELECT id, name FROM countries WHERE is_delete = 0 ORDER BY name ASC")->fetchAll(PDO::FETCH_ASSOC);
         $cities = $countryId > 0
-            ? $pdo->prepare("SELECT id, name FROM cities WHERE country_id = ? ORDER BY name ASC")
+            ? $pdo->prepare("SELECT id, name FROM cities WHERE country_id = ? AND is_delete = 0 ORDER BY name ASC")
             : null;
         if ($cities)
             $cities->execute([$countryId]);
         $citiesList = $cities ? $cities->fetchAll(PDO::FETCH_ASSOC) : [];
 
-        $eduLevels = $pdo->query("SELECT id, name FROM education_levels ORDER BY display_order ASC")->fetchAll(PDO::FETCH_ASSOC);
+        $eduLevels = $pdo->query("SELECT id, name FROM education_levels WHERE is_delete = 0 ORDER BY display_order ASC")->fetchAll(PDO::FETCH_ASSOC);
 
         view('main', 'layouts/pages/schools/index', [
             'title' => 'Tìm trường',
@@ -112,7 +112,7 @@ class SchoolController
             LEFT JOIN countries co ON s.country_id = co.id
             LEFT JOIN cities ci ON s.city_id = ci.id
             LEFT JOIN education_levels el ON s.education_level_id = el.id
-            WHERE s.slug = ?
+            WHERE s.slug = ? AND s.is_delete = 0
             LIMIT 1
         ");
         $stmt->execute([$slug]);
@@ -139,7 +139,7 @@ class SchoolController
                 SELECT p.slug, p.title, p.content
                 FROM posts p 
                 JOIN categories c ON p.category_id = c.id 
-                WHERE p.school_id = ? AND c.slug = ? AND p.is_hidden = 0 
+                WHERE p.school_id = ? AND c.slug = ? AND p.is_hidden = 0 AND p.is_delete = 0
                 LIMIT 1
             ");
             $stmt->execute([$school['id'], $catSlug]);

@@ -36,7 +36,7 @@ class AdminPostController
         $offset = ($page - 1) * $limit;
 
         // Build query conditions
-        $whereClause = "WHERE 1=1";
+        $whereClause = "WHERE p.is_delete = 0";
         $params = [];
 
         if (!empty($keyword)) {
@@ -252,7 +252,7 @@ class AdminPostController
         $db = Db::getInstance()->pdo();
 
         // Get post
-        $stmt = $db->prepare("SELECT * FROM posts WHERE id = ?");
+        $stmt = $db->prepare("SELECT * FROM posts WHERE id = ? AND is_delete = 0");
         $stmt->execute([$id]);
         $post = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -406,7 +406,7 @@ class AdminPostController
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $db = Db::getInstance()->pdo();
-        $stmt = $db->prepare("DELETE FROM posts WHERE id = ?");
+        $stmt = $db->prepare("UPDATE posts SET is_delete = 1 WHERE id = ?");
 
         if ($stmt->execute([$id])) {
             ob_clean();

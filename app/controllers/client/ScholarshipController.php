@@ -7,7 +7,7 @@ class ScholarshipController
         $db = Db::getInstance()->pdo();
 
         // 1) Lấy category "hoc-bong"
-        $catStmt = $db->prepare("SELECT id, name, slug FROM categories WHERE slug = ? OR id = ? LIMIT 1");
+        $catStmt = $db->prepare("SELECT id, name, slug FROM categories WHERE (slug = ? OR id = ?) AND is_delete = 0 LIMIT 1");
         $catStmt->execute(['hoc-bong', 4]);
         $category = $catStmt->fetch(PDO::FETCH_ASSOC);
 
@@ -23,7 +23,7 @@ class ScholarshipController
         $offset = ($page - 1) * $limit;
 
         // 3) Build sql
-        $where = "WHERE p.category_id = ?";
+        $where = "WHERE p.category_id = ? AND p.is_delete = 0";
         $params = [(int) $category['id']];
 
         if (!empty($keyword)) {

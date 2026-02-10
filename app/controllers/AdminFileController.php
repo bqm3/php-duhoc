@@ -9,21 +9,24 @@ class AdminFileController
 
         $db = Db::getInstance()->pdo();
 
-        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
         $keyword = isset($_GET['keyword']) ? trim($_GET['keyword']) : '';
-        $categoryId = isset($_GET['category_id']) ? (int)$_GET['category_id'] : 0;
+        $categoryId = isset($_GET['category_id']) ? (int) $_GET['category_id'] : 0;
         $type = isset($_GET['type']) ? trim($_GET['type']) : ''; // image|file
 
         $limit = 10;
         $offset = ($page - 1) * $limit;
 
-        $where = "WHERE 1=1";
+        $where = "WHERE f.is_delete = 0";
         $params = [];
 
         if ($keyword !== '') {
             $where .= " AND (f.title LIKE ? OR f.url_file LIKE ? OR c.name LIKE ? OR u.full_name LIKE ?)";
             $s = "%$keyword%";
-            $params[] = $s; $params[] = $s; $params[] = $s; $params[] = $s;
+            $params[] = $s;
+            $params[] = $s;
+            $params[] = $s;
+            $params[] = $s;
         }
 
         if ($categoryId > 0) {
@@ -46,8 +49,8 @@ class AdminFileController
         ";
         $countStmt = $db->prepare($countSql);
         $countStmt->execute($params);
-        $totalRecords = (int)$countStmt->fetchColumn();
-        $totalPages = (int)ceil($totalRecords / $limit);
+        $totalRecords = (int) $countStmt->fetchColumn();
+        $totalPages = (int) ceil($totalRecords / $limit);
 
         // list
         $sql = "
@@ -85,7 +88,7 @@ class AdminFileController
 
         $db = Db::getInstance()->pdo();
         $categories = $db->query("SELECT * FROM categories ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
-        $countries  = $db->query("SELECT * FROM countries ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
+        $countries = $db->query("SELECT * FROM countries ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
 
         view('admin', 'admin/files/create', [
             'categories' => $categories,
@@ -100,15 +103,15 @@ class AdminFileController
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $title = trim($_POST['title'] ?? '');
-        $category_id = !empty($_POST['category_id']) ? (int)$_POST['category_id'] : null;
-        $country_id  = !empty($_POST['country_id']) ? (int)$_POST['country_id'] : null;
+        $category_id = !empty($_POST['category_id']) ? (int) $_POST['category_id'] : null;
+        $country_id = !empty($_POST['country_id']) ? (int) $_POST['country_id'] : null;
 
         if ($title === '') {
             Response::json(['error' => 'Title is required'], 400);
         }
 
         $user = Auth::user();
-        $user_id = $user ? (int)$user['id'] : null;
+        $user_id = $user ? (int) $user['id'] : null;
 
         // upload file input name: file
         if (!isset($_FILES['file'])) {
@@ -137,7 +140,8 @@ class AdminFileController
             $saved['type']
         ]);
 
-        if ($ok) Response::redirect('/admin/files');
+        if ($ok)
+            Response::redirect('/admin/files');
         Response::json(['error' => 'Failed to create file'], 500);
     }
 
@@ -147,14 +151,15 @@ class AdminFileController
 
         $db = Db::getInstance()->pdo();
 
-        $stmt = $db->prepare("SELECT * FROM files WHERE id = ? LIMIT 1");
-        $stmt->execute([(int)$id]);
+        $stmt = $db->prepare("SELECT * FROM files WHERE id = ? AND is_delete = 0 LIMIT 1");
+        $stmt->execute([(int) $id]);
         $file = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (!$file) Response::notFound();
+        if (!$file)
+            Response::notFound();
 
         $categories = $db->query("SELECT * FROM categories ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
-        $countries  = $db->query("SELECT * FROM countries ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
+        $countries = $db->query("SELECT * FROM countries ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
 
         view('admin', 'admin/files/edit', [
             'file' => $file,
@@ -174,8 +179,8 @@ class AdminFileController
         }
 
         $title = trim($_POST['title'] ?? '');
-        $category_id = !empty($_POST['category_id']) ? (int)$_POST['category_id'] : null;
-        $country_id  = !empty($_POST['country_id']) ? (int)$_POST['country_id'] : null;
+        $category_id = !empty($_POST['category_id']) ? (int) $_POST['category_id'] : null;
+        $country_id = !empty($_POST['country_id']) ? (int) $_POST['country_id'] : null;
 
         if ($title === '') {
             Response::json(['error' => 'Title is required'], 400);
@@ -185,7 +190,7 @@ class AdminFileController
         $db = Db::getInstance()->pdo();
 
         $stmt = $db->prepare("SELECT url_file FROM files WHERE id = ? LIMIT 1");
-        $stmt->execute([(int)$id]);
+        $stmt->execute([(int) $id]);
         $old = $stmt->fetch(PDO::FETCH_ASSOC);
         if (!$old) {
             Response::notFound();
@@ -205,7 +210,8 @@ class AdminFileController
                 // delete old local file if in /assets/uploads/
                 if (!empty($old['url_file']) && str_contains($old['url_file'], '/assets/uploads/files/')) {
                     $path = __DIR__ . '/../../public' . parse_url($old['url_file'], PHP_URL_PATH);
-                    if (is_file($path)) @unlink($path);
+                    if (is_file($path))
+                        @unlink($path);
                 }
             }
         } catch (Exception $e) {
@@ -224,8 +230,9 @@ class AdminFileController
             WHERE id = ?
         ");
 
-        $ok = $stmt->execute([$category_id, $country_id, $title, $url_file, $type, (int)$id]);
-        if ($ok) Response::redirect('/admin/files');
+        $ok = $stmt->execute([$category_id, $country_id, $title, $url_file, $type, (int) $id]);
+        if ($ok)
+            Response::redirect('/admin/files');
         Response::json(['error' => 'Failed to update file'], 500);
     }
 
@@ -237,24 +244,20 @@ class AdminFileController
         $db = Db::getInstance()->pdo();
 
         // get old url to delete local file
-        $stmt = $db->prepare("SELECT url_file FROM files WHERE id = ? LIMIT 1");
-        $stmt->execute([(int)$id]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        $stmt = $db->prepare("DELETE FROM files WHERE id = ?");
-        $ok = $stmt->execute([(int)$id]);
+        $stmt = $db->prepare("UPDATE files SET is_delete = 1 WHERE id = ?");
+        $ok = $stmt->execute([(int) $id]);
 
         if ($ok) {
-            if ($row && !empty($row['url_file']) && str_contains($row['url_file'], '/assets/uploads/files/')) {
-                $path = __DIR__ . '/../../public' . parse_url($row['url_file'], PHP_URL_PATH);
-                if (is_file($path)) @unlink($path);
-            }
-            if (ob_get_length()) ob_clean();
+            // During soft delete, we typically keep the physical file.
+            // If the user wants true soft delete, we don't unlink.
+            if (ob_get_length())
+                ob_clean();
             Response::json(['success' => true]);
             exit;
         }
 
-        if (ob_get_length()) ob_clean();
+        if (ob_get_length())
+            ob_clean();
         Response::json(['error' => 'Failed to delete'], 500);
         exit;
     }
@@ -262,7 +265,7 @@ class AdminFileController
     private static function inferTypeFromUrl(string $url): string
     {
         $ext = strtolower(pathinfo(parse_url($url, PHP_URL_PATH) ?? $url, PATHINFO_EXTENSION));
-        $img = ['jpg','jpeg','png','gif','webp','bmp','svg'];
+        $img = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'];
         return in_array($ext, $img, true) ? 'image' : 'file';
     }
 
@@ -290,13 +293,27 @@ class AdminFileController
         // Allow images + documents common
         $allowed = [
             // images
-            'jpg','jpeg','png','gif','webp','bmp','svg',
+            'jpg',
+            'jpeg',
+            'png',
+            'gif',
+            'webp',
+            'bmp',
+            'svg',
             // docs
-            'pdf','doc','docx','xls','xlsx','ppt','pptx',
+            'pdf',
+            'doc',
+            'docx',
+            'xls',
+            'xlsx',
+            'ppt',
+            'pptx',
             // archives
-            'zip','rar',
+            'zip',
+            'rar',
             // text
-            'txt','csv'
+            'txt',
+            'csv'
         ];
 
         if (!in_array($ext, $allowed, true)) {

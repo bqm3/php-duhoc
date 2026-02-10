@@ -7,7 +7,7 @@ class NewsController
     $pdo = Db::getInstance()->pdo();
 
     // 1. Get Category ID for "tin-tuc"
-    $stmt = $pdo->prepare("SELECT id, name FROM categories WHERE slug = 'tin-tuc' LIMIT 1");
+    $stmt = $pdo->prepare("SELECT id, name FROM categories WHERE slug = 'tin-tuc' AND is_delete = 0 LIMIT 1");
     $stmt->execute();
     $category = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -26,7 +26,7 @@ class NewsController
     $offset = ($page - 1) * $limit;
 
     // Count total posts
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM posts WHERE category_id = ? AND is_hidden = 0");
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM posts WHERE category_id = ? AND is_hidden = 0 AND is_delete = 0");
     $stmt->execute([$categoryId]);
     $totalPosts = (int) $stmt->fetchColumn();
     $totalPages = ceil($totalPosts / $limit);
@@ -38,7 +38,7 @@ class NewsController
       LEFT JOIN categories c ON p.category_id = c.id
       LEFT JOIN users u ON p.user_id = u.id
       LEFT JOIN tags t ON p.tag_id = t.id
-      WHERE p.category_id = ? AND p.is_hidden = 0
+      WHERE p.category_id = ? AND p.is_hidden = 0 AND p.is_delete = 0
       ORDER BY p.created_at DESC, p.id DESC
       LIMIT ? OFFSET ?
     ");
@@ -50,7 +50,7 @@ class NewsController
 
     // Get sidebar posts (optional, keeping for design)
     $stmt = $pdo->prepare("
-      SELECT p.* FROM posts p WHERE p.category_id = ? AND p.is_hidden = 0 ORDER BY created_at DESC LIMIT 5
+      SELECT p.* FROM posts p WHERE p.category_id = ? AND p.is_hidden = 0 AND p.is_delete = 0 ORDER BY created_at DESC LIMIT 5
     ");
     $stmt->execute([$categoryId]);
     $sidebarPosts = $stmt->fetchAll(PDO::FETCH_ASSOC);

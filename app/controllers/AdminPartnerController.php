@@ -1,7 +1,7 @@
 <?php
-// app/controllers/AdminSlideController.php
+// app/controllers/AdminPartnerController.php
 
-class AdminSlideController
+class AdminPartnerController
 {
     public static function index()
     {
@@ -20,26 +20,24 @@ class AdminSlideController
             $params[] = "%$keyword%";
         }
 
-        $countStmt = $db->prepare("SELECT COUNT(*) FROM slides $whereClause");
+        $countStmt = $db->prepare("SELECT COUNT(*) FROM partners $whereClause");
         $countStmt->execute($params);
         $totalRecords = $countStmt->fetchColumn();
         $totalPages = ceil($totalRecords / $limit);
 
         $sql = "
-            SELECT s.*, c.name as country_name, sc.name as school_name
-            FROM slides s
-            LEFT JOIN countries c ON s.id_country = c.id
-            LEFT JOIN schools sc ON s.id_school = sc.id
+            SELECT *
+            FROM partners
             $whereClause
-            ORDER BY s.stt ASC, s.created_at DESC
+            ORDER BY stt ASC, created_at DESC
             LIMIT $limit OFFSET $offset
         ";
         $stmt = $db->prepare($sql);
         $stmt->execute($params);
-        $slides = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $partners = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        view('admin', 'admin/slides/index', [
-            'slides' => $slides,
+        view('admin', 'admin/partners/index', [
+            'partners' => $partners,
             'total_pages' => $totalPages,
             'current_page' => $page,
             'keyword' => $keyword
@@ -49,14 +47,7 @@ class AdminSlideController
     public static function create()
     {
         Auth::requireAdmin();
-        $db = Db::getInstance()->pdo();
-
-        $countries = $db->query("SELECT id, name FROM countries ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
-        $schools = $db->query("SELECT id, name FROM schools ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
-
-        view('admin', 'admin/slides/create', [
-            'countries' => $countries,
-            'schools' => $schools,
+        view('admin', 'admin/partners/create', [
             'csrf' => Csrf::token()
         ]);
     }
@@ -68,21 +59,18 @@ class AdminSlideController
 
         $name = trim($_POST['name'] ?? '');
         $link_href = trim($_POST['link_href'] ?? '');
-        $id_country = !empty($_POST['id_country']) ? (int) $_POST['id_country'] : null;
-        $id_school = !empty($_POST['id_school']) ? (int) $_POST['id_school'] : null;
         $is_hidden = isset($_POST['is_hidden']) ? 1 : 0;
         $stt = (int) ($_POST['stt'] ?? 0);
-        $ghi_chu = $_POST['ghi_chu'] ?? '';
 
         if (empty($name)) {
-            Response::json(['error' => 'Tên slide không được để trống'], 400);
+            Response::json(['error' => 'Tên đối tác không được để trống'], 400);
             return;
         }
 
         $image_url = '';
         if (isset($_FILES['image']) && $_FILES['image']['size'] > 0) {
             try {
-                $image_url = self::saveUploadedImage($_FILES['image'], 'slide_');
+                $image_url = self::saveUploadedImage($_FILES['image'], 'partner_');
             } catch (Exception $e) {
                 Response::json(['error' => $e->getMessage()], 400);
                 return;
@@ -90,12 +78,12 @@ class AdminSlideController
         }
 
         $db = Db::getInstance()->pdo();
-        $sql = "INSERT INTO slides (name, image_url, link_href, id_country, id_school, is_hidden, stt, ghi_chu, created_at) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+        $sql = "INSERT INTO partners (name, image_url, link_href, is_hidden, stt, created_at) 
+                VALUES (?, ?, ?, ?, ?, NOW())";
         $stmt = $db->prepare($sql);
 
-        if ($stmt->execute([$name, $image_url, $link_href, $id_country, $id_school, $is_hidden, $stt, $ghi_chu])) {
-            Response::redirect('/admin/slides');
+        if ($stmt->execute([$name, $image_url, $link_href, $is_hidden, $stt])) {
+            Response::redirect('/admin/partners');
         } else {
             Response::json(['error' => 'Lỗi hệ thống'], 500);
         }
@@ -106,20 +94,15 @@ class AdminSlideController
         Auth::requireAdmin();
         $db = Db::getInstance()->pdo();
 
-        $stmt = $db->prepare("SELECT * FROM slides WHERE id = ? AND is_delete = 0");
+        $stmt = $db->prepare("SELECT * FROM partners WHERE id = ? AND is_delete = 0");
         $stmt->execute([$id]);
-        $slide = $stmt->fetch(PDO::FETCH_ASSOC);
+        $partner = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (!$slide)
+        if (!$partner)
             Response::notFound();
 
-        $countries = $db->query("SELECT id, name FROM countries ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
-        $schools = $db->query("SELECT id, name FROM schools ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
-
-        view('admin', 'admin/slides/edit', [
-            'slide' => $slide,
-            'countries' => $countries,
-            'schools' => $schools,
+        view('admin', 'admin/partners/edit', [
+            'partner' => $partner,
             'csrf' => Csrf::token()
         ]);
     }
@@ -131,32 +114,29 @@ class AdminSlideController
 
         $name = trim($_POST['name'] ?? '');
         $link_href = trim($_POST['link_href'] ?? '');
-        $id_country = !empty($_POST['id_country']) ? (int) $_POST['id_country'] : null;
-        $id_school = !empty($_POST['id_school']) ? (int) $_POST['id_school'] : null;
         $is_hidden = isset($_POST['is_hidden']) ? 1 : 0;
         $stt = (int) ($_POST['stt'] ?? 0);
-        $ghi_chu = $_POST['ghi_chu'] ?? '';
 
         $db = Db::getInstance()->pdo();
-        $stmt = $db->prepare("SELECT image_url FROM slides WHERE id = ?");
+        $stmt = $db->prepare("SELECT image_url FROM partners WHERE id = ?");
         $stmt->execute([$id]);
         $old = $stmt->fetch();
         $image_url = $old['image_url'];
 
         if (isset($_FILES['image']) && $_FILES['image']['size'] > 0) {
             try {
-                $image_url = self::saveUploadedImage($_FILES['image'], 'slide_');
+                $image_url = self::saveUploadedImage($_FILES['image'], 'partner_');
             } catch (Exception $e) {
                 Response::json(['error' => $e->getMessage()], 400);
                 return;
             }
         }
 
-        $sql = "UPDATE slides SET name=?, image_url=?, link_href=?, id_country=?, id_school=?, is_hidden=?, stt=?, ghi_chu=?, updated_at=NOW() WHERE id=?";
+        $sql = "UPDATE partners SET name=?, image_url=?, link_href=?, is_hidden=?, stt=?, updated_at=NOW() WHERE id=?";
         $stmt = $db->prepare($sql);
 
-        if ($stmt->execute([$name, $image_url, $link_href, $id_country, $id_school, $is_hidden, $stt, $ghi_chu, $id])) {
-            Response::redirect('/admin/slides');
+        if ($stmt->execute([$name, $image_url, $link_href, $is_hidden, $stt, $id])) {
+            Response::redirect('/admin/partners');
         } else {
             Response::json(['error' => 'Lỗi hệ thống'], 500);
         }
@@ -167,7 +147,7 @@ class AdminSlideController
         Auth::requireAdmin();
         Csrf::verify($_POST['_csrf'] ?? '');
         $db = Db::getInstance()->pdo();
-        $stmt = $db->prepare("UPDATE slides SET is_delete = 1 WHERE id = ?");
+        $stmt = $db->prepare("UPDATE partners SET is_delete = 1 WHERE id = ?");
         if ($stmt->execute([$id])) {
             ob_clean();
             Response::json(['success' => true]);
@@ -185,17 +165,17 @@ class AdminSlideController
         Csrf::verify($_POST['_csrf'] ?? '');
         $db = Db::getInstance()->pdo();
 
-        $stmt = $db->prepare("SELECT is_hidden FROM slides WHERE id = ?");
+        $stmt = $db->prepare("SELECT is_hidden FROM partners WHERE id = ?");
         $stmt->execute([$id]);
-        $slide = $stmt->fetch();
+        $partner = $stmt->fetch();
 
-        if (!$slide) {
-            Response::json(['error' => 'Không tìm thấy slide'], 404);
+        if (!$partner) {
+            Response::json(['error' => 'Không tìm thấy đối tác'], 404);
             return;
         }
 
-        $newStatus = $slide['is_hidden'] ? 0 : 1;
-        $stmt = $db->prepare("UPDATE slides SET is_hidden = ? WHERE id = ?");
+        $newStatus = $partner['is_hidden'] ? 0 : 1;
+        $stmt = $db->prepare("UPDATE partners SET is_hidden = ? WHERE id = ?");
 
         if ($stmt->execute([$newStatus, $id])) {
             ob_clean();
@@ -207,16 +187,17 @@ class AdminSlideController
             exit;
         }
     }
+
     private static function saveUploadedImage($file, $prefix)
     {
-        $uploadDir = __DIR__ . '/../../public/assets/uploads/slides';
+        $uploadDir = __DIR__ . '/../../public/assets/uploads/partners';
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true);
         }
         $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         $filename = $prefix . time() . '_' . rand(1000, 9999) . '.' . $ext;
         if (move_uploaded_file($file['tmp_name'], $uploadDir . '/' . $filename)) {
-            return '/assets/uploads/slides/' . $filename;
+            return '/assets/uploads/partners/' . $filename;
         }
         throw new Exception("Upload failed");
     }

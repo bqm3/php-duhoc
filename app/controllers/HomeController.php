@@ -21,7 +21,7 @@ class HomeController
         // Fetch slides
         $slides = [];
         try {
-            $stmt = $pdo->prepare("SELECT * FROM slides WHERE is_hidden = 0 AND is_dele = 0 ORDER BY stt ASC, created_at DESC");
+            $stmt = $pdo->prepare("SELECT * FROM slides WHERE is_hidden = 0 AND is_delete = 0 ORDER BY stt ASC, created_at DESC");
             $stmt->execute();
             $slides = $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
@@ -100,6 +100,15 @@ class HomeController
         } catch (Exception $e) {
         }
 
+        // Fetch active partners
+        $partners = [];
+        try {
+            $stmt = $pdo->prepare("SELECT * FROM partners WHERE is_hidden = 0 AND is_delete = 0 ORDER BY stt ASC, created_at DESC");
+            $stmt->execute();
+            $partners = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+        }
+
         view('main', 'layouts/pages/home/index', [
             'title' => 'Trang chủ',
             'posts' => $posts,
@@ -108,6 +117,7 @@ class HomeController
             'scholarshipPosts' => $scholarshipPosts,
             'internationalInfoPosts' => $internationalInfoPosts,
             'slides' => $slides,
+            'partners' => $partners,
             'pageCss' => ['home.css'],
         ]);
     }

@@ -45,6 +45,8 @@ function activeClass($targetPath)
         return 'text-primary font-weight-bold';
     if (strpos($targetPath, '/admin/slides') !== false && strpos($currentPath, '/slides') !== false)
         return 'text-primary font-weight-bold';
+    if (strpos($targetPath, '/admin/partners') !== false && strpos($currentPath, '/partners') !== false)
+        return 'text-primary font-weight-bold';
 
 
     return '';
@@ -157,6 +159,14 @@ $open_pages = isGroupActive(['email', 'login', 'register', 'lockscreen', 'forgot
                     <a href="<?= $base ?>/admin/slides" class="<?= activeClass('/admin/slides') ?>">
                         <i class="fa fa-sliders mr-3"></i>
                         <span class="none"> Quản lý Slide </span>
+                    </a>
+                </li>
+
+                <!-- PARTNERS -->
+                <li class="parent">
+                    <a href="<?= $base ?>/admin/partners" class="<?= activeClass('/admin/partners') ?>">
+                        <i class="fa fa-handshake-o mr-3"></i>
+                        <span class="none"> Quản lý Đối tác </span>
                     </a>
                 </li>
 
@@ -440,7 +450,8 @@ $open_pages = isGroupActive(['email', 'login', 'register', 'lockscreen', 'forgot
         // Nhóm các trang độc lập (Users, Categories) -> Xóa trạng thái để đóng hết
         else if (currentUrl.indexOf('/admin/users') > -1 ||
             currentUrl.indexOf('/admin/categories') > -1 ||
-            currentUrl.indexOf('/admin/tags') > -1) {
+            currentUrl.indexOf('/admin/tags') > -1 ||
+            currentUrl.indexOf('/admin/partners') > -1) {
 
             localStorage.removeItem('lastTab');
 

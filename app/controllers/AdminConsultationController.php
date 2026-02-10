@@ -19,7 +19,7 @@ class AdminConsultationController
         $offset = ($page - 1) * $limit;
 
         // Build query conditions
-        $whereClause = "WHERE 1=1";
+        $whereClause = "WHERE is_delete = 0";
         $params = [];
 
         if (!empty($keyword)) {
@@ -88,7 +88,7 @@ class AdminConsultationController
     {
         Auth::requireAdmin();
         $db = Db::getInstance()->pdo();
-        $stmt = $db->prepare("SELECT * FROM consultations WHERE id = ?");
+        $stmt = $db->prepare("SELECT * FROM consultations WHERE id = ? AND is_delete = 0");
         $stmt->execute([$id]);
         $consultation = $stmt->fetch();
 
@@ -132,7 +132,7 @@ class AdminConsultationController
         Csrf::verify($_POST['_csrf'] ?? '');
         $db = Db::getInstance()->pdo();
 
-        $stmt = $db->prepare("DELETE FROM consultations WHERE id = ?");
+        $stmt = $db->prepare("UPDATE consultations SET is_delete = 1 WHERE id = ?");
 
         if ($stmt->execute([$id])) {
             ob_clean();

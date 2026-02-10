@@ -15,7 +15,7 @@ class StudyAbroadController
       LEFT JOIN users u ON p.user_id = u.id
       LEFT JOIN countries ctry ON p.country_id = ctry.id
       LEFT JOIN tags t ON p.tag_id = t.id
-      WHERE p.slug = ?
+      WHERE p.slug = ? AND p.is_delete = 0
       LIMIT 1
     ");
     $stmt->execute([$slug]);
@@ -43,7 +43,7 @@ class StudyAbroadController
                 SELECT p.slug 
                 FROM posts p 
                 JOIN categories c ON p.category_id = c.id 
-                WHERE p.country_id = ? AND c.slug = ? AND p.is_hidden = 0 
+                WHERE p.country_id = ? AND c.slug = ? AND p.is_hidden = 0 AND p.is_delete = 0
                 LIMIT 1
             ");
         $stmt->execute([$post['country_id'], $catSlug]);
@@ -78,7 +78,7 @@ class StudyAbroadController
         SELECT p.*, c.name AS category_name
         FROM posts p
         LEFT JOIN categories c ON p.category_id = c.id
-        WHERE c.slug = 'tin-tuc' AND p.is_hidden = 0
+        WHERE c.slug = 'tin-tuc' AND p.is_hidden = 0 AND p.is_delete = 0
         ORDER BY p.created_at DESC, p.id DESC
         LIMIT 3
       ");
@@ -91,7 +91,7 @@ class StudyAbroadController
         FROM posts p
         LEFT JOIN categories c ON p.category_id = c.id
         LEFT JOIN tags t ON p.tag_id = t.id
-        WHERE c.slug = 'tin-tuc' AND p.is_hidden = 0
+        WHERE c.slug = 'tin-tuc' AND p.is_hidden = 0 AND p.is_delete = 0
         ORDER BY p.created_at DESC, p.id DESC
       ");
       $stmt->execute();

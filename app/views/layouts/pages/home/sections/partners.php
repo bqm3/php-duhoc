@@ -63,39 +63,32 @@
       </p>
     </header>
 
-    <?php
-    $partners = [
-      ['file' => 'img_main1.png', 'name' => 'Đối tác đại học tại Úc', 'country' => 'Úc'],
-      ['file' => 'img_main2.png', 'name' => 'Đối tác đại học tại Canada', 'country' => 'Canada'],
-      ['file' => 'img_main3.png', 'name' => 'Đối tác đại học tại Mỹ', 'country' => 'Mỹ'],
-      ['file' => 'img_main4.png', 'name' => 'Đối tác đại học tại Anh', 'country' => 'Anh'],
-      ['file' => 'img_main5.png', 'name' => 'Đối tác đại học tại Nhật Bản', 'country' => 'Nhật Bản'],
-      ['file' => 'img_main6.png', 'name' => 'Đối tác đại học tại Hàn Quốc', 'country' => 'Hàn Quốc'],
-    ];
+    <?php if (empty($partners)): ?>
+      <!-- No partners found -->
+    <?php else: ?>
+      <?php $orgName = 'VNPC'; ?>
+      <div itemscope itemtype="https://schema.org/Organization" class="visually-hidden">
+        <meta itemprop="name" content="<?= htmlspecialchars($orgName) ?>">
+        <?php foreach ($partners as $p): ?>
+          <div itemprop="brand" itemscope itemtype="https://schema.org/Brand">
+            <meta itemprop="name" content="<?= htmlspecialchars($p['name']) ?>">
+            <meta itemprop="logo" content="<?= htmlspecialchars($base . $p['image_url']) ?>">
+          </div>
+        <?php endforeach; ?>
+      </div>
 
-    $orgName = 'VNPC';
-    ?>
-
-    <div itemscope itemtype="https://schema.org/Organization" class="visually-hidden">
-      <meta itemprop="name" content="<?= htmlspecialchars($orgName) ?>">
-      <?php foreach ($partners as $p): ?>
-        <div itemprop="brand" itemscope itemtype="https://schema.org/Brand">
-          <meta itemprop="name" content="<?= htmlspecialchars($p['name']) ?>">
-          <meta itemprop="logo" content="<?= htmlspecialchars($base . '/assets/img/client/' . $p['file']) ?>">
-        </div>
-      <?php endforeach; ?>
-    </div>
-
-    <div class="d-flex flex-wrap justify-content-center align-items-center gap-5 partner-row-scroll" role="list"
-      aria-label="Logo đối tác tiêu biểu">
-      <?php foreach ($partners as $i => $p): ?>
-        <figure class="m-0 partner-item" role="listitem">
-          <img src="<?= $base ?>/assets/img/client/<?= htmlspecialchars($p['file']) ?>"
-            alt="Logo <?= htmlspecialchars($p['name']) ?>" title="<?= htmlspecialchars($p['name']) ?>"
-            class="partner-logo" width="160" height="60" loading="lazy" decoding="async"
-            fetchpriority="<?= $i < 2 ? 'high' : 'low' ?>" />
-        </figure>
-      <?php endforeach; ?>
-    </div>
+      <div class="d-flex flex-wrap justify-content-center align-items-center gap-5 partner-row-scroll" role="list"
+        aria-label="Logo đối tác tiêu biểu">
+        <?php foreach ($partners as $i => $p): ?>
+          <figure class="m-0 partner-item" role="listitem">
+            <a href="<?= htmlspecialchars($p['link_href'] ?: '#') ?>" target="_blank" rel="noopener">
+              <img src="<?= $base . htmlspecialchars($p['image_url']) ?>" alt="Logo <?= htmlspecialchars($p['name']) ?>"
+                title="<?= htmlspecialchars($p['name']) ?>" class="partner-logo" width="160" height="60" loading="lazy"
+                decoding="async" style="height: 60px; object-fit: contain;" />
+            </a>
+          </figure>
+        <?php endforeach; ?>
+      </div>
+    <?php endif; ?>
   </div>
 </section>

@@ -12,7 +12,7 @@ class NavbarController
       $db = Db::getInstance()->pdo();
 
       // 1) lấy category theo slug
-      $stmt = $db->prepare("SELECT id FROM categories WHERE slug = ? LIMIT 1");
+      $stmt = $db->prepare("SELECT id FROM categories WHERE slug = ? AND is_delete = 0 LIMIT 1");
       $stmt->execute([$slug]);
       $catId = (int) $stmt->fetchColumn();
 
@@ -43,7 +43,7 @@ class NavbarController
         FROM posts p
         JOIN countries co   ON co.id = p.country_id
         JOIN continents ct  ON ct.id = co.continent_id
-        WHERE p.category_id = ? AND p.is_hidden = 0
+        WHERE p.category_id = ? AND p.is_hidden = 0 AND p.is_delete = 0 AND co.is_delete = 0 AND ct.is_delete = 0
         ORDER BY ct.display_order ASC, co.display_order ASC, co.name ASC
       ";
       $stmt = $db->prepare($sql);
@@ -100,8 +100,8 @@ class NavbarController
       $db = Db::getInstance()->pdo();
       $svc_stmt = $db->prepare("
         SELECT slug FROM posts 
-        WHERE category_id = (SELECT id FROM categories WHERE slug = 'dich-vu' LIMIT 1)
-        AND is_hidden = 0
+        WHERE category_id = (SELECT id FROM categories WHERE slug = 'dich-vu' AND is_delete = 0 LIMIT 1)
+        AND is_hidden = 0 AND is_delete = 0
         ORDER BY updated_at DESC, created_at DESC 
         LIMIT 1
       ");
