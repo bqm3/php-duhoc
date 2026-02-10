@@ -1,4 +1,64 @@
-<?php if (!isset($base)) $base = ''; ?>
+<style>
+  .why-container {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    height: 800px;
+  }
+
+  /* Desktop absolute positioning */
+  @media (min-width: 992px) {
+    .vnpc-feature {
+      position: absolute;
+      width: 300px;
+    }
+  }
+
+  /* Mobile/Tablet layout */
+  @media (max-width: 991px) {
+    .why-container {
+      height: auto;
+      padding: 40px 15px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .why-title-group {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .vnpc-feature-list {
+      display: grid !important;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-bottom: 30px !important;
+    }
+
+    .vnpc-feature {
+      position: static !important;
+      width: 100% !important;
+    }
+
+    .why-main-img,
+    .why-small-img,
+    .vnpc-why-accent,
+    .why-icon-top {
+      display: none;
+    }
+
+    .vnpc-big-q {
+      display: none;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .vnpc-feature-list {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
 
 <section class="vnpc-why" aria-labelledby="why-title" itemscope itemtype="https://schema.org/Organization">
   <div class="why-container">
@@ -14,38 +74,23 @@
       ['title' => 'Luôn Kết Nối', 'desc' => 'Giữ kết nối, chăm sóc và hỗ trợ học sinh trước khi bay, trong khi bay và sau khi bay', 'top' => '595.53px', 'left' => '646px'],
     ];
 
-    // Mô tả ngắn cho SEO (không ảnh hưởng layout)
     $seoDesc = 'Trung tâm tư vấn du học với kinh nghiệm lâu năm, hỗ trợ 24/7, đào tạo chuyên sâu, quy trình minh bạch và đồng hành từ chuẩn bị hồ sơ đến khi ổn định ở nước ngoài.';
     ?>
 
-    <!-- SEO: Heading + mô tả (giữ class để không vỡ layout) -->
     <div class="why-title-group">
       <h2 class="why-title" id="why-title" itemprop="slogan">
         Tại sao nên chọn <br /> du học tại chúng tôi
       </h2>
-
-      <!-- đoạn mô tả cho SEO, dùng inline style để không phá CSS hiện có -->
-      <!-- <p class="why-subtitle" style="max-width: 520px; margin: 10px 0 0; line-height: 1.6;">
-        <?= htmlspecialchars($seoDesc) ?>
-      </p> -->
-
       <div class="vnpc-big-q" aria-hidden="true">?</div>
     </div>
 
-    <!-- SEO: list semantics cho feature, không đổi class/position -->
-    <ul class="vnpc-feature-list" style="list-style: none; padding: 0; margin: 0;" aria-label="Lý do nên chọn chúng tôi">
+    <ul class="vnpc-feature-list" style="list-style: none; padding: 0; margin: 0;"
+      aria-label="Lý do nên chọn chúng tôi">
       <?php foreach ($features as $f): ?>
         <li class="vnpc-feature" style="top: <?= $f['top'] ?>; left: <?= $f['left'] ?>;">
           <div class="vnpc-feature-h">
-            <img
-              src="<?= $base ?>/assets/svgs/clients/ic_home7.svg"
-              width="17"
-              height="17"
-              alt=""
-              aria-hidden="true"
-              loading="lazy"
-              decoding="async"
-            >
+            <img src="<?= $base ?>/assets/svgs/clients/ic_home7.svg" width="17" height="17" alt="" aria-hidden="true"
+              loading="lazy" decoding="async">
             <h3 class="vnpc-feature-title" style="margin:0;">
               <?= htmlspecialchars($f['title']) ?>
             </h3>
@@ -57,31 +102,14 @@
       <?php endforeach; ?>
     </ul>
 
-    <!-- Images: thêm alt/title + lazy + size để SEO & CLS tốt hơn -->
-    <img
-      class="why-small-img"
-      src="<?= $base ?>/assets/img/client/img_home14.png"
-      alt="Học viên nhận tư vấn du học"
-      title="Tư vấn du học và hỗ trợ hồ sơ"
-      loading="lazy"
-      decoding="async"
-      width="320"
-      height="320"
-    >
+    <img class="why-small-img" src="<?= $base ?>/assets/img/client/img_home14.png" alt="Học viên nhận tư vấn du học"
+      title="Tư vấn du học và hỗ trợ hồ sơ" loading="lazy" decoding="async" width="320" height="320">
 
     <div class="vnpc-why-accent a" aria-hidden="true"></div>
     <div class="vnpc-why-accent b" aria-hidden="true"></div>
 
-    <img
-      class="why-main-img"
-      src="<?= $base ?>/assets/img/client/img_home15.png"
-      alt="Đội ngũ tư vấn du học đồng hành cùng học viên"
-      title="Vì sao chọn trung tâm tư vấn du học"
-      loading="lazy"
-      decoding="async"
-      width="720"
-      height="720"
-      itemprop="image"
-    >
+    <img class="why-main-img" src="<?= $base ?>/assets/img/client/img_home15.png"
+      alt="Đội ngũ tư vấn du học đồng hành cùng học viên" title="Vì sao chọn trung tâm tư vấn du học" loading="lazy"
+      decoding="async" width="720" height="720" itemprop="image">
   </div>
 </section>

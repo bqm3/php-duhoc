@@ -1,5 +1,30 @@
-<?php if (!isset($base))
-  $base = ''; ?>
+<style>
+  @media (max-width: 991px) {
+
+    .vnpc-consult-photos,
+    .consult-deco {
+      display: none !important;
+    }
+
+    .vnpc-consult {
+      padding: 40px 0;
+      min-height: auto;
+    }
+
+    .vnpc-form {
+      margin: 0 auto;
+      max-width: 100%;
+    }
+
+    .vnpc-form-title {
+      font-size: 24px;
+    }
+
+    .vnpc-form-sub {
+      font-size: 16px;
+    }
+  }
+</style>
 
 <section id="consult" class="vnpc-consult"
   style="background-image: url('<?= $base ?>/assets/img/client/img_home20.png');">

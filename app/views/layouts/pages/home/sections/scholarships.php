@@ -1,6 +1,3 @@
-<?php if (!isset($base))
-  $base = ''; ?>
-
 <style>
   /* =========================================================
    SCHOLARSHIP SECTION (ISOLATED – NO CONFLICT)
@@ -54,16 +51,6 @@
     transform: translateY(-1px);
   }
 
-  .scholar-btn-ico {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, .2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
   /* ===== Card ===== */
   .scholar-card {
     background: #fff;
@@ -75,128 +62,42 @@
     box-shadow: 0 12px 28px rgba(15, 23, 42, .12);
   }
 
-  /* image */
-  .scholar-card-img {
-    position: relative;
-  }
-
-  .scholar-card-img img {
-    width: 100%;
-    height: 230px;
-    object-fit: cover;
-    display: block;
-  }
-
-  /* badge */
-  .scholar-badge {
-    position: absolute;
-    top: 14px;
-    left: 14px;
-    background: #ff4d3d;
-    color: #fff;
-    font-size: 12px;
-    font-weight: 800;
-    padding: 6px 10px;
-    border-radius: 8px;
-  }
-
-  /* body */
-  .scholar-card-body {
-    padding: 16px 18px;
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    gap: 10px;
-  }
-
-  /* rating */
-  .scholar-rating {
-    font-size: 13px;
-    color: #64748b;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .scholar-rating-stars {
-    color: #f5b301;
-    letter-spacing: 1px;
-  }
-
-  /* title */
-  .scholar-title {
-    font-size: 18px;
-    font-weight: 800;
-    line-height: 1.35;
-    color: #0e2a46;
-    margin: 0;
-  }
-
-  .scholar-title a {
-    color: inherit;
-    text-decoration: none;
-  }
-
-  .scholar-title a:hover {
-    text-decoration: underline;
-  }
-
-  /* clamp */
-  .scholar-clamp {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  /* meta */
-  .scholar-meta {
-    margin-top: auto;
-    padding-top: 12px;
-    border-top: 1px solid #eef2f7;
-    display: flex;
-    gap: 16px;
-    font-size: 12px;
-    color: #64748b;
-    flex-wrap: wrap;
-  }
-
-  .scholar-meta span {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  /* Horizontal scroll on mobile */
+  /* Swiper Mobile Styles */
   @media (max-width: 991px) {
-    .scholar-row-scroll {
-      display: flex;
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      padding-bottom: 20px;
-      -webkit-overflow-scrolling: touch;
-      margin-left: -12px;
-      margin-right: -12px;
-      padding-left: 12px;
-      padding-right: 12px;
-      scrollbar-width: thin;
+    .scholar-swiper {
+      padding-bottom: 40px !important;
+      overflow: hidden;
     }
 
-    .scholar-row-scroll>[class*="col-"] {
-      flex: 0 0 85%;
-      max-width: 85%;
+    .scholar-swiper .swiper-slide {
+      width: 100%;
+      height: auto;
     }
 
-    .scholar-row-scroll::-webkit-scrollbar {
-      height: 4px;
+    .scholar-swiper .swiper-pagination-bullet-active {
+      background: #1d76d3;
+    }
+  }
+
+  /* Desktop Grid simulation since we removed Bootstrap classes to avoid Swiper conflict */
+  @media (min-width: 992px) {
+    .scholar-swiper {
+      overflow: visible;
     }
 
-    .scholar-row-scroll::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 4px;
+    .scholar-swiper .swiper-wrapper {
+      display: grid !important;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      transform: none !important;
+    }
+
+    .scholar-swiper .swiper-pagination {
+      display: none !important;
     }
   }
 </style>
+
 <section class="vnpc-section" aria-labelledby="scholarships-title">
   <section class="scholar-section" style="background-image:url('<?= $base ?>/assets/img/client/img_home13.png');"
     itemscope itemtype="https://schema.org/ItemList">
@@ -212,28 +113,59 @@
 
         <a href="<?= $base ?>/hoc-bong" class="scholar-btn">
           <span>Xem Thêm</span>
-          <!-- <span class="scholar-btn-ico">
-            <img src="<?= $base ?>/assets/svgs/clients/ic_home3.svg" width="18" height="18" alt="">
-          </span> -->
         </a>
       </div>
 
-      <!-- CARDS -->
-      <div class="row g-4 scholar-row-scroll">
+      <!-- SWIPER -->
+      <div class="swiper scholar-swiper">
+        <div class="swiper-wrapper">
 
-        <?php if (!empty($scholarshipPosts)): ?>
-          <?php foreach ($scholarshipPosts as $c): ?>
-            <article class="col-lg-4 col-md-6" itemprop="itemListElement">
-              <?php partial('layouts/partials/post_card', ['post' => $c, 'base' => $base]); ?>
-            </article>
-          <?php endforeach; ?>
-        <?php else: ?>
-          <div class="col-12 text-center py-5">
-            <p class="text-secondary">Đang cập nhật các chương trình học bổng mới nhất...</p>
-          </div>
-        <?php endif; ?>
+          <?php if (!empty($scholarshipPosts)): ?>
+            <?php foreach ($scholarshipPosts as $c): ?>
+              <article class="swiper-slide" itemprop="itemListElement">
+                <?php partial('layouts/partials/post_card', ['post' => $c, 'base' => $base]); ?>
+              </article>
+            <?php endforeach; ?>
+          <?php else: ?>
+            <div class="swiper-slide text-center py-5">
+              <p class="text-secondary">Đang cập nhật các chương trình học bổng mới nhất...</p>
+            </div>
+          <?php endif; ?>
 
+        </div>
+        <!-- Add Pagination -->
+        <div class="swiper-pagination"></div>
       </div>
     </div>
   </section>
 </section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    let scholarSwiper;
+
+    function initScholarSwiper() {
+      if (window.innerWidth < 992) {
+        if (!scholarSwiper) {
+          scholarSwiper = new Swiper(".scholar-swiper", {
+            slidesPerView: 1,
+            spaceBetween: 20,
+            loop: true,
+            pagination: {
+              el: ".swiper-pagination",
+              clickable: true,
+            },
+          });
+        }
+      } else {
+        if (scholarSwiper) {
+          scholarSwiper.destroy(true, true);
+          scholarSwiper = undefined;
+        }
+      }
+    }
+
+    initScholarSwiper();
+    window.addEventListener('resize', initScholarSwiper);
+  });
+</script>

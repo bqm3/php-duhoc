@@ -1,4 +1,40 @@
-<?php if (!isset($base)) $base = ''; ?>
+<style>
+@media (max-width: 991px) {
+    .vnpc-about-photos {
+        min-height: auto;
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: center;
+    }
+    .vnpc-about-photos .a1, 
+    .vnpc-about-photos .a-badge, 
+    .vnpc-about-photos .about-frame {
+        display: none !important;
+    }
+    .vnpc-about-photos .a2 {
+        position: static !important;
+        width: 100% !important;
+        max-width: 500px;
+        height: auto !important;
+        border-radius: 20px;
+    }
+    .vnpc-about {
+        padding: 40px 0;
+    }
+    .vnpc-about .vnpc-h2 {
+        text-align: center;
+    }
+    .vnpc-about .vnpc-p {
+        text-align: center !important;
+    }
+    .vnpc-about .btn {
+        display: flex !important;
+        justify-content: center;
+        margin: 0 auto;
+        width: fit-content;
+    }
+}
+</style>
 
 <section class="vnpc-section vnpc-about" aria-labelledby="about-vnpc">
   <div class="container-xxl position-relative">
