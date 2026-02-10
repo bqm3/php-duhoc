@@ -1,39 +1,50 @@
 <style>
-@media (max-width: 991px) {
+  @media (max-width: 991px) {
     .vnpc-about-photos {
-        min-height: auto;
-        margin-bottom: 30px;
-        display: flex;
-        justify-content: center;
+      min-height: auto;
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: center;
     }
-    .vnpc-about-photos .a1, 
-    .vnpc-about-photos .a-badge, 
+
+    .vnpc-about-photos .a1,
+    .vnpc-about-photos .a-badge,
     .vnpc-about-photos .about-frame {
-        display: none !important;
+      display: none !important;
     }
+
     .vnpc-about-photos .a2 {
-        position: static !important;
-        width: 100% !important;
-        max-width: 500px;
-        height: auto !important;
-        border-radius: 20px;
+      position: static !important;
+      width: 100% !important;
+      max-width: 500px;
+      height: auto !important;
+      border-radius: 20px;
     }
+
     .vnpc-about {
-        padding: 40px 0;
+      padding: 40px 0;
+      overflow-x: hidden;
     }
+
+    .vnpc-about .container-xxl {
+      overflow: hidden;
+    }
+
     .vnpc-about .vnpc-h2 {
-        text-align: center;
+      text-align: center;
     }
+
     .vnpc-about .vnpc-p {
-        text-align: center !important;
+      text-align: center !important;
     }
+
     .vnpc-about .btn {
-        display: flex !important;
-        justify-content: center;
-        margin: 0 auto;
-        width: fit-content;
+      display: flex !important;
+      justify-content: center;
+      margin: 0 auto;
+      width: fit-content;
     }
-}
+  }
 </style>
 
 <section class="vnpc-section vnpc-about" aria-labelledby="about-vnpc">
@@ -44,26 +55,14 @@
       <div class="col-lg-6">
         <div class="vnpc-about-photos">
 
-          <img
-            class="a1"
-            src="<?= $base ?>/assets/img/client/img_home8.png"
-            alt="Tư vấn du học VNPC đồng hành cùng du học sinh"
-            loading="lazy"
-          >
+          <img class="a1" src="<?= $base ?>/assets/img/client/img_home8.png"
+            alt="Tư vấn du học VNPC đồng hành cùng du học sinh" loading="lazy">
 
-          <img
-            class="a2"
-            src="<?= $base ?>/assets/img/client/img_home9.png"
-            alt="Học sinh VNPC tại các trường đại học quốc tế"
-            loading="lazy"
-          >
+          <img class="a2" src="<?= $base ?>/assets/img/client/img_home9.png"
+            alt="Học sinh VNPC tại các trường đại học quốc tế" loading="lazy">
 
-          <img
-            class="a-badge"
-            src="<?= $base ?>/assets/svgs/clients/ic_home1.svg"
-            alt="Gần 20 năm kinh nghiệm tư vấn du học"
-            loading="lazy"
-          >
+          <img class="a-badge" src="<?= $base ?>/assets/svgs/clients/ic_home1.svg"
+            alt="Gần 20 năm kinh nghiệm tư vấn du học" loading="lazy">
 
           <!-- Decorative Frame -->
           <div class="about-frame" aria-hidden="true">
@@ -72,12 +71,7 @@
             <div class="frame-dot" style="left: 0; bottom: 0;"></div>
             <div class="frame-dot" style="right: 0; bottom: 0;"></div>
             <div class="frame-border"></div>
-            <img
-              src="<?= $base ?>/assets/svgs/clients/ic_home2.svg"
-              alt=""
-              class="frame-icon"
-              loading="lazy"
-            >
+            <img src="<?= $base ?>/assets/svgs/clients/ic_home2.svg" alt="" class="frame-icon" loading="lazy">
           </div>
 
         </div>
@@ -90,23 +84,22 @@
         </h2>
 
         <p class="vnpc-p mb-4" style="text-align: justify;">
-          Thành lập năm 2006, <strong>VNPC</strong> là trung tâm <strong>tư vấn du học uy tín</strong> với gần 20 năm kinh
+          Thành lập năm 2006, <strong>VNPC</strong> là trung tâm <strong>tư vấn du học uy tín</strong> với gần 20 năm
+          kinh
           nghiệm và mạng lưới đối tác toàn cầu. Chúng tôi đã đồng hành cùng hàng nghìn học sinh, sinh viên chinh phục
           ước mơ du học tại các quốc gia như <strong>Úc, Mỹ, Anh, Canada, Đức, Thụy Sỹ, New Zealand, Hàn Quốc,
-          Nhật Bản, Singapore</strong> và nhiều nước khác.
+            Nhật Bản, Singapore</strong> và nhiều nước khác.
           <br><br>
-          VNPC cung cấp dịch vụ <strong>tư vấn chọn trường – chọn ngành, xử lý hồ sơ, xin học bổng và visa du học</strong>
+          VNPC cung cấp dịch vụ <strong>tư vấn chọn trường – chọn ngành, xử lý hồ sơ, xin học bổng và visa du
+            học</strong>
           với quy trình minh bạch, chi phí rõ ràng và tỷ lệ đậu visa cao, được thực hiện bởi đội ngũ chuyên viên giàu
           kinh nghiệm và tận tâm.
         </p>
 
-        <a
-          href="<?= $base ?>/gioi-thieu"
-          class="btn vnpc-btn-primary d-inline-flex align-items-center gap-2"
-          title="Giới thiệu trung tâm tư vấn du học VNPC"
-        >
+        <a href="<?= $base ?>/gioi-thieu" class="btn vnpc-btn-primary d-inline-flex align-items-center gap-2"
+          title="Giới thiệu trung tâm tư vấn du học VNPC">
           <span>Tìm hiểu thêm về VNPC</span>
-         
+
         </a>
       </div>
 
