@@ -19,7 +19,9 @@
 <?php include __DIR__ . '/sections/countries.php'; ?>
 <?php include __DIR__ . '/sections/scholarships.php'; ?>
 <?php include __DIR__ . '/sections/why.php'; ?>
-<?php include __DIR__ . '/sections/process.php'; ?>
+<div class="d-none d-md-block">
+    <?php include __DIR__ . '/sections/process.php'; ?>
+</div>
 <?php include __DIR__ . '/sections/consult.php'; ?>
 <?php include __DIR__ . '/sections/testimonials.php'; ?>
 <?php include __DIR__ . '/sections/blogs.php'; ?>

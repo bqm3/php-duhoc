@@ -479,16 +479,25 @@ $megaMenuSlugs = [
     /* Drawer Items */
     .nav-item-container {
       width: 100%;
-      border-bottom: 1px solid #f2f2f2;
+      border-bottom: 1px solid #f0f0f0;
+      flex-direction: column;
+      align-items: stretch;
+      height: auto;
     }
 
     .nav-link {
       color: #333;
-      padding: 14px 20px;
+      padding: 15px 20px;
       width: 100%;
       justify-content: flex-start;
-      font-weight: 500;
-      font-size: 17px;
+      font-weight: 600;
+      font-size: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .nav-link:hover {
+      background: #f8f8f8;
     }
 
     .drawer-icon {
@@ -499,50 +508,79 @@ $megaMenuSlugs = [
     }
 
     .nav-link.active {
-      background: rgba(39, 119, 196, 0.05);
+      background: rgba(39, 119, 196, 0.08);
       color: #2777C4;
-      border-left: 4px solid #2777C4;
+      border-left: 3px solid #2777C4;
     }
 
     .chevron-icon {
       margin-left: auto;
-      font-size: 12px;
+      font-size: 11px;
       transition: transform 0.3s ease;
+    }
+
+    .nav-item-container.active-mobile > .nav-link .chevron-icon {
+      transform: rotate(180deg);
     }
 
     /* Mega Menu on Mobile */
     .mega-menu-dropdown {
-      position: static;
-      transform: none;
-      width: 100%;
-      background: #fcfcfc;
-      box-shadow: none;
+      position: static !important;
+      transform: none !important;
+      width: 100% !important;
+      background: #f9f9f9;
+      box-shadow: none !important;
       border-radius: 0;
-      opacity: 1;
-      pointer-events: auto;
+      opacity: 1 !important;
+      pointer-events: auto !important;
+      display: block !important;
       max-height: 0;
       overflow: hidden;
       margin-top: 0;
+      transition: max-height 0.35s ease;
     }
 
     .mega-menu-inner {
       border-top: none;
       background: transparent;
+      border-radius: 0;
+      box-shadow: none !important;
     }
 
     .nav-item-container.active-mobile .mega-menu-dropdown {
-      max-height: 2000px;
-      margin-bottom: 10px;
+      max-height: 3000px;
+    }
+
+    .mega-menu-content {
+      padding: 8px 0 !important;
+      min-height: auto !important;
     }
 
     .mega-menu-header {
-      padding: 10px 20px;
-      font-size: 14px;
-      margin-top: 5px;
+      padding: 10px 24px;
+      font-size: 13px;
+      margin: 0;
+      border-bottom: none;
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 700;
+    }
+
+    .mega-menu-header::after {
+      display: none;
     }
 
     .mega-menu-item {
-      padding: 10px 40px;
+      padding: 10px 24px 10px 36px;
+      font-size: 14px;
+      color: #444;
+      border-radius: 0;
+    }
+
+    .mega-menu-item:hover {
+      background: #eee;
+      padding-left: 36px;
     }
 
     /* Drawer Footer */
@@ -700,9 +738,11 @@ $megaMenuSlugs = [
       }
 
       let html = '';
+      const isMobile = window.innerWidth <= 991;
+      const colClass = isMobile ? 'col-12 mb-0' : 'col-md-4 mb-3';
       res.items.forEach(ct => {
         html += `
-        <div class="col-md-4 mb-3">
+        <div class="${colClass}">
           <h3 class="mega-menu-header">
             ${escapeHtml(ct.name)}
           </h3>
