@@ -98,8 +98,10 @@ function view(string $layout, string $view, array $data = []): void
     $layoutFile2 = __DIR__ . "/../app/views/layouts/$layout.layout.php";
 
     $layoutFile = null;
-    if (file_exists($layoutFile1)) $layoutFile = $layoutFile1;
-    elseif (file_exists($layoutFile2)) $layoutFile = $layoutFile2;
+    if (file_exists($layoutFile1))
+        $layoutFile = $layoutFile1;
+    elseif (file_exists($layoutFile2))
+        $layoutFile = $layoutFile2;
 
     if (!$layoutFile) {
         throw new RuntimeException("Layout not found: $layoutFile1 OR $layoutFile2");
@@ -134,7 +136,7 @@ function partial(string $view, array $data = []): void
 function notFound(): void
 {
     http_response_code(404);
-    include __DIR__ . '/../app/views/admin/error-404.html';
+    include __DIR__ . '/../app/views/admin/error-404.php';
     exit;
 }
 
