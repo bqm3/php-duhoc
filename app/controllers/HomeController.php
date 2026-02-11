@@ -72,7 +72,7 @@ class HomeController
                         FROM posts p 
                         LEFT JOIN tags t ON p.tag_id = t.id
                         WHERE p.category_id = ? AND p.is_hidden = 0 
-                        ORDER BY RAND() LIMIT 3";
+                        ORDER BY RAND() LIMIT 18";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([$scholarshipCatId]);
                 $scholarshipPosts = $stmt->fetchAll(PDO::FETCH_ASSOC);
