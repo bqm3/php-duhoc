@@ -147,7 +147,8 @@ $megaMenuSlugs = [
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 84px;
+    justify-content: space-between;
+    width: 100%;
     height: 100%;
   }
 
@@ -519,7 +520,7 @@ $megaMenuSlugs = [
       transition: transform 0.3s ease;
     }
 
-    .nav-item-container.active-mobile > .nav-link .chevron-icon {
+    .nav-item-container.active-mobile>.nav-link .chevron-icon {
       transform: rotate(180deg);
     }
 
