@@ -16,6 +16,7 @@ $nav_items = NavbarController::getNavItems($base, $relative_path);
 $megaMenuSlugs = [
   'Du học' => 'du-hoc',
   'Học bổng' => 'hoc-bong',
+  'Chi phí' => 'chi-phi',
   'Ngoại ngữ du học' => 'ngoai-ngu-du-hoc',
 ];
 ?>

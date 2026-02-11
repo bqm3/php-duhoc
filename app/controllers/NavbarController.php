@@ -122,6 +122,7 @@ class NavbarController
       ['Giới thiệu', $base . '/gioi-thieu', $relative_path === '/gioi-thieu', 'about'],
       ['Du học', $base . '/du-hoc', strpos($relative_path, '/du-hoc') === 0, 'study'],
       ['Học bổng', $base . '/hoc-bong', strpos($relative_path, '/hoc-bong') === 0, 'scholarship'],
+      ['Chi phí', $base . '/chi-phi', strpos($relative_path, '/chi-phi') === 0, 'cost'],
       ['Dịch vụ', $service_href, $is_service_active, 'service'],
       ['Ngoại ngữ du học', $base . '/ngoai-ngu-du-hoc', strpos($relative_path, '/ngoai-ngu-du-hoc') === 0, 'language'],
       ['Tin tức', $base . '/tin-tuc', strpos($relative_path, '/tin-tuc') === 0, 'news'],
