@@ -55,8 +55,7 @@
                                     <input type="text" class="form-control" id="slug" name="slug"
                                         value="<?= htmlspecialchars($post['slug']) ?>"
                                         placeholder="URL-friendly version" readonly>
-                                    <small class="form-text text-muted">URL-friendly version of the title. (View only
-                                        during update)</small>
+                                    <small class="form-text text-muted">Phiên bản tiêu đề thân thiện với URL. (Chỉ xem trong quá trình cập nhật)</small>
                                 </div>
 
                                 <div class="form-group">
