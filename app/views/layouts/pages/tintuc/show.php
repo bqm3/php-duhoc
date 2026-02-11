@@ -5,10 +5,10 @@ $base = $base ?? '';
 
 <div class="container py-5">
     <div class="row">
-        <div class="col-lg-8 mx-auto">
+        <div class="col-lg-11 mx-auto">
 
             <!-- Breadcrumb -->
-            <nav aria-label="breadcrumb">
+            <!-- <nav aria-label="breadcrumb">
                 <ol class="breadcrumb bg-transparent p-0">
                     <li class="breadcrumb-item"><a href="<?= $base ?>/">Trang chủ</a></li>
                     <li class="breadcrumb-item"><a href="<?= $base ?>/tin-tuc">Tin tức</a></li>
@@ -16,7 +16,7 @@ $base = $base ?? '';
                         <?= htmlspecialchars($title) ?>
                     </li>
                 </ol>
-            </nav>
+            </nav> -->
 
             <!-- Post Header -->
             <h1 class="fw-bold mb-4" style="color: #2c3e50; line-height: 1.3;">
@@ -75,16 +75,16 @@ $base = $base ?? '';
 
             <!-- Share Buttons -->
             <div class="mt-5 pt-3 border-top">
-                <p class="font-weight-bold mb-3">Chia sẻ bài viết:</p>
-                <div class="d-flex gap-2">
-                    <a href="https://www.facebook.com/sharer/sharer.php?u=<?= urlencode((isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]") ?>"
-                        target="_blank" class="btn btn-primary px-4">
-                        <i class="fa fa-facebook me-2"></i>Facebook
-                    </a>
-                    <button class="btn btn-outline-secondary px-4" onclick="window.print()">
-                        <i class="fa fa-print me-2"></i>In bài viết
-                    </button>
-                </div>
+                <!-- <p class="font-weight-bold mb-2">Chia sẻ bài viết:</p> -->
+                <button class="btn btn-success btn-sm" type="button">
+                    <i class="fa fa-thumbs-up"></i> Like
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="sharePost(<?= (int) ($post['id'] ?? 0) ?>)">
+                    <i class="fa fa-share"></i> Facebook
+                </button>
+                <!-- <button class="btn btn-info btn-sm" type="button">
+      <i class="fa fa-share"></i> Twitter
+    </button> -->
             </div>
         </div>
 

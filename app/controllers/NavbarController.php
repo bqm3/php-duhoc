@@ -123,11 +123,11 @@ class NavbarController
       ['Du học', $base . '/du-hoc', strpos($relative_path, '/du-hoc') === 0, 'study'],
       ['Học bổng', $base . '/hoc-bong', strpos($relative_path, '/hoc-bong') === 0, 'scholarship'],
       ['Dịch vụ', $service_href, $is_service_active, 'service'],
-      ['Tìm trường', $base . '/tim-truong', strpos($relative_path, '/tim-truong') === 0, 'school'],
       ['Ngoại ngữ du học', $base . '/ngoai-ngu-du-hoc', strpos($relative_path, '/ngoai-ngu-du-hoc') === 0, 'language'],
       ['Tin tức', $base . '/tin-tuc', strpos($relative_path, '/tin-tuc') === 0, 'news'],
       // Mobile only items (from topbar)
       ['Sự kiện', $base . '/su-kien', $relative_path === '/su-kien', 'event', true],
+      ['Tìm trường', $base . '/tim-truong', strpos($relative_path, '/tim-truong') === 0, 'school', true],
       ['Đăng ký', $base . '/dang-ky', $relative_path === '/dang-ky', 'register', true],
       ['Tuyển dụng', $base . '/tuyen-dung', $relative_path === '/tuyen-dung', 'career', true],
       ['Liên hệ', $base . '/lien-he', $relative_path === '/lien-he', 'contact', true],

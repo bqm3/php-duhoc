@@ -50,12 +50,12 @@ if (strpos($link, '//') === 0) {
     </a>
 
     <div class="card-content">
-        <div class="card-rating">
+        <!-- <div class="card-rating">
             <span class="stars">★★★★★</span>
             <span class="rating-val">(
                 <?= $rating ?>)
             </span>
-        </div>
+        </div> -->
 
         <h3 class="card-title">
             <a href="<?= $link ?>" class="stretched-link">
@@ -63,7 +63,7 @@ if (strpos($link, '//') === 0) {
             </a>
         </h3>
 
-        <div class="card-footer-stats">
+        <!-- <div class="card-footer-stats">
             <div class="stat-item">
                 <i class="fa fa-eye"></i>
                 <span>Người xem:
@@ -82,7 +82,7 @@ if (strpos($link, '//') === 0) {
                     <?= $search_count ?>
                 </span>
             </div>
-        </div>
+        </div> -->
     </div>
 </div>
 
@@ -209,7 +209,7 @@ if (strpos($link, '//') === 0) {
         color: #0E2A46;
         margin: 0;
         display: -webkit-box;
-        -webkit-line-clamp: 3;
+        -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
         flex: 1;
