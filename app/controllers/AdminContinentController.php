@@ -67,7 +67,7 @@ class AdminContinentController
         $image_url = null;
         try {
             if (isset($_FILES['image']) && $_FILES['image']['size'] > 0) {
-                $image_url = self::saveUploadedImage($_FILES['image'], 'continent_');
+                $image_url = Upload::saveUploadedImage($_FILES['image'], 'continent_', 'locations');
             }
         } catch (Exception $e) {
             Response::json(['error' => $e->getMessage()], 400);
@@ -129,7 +129,7 @@ class AdminContinentController
         $image_url = $old['image_url'];
         try {
             if (isset($_FILES['image']) && $_FILES['image']['size'] > 0) {
-                $image_url = self::saveUploadedImage($_FILES['image'], 'continent_');
+                $image_url = Upload::saveUploadedImage($_FILES['image'], 'continent_', 'locations');
             }
         } catch (Exception $e) {
             Response::json(['error' => $e->getMessage()], 400);
@@ -326,18 +326,5 @@ class AdminContinentController
         return strtr($str, $vietnameseTones);
     }
 
-    private static function saveUploadedImage($file, $prefix)
-    {
-        $uploadDir = __DIR__ . '/../../public/assets/uploads/locations';
-        if (!is_dir($uploadDir))
-            mkdir($uploadDir, 0755, true);
 
-        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        $filename = $prefix . time() . '_' . rand(1000, 9999) . '.' . $ext;
-
-        if (move_uploaded_file($file['tmp_name'], $uploadDir . '/' . $filename)) {
-            return '/assets/uploads/locations/' . $filename;
-        }
-        throw new Exception("Upload failed");
-    }
 }

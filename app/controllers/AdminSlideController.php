@@ -82,7 +82,7 @@ class AdminSlideController
         $image_url = '';
         if (isset($_FILES['image']) && $_FILES['image']['size'] > 0) {
             try {
-                $image_url = self::saveUploadedImage($_FILES['image'], 'slide_');
+                $image_url = Upload::saveUploadedImage($_FILES['image'], 'slide_', 'slides');
             } catch (Exception $e) {
                 Response::json(['error' => $e->getMessage()], 400);
                 return;
@@ -145,7 +145,7 @@ class AdminSlideController
 
         if (isset($_FILES['image']) && $_FILES['image']['size'] > 0) {
             try {
-                $image_url = self::saveUploadedImage($_FILES['image'], 'slide_');
+                $image_url = Upload::saveUploadedImage($_FILES['image'], 'slide_', 'slides');
             } catch (Exception $e) {
                 Response::json(['error' => $e->getMessage()], 400);
                 return;
@@ -207,17 +207,5 @@ class AdminSlideController
             exit;
         }
     }
-    private static function saveUploadedImage($file, $prefix)
-    {
-        $uploadDir = __DIR__ . '/../../public/assets/uploads/slides';
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
-        }
-        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        $filename = $prefix . time() . '_' . rand(1000, 9999) . '.' . $ext;
-        if (move_uploaded_file($file['tmp_name'], $uploadDir . '/' . $filename)) {
-            return '/assets/uploads/slides/' . $filename;
-        }
-        throw new Exception("Upload failed");
-    }
+
 }

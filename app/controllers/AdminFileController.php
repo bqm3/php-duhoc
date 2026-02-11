@@ -119,7 +119,12 @@ class AdminFileController
         }
 
         try {
-            $saved = self::saveUploadedAny($_FILES['file'], 'lib_'); // returns ['url'=>..., 'type'=>...]
+            $url = Upload::saveUploadedFile($_FILES['file'], 'lib_', 'files');
+            if (!$url) {
+                throw new Exception('No file uploaded');
+            }
+            $type = Upload::inferTypeFromUrl($url);
+            $saved = ['url' => $url, 'type' => $type];
         } catch (Exception $e) {
             Response::json(['error' => $e->getMessage()], 400);
             return;
@@ -203,9 +208,13 @@ class AdminFileController
         // upload new file optional
         try {
             if (isset($_FILES['file']) && ($_FILES['file']['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE) {
-                $saved = self::saveUploadedAny($_FILES['file'], 'lib_');
-                $url_file = $saved['url'];
-                $type = $saved['type'];
+                $url = Upload::saveUploadedFile($_FILES['file'], 'lib_', 'files');
+                if ($url) {
+                    $url_file = $url;
+                    $type = Upload::inferTypeFromUrl($url);
+                }
+
+                $saved = ['url' => $url_file, 'type' => $type];
 
                 // delete old local file if in /assets/uploads/
                 if (!empty($old['url_file']) && str_contains($old['url_file'], '/assets/uploads/files/')) {
@@ -221,7 +230,7 @@ class AdminFileController
 
         // if no new upload: keep old type inferred from url
         if ($type === null) {
-            $type = self::inferTypeFromUrl($url_file);
+            $type = Upload::inferTypeFromUrl($url_file);
         }
 
         $stmt = $db->prepare("
@@ -262,82 +271,5 @@ class AdminFileController
         exit;
     }
 
-    private static function inferTypeFromUrl(string $url): string
-    {
-        $ext = strtolower(pathinfo(parse_url($url, PHP_URL_PATH) ?? $url, PATHINFO_EXTENSION));
-        $img = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'];
-        return in_array($ext, $img, true) ? 'image' : 'file';
-    }
 
-    // Save ANY file (image or other) -> /public/assets/uploads
-    private static function saveUploadedAny($file, $prefix)
-    {
-        if (!isset($file) || !isset($file['error'])) {
-            throw new Exception('Invalid upload payload');
-        }
-        if ($file['error'] === UPLOAD_ERR_NO_FILE) {
-            throw new Exception('No file uploaded');
-        }
-        if ($file['error'] !== UPLOAD_ERR_OK) {
-            throw new Exception('Upload failed');
-        }
-        if (!isset($file['tmp_name']) || empty($file['tmp_name'])) {
-            throw new Exception('Missing tmp file');
-        }
-
-        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        if ($ext === '') {
-            throw new Exception('File extension is missing');
-        }
-
-        // Allow images + documents common
-        $allowed = [
-            // images
-            'jpg',
-            'jpeg',
-            'png',
-            'gif',
-            'webp',
-            'bmp',
-            'svg',
-            // docs
-            'pdf',
-            'doc',
-            'docx',
-            'xls',
-            'xlsx',
-            'ppt',
-            'pptx',
-            // archives
-            'zip',
-            'rar',
-            // text
-            'txt',
-            'csv'
-        ];
-
-        if (!in_array($ext, $allowed, true)) {
-            throw new Exception('Invalid file type');
-        }
-
-        $filename = $prefix . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
-
-        $uploadDir = realpath(__DIR__ . '/../../public') . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'files';
-        if ($uploadDir === false) {
-            $uploadDir = __DIR__ . '/../../public/assets/uploads/files';
-        }
-        if (!is_dir($uploadDir) && !mkdir($uploadDir, 0755, true)) {
-            throw new Exception('Failed to create upload directory');
-        }
-
-        $destPath = $uploadDir . DIRECTORY_SEPARATOR . $filename;
-        if (!move_uploaded_file($file['tmp_name'], $destPath)) {
-            throw new Exception('Failed to move uploaded file');
-        }
-
-        $url = '/assets/uploads/files/' . $filename;
-        $type = self::inferTypeFromUrl($url);
-
-        return ['url' => $url, 'type' => $type];
-    }
 }

@@ -70,7 +70,7 @@ class AdminPartnerController
         $image_url = '';
         if (isset($_FILES['image']) && $_FILES['image']['size'] > 0) {
             try {
-                $image_url = self::saveUploadedImage($_FILES['image'], 'partner_');
+                $image_url = Upload::saveUploadedImage($_FILES['image'], 'partner_', 'partners');
             } catch (Exception $e) {
                 Response::json(['error' => $e->getMessage()], 400);
                 return;
@@ -125,7 +125,7 @@ class AdminPartnerController
 
         if (isset($_FILES['image']) && $_FILES['image']['size'] > 0) {
             try {
-                $image_url = self::saveUploadedImage($_FILES['image'], 'partner_');
+                $image_url = Upload::saveUploadedImage($_FILES['image'], 'partner_', 'partners');
             } catch (Exception $e) {
                 Response::json(['error' => $e->getMessage()], 400);
                 return;
@@ -188,17 +188,5 @@ class AdminPartnerController
         }
     }
 
-    private static function saveUploadedImage($file, $prefix)
-    {
-        $uploadDir = __DIR__ . '/../../public/assets/uploads/partners';
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
-        }
-        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        $filename = $prefix . time() . '_' . rand(1000, 9999) . '.' . $ext;
-        if (move_uploaded_file($file['tmp_name'], $uploadDir . '/' . $filename)) {
-            return '/assets/uploads/partners/' . $filename;
-        }
-        throw new Exception("Upload failed");
-    }
+
 }

@@ -192,7 +192,7 @@ class AdminPostController
         $featured_image = null;
         try {
             if (isset($_FILES['featured_image'])) {
-                $featured_image = self::saveUploadedImage($_FILES['featured_image'], 'post_cover_');
+                $featured_image = Upload::saveUploadedImage($_FILES['featured_image'], 'post_cover_', 'posts');
             }
         } catch (Exception $e) {
             Response::json(['error' => $e->getMessage()], 400);
@@ -371,7 +371,7 @@ class AdminPostController
         $newFeatured = $old['featured_image'] ?? null;
         try {
             if (isset($_FILES['featured_image']) && ($_FILES['featured_image']['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE) {
-                $newFeatured = self::saveUploadedImage($_FILES['featured_image'], 'post_cover_');
+                $newFeatured = Upload::saveUploadedImage($_FILES['featured_image'], 'post_cover_', 'posts');
 
                 // (tuỳ chọn) xoá file cũ trên disk nếu thuộc uploads của mình
                 if (!empty($old['featured_image']) && str_contains($old['featured_image'], '/assets/uploads/')) {
@@ -495,74 +495,7 @@ class AdminPostController
         ]);
     }
 
-    // Save uploaded image
-    private static function saveUploadedImage($file, $prefix)
-    {
-        // Check if file array structure is valid
-        if (!isset($file) || !isset($file['error'])) {
-            return null;
-        }
 
-        // Check specifically for no file uploaded
-        if ($file['error'] === UPLOAD_ERR_NO_FILE) {
-            return null;
-        }
-
-        if ($file['error'] !== UPLOAD_ERR_OK) {
-            $msg = 'Upload failed.';
-            switch ($file['error']) {
-                case UPLOAD_ERR_INI_SIZE:
-                case UPLOAD_ERR_FORM_SIZE:
-                    $msg = 'File is too large (exceeds server limits).';
-                    break;
-                case UPLOAD_ERR_PARTIAL:
-                    $msg = 'File was only partially uploaded.';
-                    break;
-                case UPLOAD_ERR_NO_TMP_DIR:
-                    $msg = 'Missing a temporary folder.';
-                    break;
-                case UPLOAD_ERR_CANT_WRITE:
-                    $msg = 'Failed to write file to disk.';
-                    break;
-                case UPLOAD_ERR_EXTENSION:
-                    $msg = 'File upload stopped by extension.';
-                    break;
-            }
-            throw new Exception($msg);
-        }
-
-        if (!isset($file['tmp_name']) || empty($file['tmp_name'])) {
-            return null;
-        }
-
-        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-        if (!in_array($ext, $allowed, true)) {
-            throw new Exception('Invalid file type. Only JPG, PNG, GIF, WEBP allowed.');
-        }
-
-        $filename = $prefix . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
-
-        // Lưu file vào public/assets/uploads
-        $uploadDir = realpath(__DIR__ . '/../../public') . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'uploads';
-        if ($uploadDir === false) {
-            // Try to create if realpath fails (dir doesnt exist)
-            $uploadDir = __DIR__ . '/../../public/assets/uploads';
-        }
-
-        if (!is_dir($uploadDir) && !mkdir($uploadDir, 0755, true)) {
-            throw new Exception('Failed to create upload directory.');
-        }
-
-        $destPath = $uploadDir . DIRECTORY_SEPARATOR . $filename;
-
-        if (!move_uploaded_file($file['tmp_name'], $destPath)) {
-            throw new Exception('Failed to move uploaded file. Check permissions.');
-        }
-
-        // Khi render: echo $base . $featured_image
-        return '/assets/uploads/' . $filename;
-    }
 
 
     // Generate slug from title
@@ -784,28 +717,11 @@ class AdminPostController
         }
 
         try {
-            $file = $_FILES['upload'];
-            $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-            $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+            $url = Upload::saveUploadedImage($_FILES['upload'], 'post_', 'posts');
 
-            if (!in_array($ext, $allowed, true)) {
-                throw new Exception('Invalid file type');
+            if (!$url) {
+                throw new Exception('Upload failed');
             }
-
-            $filename = 'post_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
-
-            $uploadDir = __DIR__ . '/../../public/assets/uploads';
-            if (!is_dir($uploadDir)) {
-                mkdir($uploadDir, 0755, true);
-            }
-
-            $destPath = $uploadDir . '/' . $filename;
-
-            if (!move_uploaded_file($file['tmp_name'], $destPath)) {
-                throw new Exception('Failed to move file');
-            }
-
-            $url = '/assets/uploads/' . $filename;
             if (ob_get_length())
                 ob_clean();
             header('Content-Type: application/json; charset=utf-8');

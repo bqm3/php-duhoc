@@ -44,6 +44,7 @@ require __DIR__ . '/../app/core/Db.php';
 require __DIR__ . '/../app/core/Auth.php';
 require __DIR__ . '/../app/core/Csrf.php';
 require __DIR__ . '/../app/core/Response.php';
+require __DIR__ . '/../app/core/Upload.php';
 
 /**
  * -----------------------------------------------------

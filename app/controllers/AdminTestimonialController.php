@@ -66,7 +66,7 @@ class AdminTestimonialController
 
         $image_url = null;
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-            $image_url = self::saveUploadedImage($_FILES['image'], 'testimonial');
+            $image_url = Upload::saveUploadedImage($_FILES['image'], 'testimonial_', 'testimonials');
         }
 
         if (empty($name) || empty($content)) {
@@ -132,7 +132,7 @@ class AdminTestimonialController
         $image_url = $stmt->fetchColumn();
 
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-            $new_image = self::saveUploadedImage($_FILES['image'], 'testimonial');
+            $new_image = Upload::saveUploadedImage($_FILES['image'], 'testimonial_', 'testimonials');
             if ($new_image) {
                 $image_url = $new_image;
             }
@@ -177,21 +177,5 @@ class AdminTestimonialController
         }
     }
 
-    private static function saveUploadedImage($file, $prefix)
-    {
-        $uploadDir = __DIR__ . '/../../public/uploads/testimonials/';
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
-        }
 
-        $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $filename = $prefix . '_' . time() . '_' . rand(1000, 9999) . '.' . $ext;
-        $targetPath = $uploadDir . $filename;
-
-        if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-            return '/uploads/testimonials/' . $filename;
-        }
-
-        return null;
-    }
 }
