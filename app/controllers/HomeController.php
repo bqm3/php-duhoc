@@ -109,6 +109,15 @@ class HomeController
         } catch (Exception $e) {
         }
 
+        // Fetch testimonials
+        $testimonials = [];
+        try {
+            $stmt = $pdo->prepare("SELECT * FROM testimonials WHERE is_hidden = 0 AND is_delete = 0 ORDER BY display_order ASC, created_at DESC");
+            $stmt->execute();
+            $testimonials = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+        }
+
         view('main', 'layouts/pages/home/index', [
             'title' => 'Trang chủ',
             'posts' => $posts,
@@ -118,6 +127,7 @@ class HomeController
             'internationalInfoPosts' => $internationalInfoPosts,
             'slides' => $slides,
             'partners' => $partners,
+            'testimonials' => $testimonials,
             'pageCss' => ['home.css'],
         ]);
     }

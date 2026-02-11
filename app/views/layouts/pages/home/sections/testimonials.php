@@ -48,29 +48,21 @@
     </header>
 
     <?php
-    $testimonials = [
-      [
-        'name' => 'Minh Khoa',
-        'img' => 'https://placehold.co/56x56',
-        'role' => 'Học viên du học Úc',
-        'rating' => 5,
-        'content' => 'Em vô tình biết đến VNPC qua Facebook, bản thân lại không tin tưởng mấy trung tâm tư vấn lắm nhưng vẫn liều tới thử xem sao. Nhưng thật sự, em đã bị thuyết phục bởi sự tận tâm, nhiệt tình, tính minh bạch và tốc độ xử lý hồ sơ của trung tâm. Cảm ơn trung tâm đã giúp em sớm thực hiện được giấc mơ du học Úc.'
-      ],
-      [
-        'name' => 'Hải Yến',
-        'img' => 'https://placehold.co/56x56',
-        'role' => 'Phụ huynh',
-        'rating' => 5,
-        'content' => 'Tôi có đưa con trai đến VNPC nhận tư vấn du học Úc và thấy khá hài lòng với cách tư vấn nhiệt tình, chuyên nghiệp của công ty. Công ty còn xử lý hồ sơ rất nhanh, minh bạch mọi khoản chi phí và rất có trách nhiệm.'
-      ],
-      [
-        'name' => 'Hoàng Quân',
-        'img' => 'https://placehold.co/56x56',
-        'role' => 'Khách hàng',
-        'rating' => 5,
-        'content' => 'Luôn ủng hộ VNPC, các bạn rất tận tình và có tâm trong công việc. Mình được bạn thân giới thiệu đến VNPC và vô cùng ấn tượng với phong cách làm việc chuyên nghiệp tại đây. Từ không gian văn phòng, thái độ nhân viên đến quy trình làm việc đều rất tốt. Chúc VNPC ngày càng phát triển hơn nữa trong tương lai.'
-      ],
-    ];
+    // Testimonials data passed from HomeController
+    $testimonials = $testimonials ?? [];
+
+    // Fallback if empty (optional, but good for design stability)
+    if (empty($testimonials)) {
+      $testimonials = [
+        [
+          'name' => 'Minh Khoa',
+          'image_url' => '/assets/img/client/img_home24.png',
+          'role' => 'Học viên du học Úc',
+          'rating' => 5,
+          'content' => 'Em vô tình biết đến VNPC qua Facebook, bản thân lại không tin tưởng mấy trung tâm tư vấn lắm nhưng vẫn liều tới thử xem sao. Nhưng thật sự, em đã bị thuyết phục bởi sự tận tâm, nhiệt tình, tính minh bạch và tốc độ xử lý hồ sơ của trung tâm. Cảm ơn trung tâm đã giúp em sớm thực hiện được giấc mơ du học Úc.'
+        ],
+      ];
+    }
 
     $avg = 0;
     foreach ($testimonials as $t)
@@ -97,7 +89,7 @@
           $name = $t['name'] ?? 'Khách hàng';
           $role = $t['role'] ?? 'Khách hàng';
           $content = $t['content'] ?? '';
-          $img = $t['img'] ?? '';
+          $img = (!empty($t['image_url'])) ? $base . $t['image_url'] : $base . '/assets/img/client/img_home24.png';
           $rating = (int) ($t['rating'] ?? 5);
           $cardId = 'review-' . ($i + 1);
           ?>

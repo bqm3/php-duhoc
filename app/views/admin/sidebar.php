@@ -47,6 +47,8 @@ function activeClass($targetPath)
         return 'text-primary font-weight-bold';
     if (strpos($targetPath, '/admin/partners') !== false && strpos($currentPath, '/partners') !== false)
         return 'text-primary font-weight-bold';
+    if (strpos($targetPath, '/admin/testimonials') !== false && strpos($currentPath, '/testimonials') !== false)
+        return 'text-primary font-weight-bold';
 
 
     return '';
@@ -220,6 +222,14 @@ $open_pages = isGroupActive(['email', 'login', 'register', 'lockscreen', 'forgot
                     <a href="<?= $base ?>/admin/partners" class="<?= activeClass('/admin/partners') ?>">
                         <i class="fa fa-briefcase mr-3"></i>
                         <span class="none"> Danh sách đối tác </span>
+                    </a>
+                </li>
+
+                <!-- TESTIMONIALS -->
+                <li class="parent">
+                    <a href="<?= $base ?>/admin/testimonials" class="<?= activeClass('/admin/testimonials') ?>">
+                        <i class="fa fa-comments mr-3"></i>
+                        <span class="none"> Ý kiến khách hàng </span>
                     </a>
                 </li>
 
@@ -452,6 +462,7 @@ $open_pages = isGroupActive(['email', 'login', 'register', 'lockscreen', 'forgot
         else if (currentUrl.indexOf('/admin/users') > -1 ||
             currentUrl.indexOf('/admin/categories') > -1 ||
             currentUrl.indexOf('/admin/tags') > -1 ||
+            currentUrl.indexOf('/admin/testimonials') > -1 ||
             currentUrl.indexOf('/admin/partners') > -1) {
 
             localStorage.removeItem('lastTab');
