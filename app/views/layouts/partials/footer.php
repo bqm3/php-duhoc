@@ -15,43 +15,6 @@ $siteUrl = $base ?: '';
 ?>
 
 <!-- Newsletter Section (Only show on homepage) -->
-<?php if ($relative_path === '/'): ?>
-  <section class="vnpc-newsletter d-none d-md-block" aria-labelledby="newsletter-title"
-    style="position: relative; z-index: 10; margin-bottom: -100px; padding: 0 20px;">
-    <div class="container-xxl">
-      <div class="newsletter-section"
-        style="position: relative; z-index: 10; width: 100%; display: flex; justify-content: center; margin-bottom: -100px; padding: 0 20px;">
-        <div class="newsletter-box"
-          style="width: 90%; max-width: 1000px; background-color: #FC6441; background-image: url('<?= $base ?>/assets/img/client/img_main7.png'); background-size: cover; border-radius: 100px; padding: 40px 20px; box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2); text-align: center;"
-          role="region" aria-label="Đăng ký nhận thông tin học bổng">
-          <h2 id="newsletter-title" class="text-white mb-2" style="font-size: 32px; font-weight: 700;">
-            Đăng ký nhận thông tin học bổng du học
-          </h2>
-          <p class="text-white mb-4" style="font-size: 16px; font-weight: 500; opacity: 0.95;">
-            Nhập email để nhận tin học bổng, sự kiện và cập nhật mới nhất từ VNPC.
-          </p>
-
-          <form action="" method="POST" class="d-flex justify-content-center align-items-center gap-3 flex-wrap"
-            aria-label="Form đăng ký nhận bản tin">
-            <label class="visually-hidden" for="newsletter-email">Email của bạn</label>
-            <input id="newsletter-email" name="email" type="email" class="form-control" placeholder="Nhập email của bạn"
-              required autocomplete="email" inputmode="email" aria-required="true"
-              style="max-width: 450px; height: 50px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.95); padding: 0 24px; font-size: 16px;" />
-            <button type="submit" class="btn vnpc-btn-primary"
-              style="height: 50px; padding: 0 40px; border-radius: 30px; font-size: 16px; font-weight: 600; background: #2777C4; border: none;">
-              Đăng ký
-            </button>
-
-            <!-- Optional (nice-to-have): consent text -->
-            <p class="text-white mb-0" style="font-size: 12px; opacity: .9; width: 100%;">
-              Bằng việc đăng ký, bạn đồng ý nhận email từ VNPC. Bạn có thể hủy đăng ký bất cứ lúc nào.
-            </p>
-          </form>
-        </div>
-      </div>
-    </div>
-  </section>
-<?php endif; ?>
 
 <!-- Footer -->
 <footer class="vnpc-footer <?= ($relative_path === '/') ? 'vnpc-footer-home' : '' ?>"
