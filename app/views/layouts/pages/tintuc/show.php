@@ -45,6 +45,16 @@ $base = $base ?? '';
                         <?= $post['tag_name'] ?>
                     </span>
                 <?php endif; ?>
+
+
+            </div>
+            <div class="mb-3">
+                <button class="btn btn-success btn-sm" type="button">
+                    <i class="fa fa-thumbs-up"></i> Like
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="sharePost(<?= (int) ($post['id'] ?? 0) ?>)">
+                    <i class="fa fa-share"></i> Facebook
+                </button>
             </div>
 
             <!-- Featured Image -->
@@ -71,20 +81,6 @@ $base = $base ?? '';
             <!-- Main Content -->
             <div class="post-content" id="post-content" style="font-size: 1.1rem; line-height: 1.8; color: #444;">
                 <?= $post['content'] ?? '' ?>
-            </div>
-
-            <!-- Share Buttons -->
-            <div class="mt-5 pt-3 border-top">
-                <!-- <p class="font-weight-bold mb-2">Chia sẻ bài viết:</p> -->
-                <button class="btn btn-success btn-sm" type="button">
-                    <i class="fa fa-thumbs-up"></i> Like
-                </button>
-                <button class="btn btn-primary btn-sm" onclick="sharePost(<?= (int) ($post['id'] ?? 0) ?>)">
-                    <i class="fa fa-share"></i> Facebook
-                </button>
-                <!-- <button class="btn btn-info btn-sm" type="button">
-      <i class="fa fa-share"></i> Twitter
-    </button> -->
             </div>
         </div>
 
