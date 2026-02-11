@@ -117,6 +117,51 @@
       padding-right: 10px;
     }
   }
+
+  /* Mobile Responsive Fixes */
+  @media (max-width: 767px) {
+    .vnpc-testimonials {
+      padding: 40px 0;
+    }
+
+    .vnpc-quote-card {
+      padding: 16px;
+      gap: 12px;
+    }
+
+    .quote-icon {
+      width: 46px;
+      height: 30px;
+      left: -10px;
+      top: -15px;
+    }
+
+    .vnpc-quote {
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .vnpc-quote-user img {
+      width: 40px;
+      height: 40px;
+    }
+
+    .vnpc-quote-user-name {
+      font-size: 14px;
+    }
+
+    .testimonial-swiper {
+      padding-top: 25px !important;
+    }
+
+    .vnpc-testimonials .vnpc-h2 {
+      font-size: 24px;
+    }
+
+    .vnpc-testimonials .vnpc-p {
+      font-size: 14px;
+    }
+  }
 </style>
 
 <section class="vnpc-testimonials" style="background-image: url('<?= $base ?>/assets/img/client/img_home24.png');"
