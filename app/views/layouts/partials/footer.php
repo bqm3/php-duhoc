@@ -177,7 +177,7 @@ $siteUrl = $base ?: '';
     </div>
 
     <div class="text-center pt-4" style="border-top: 1px solid rgba(255,255,255,0.1); font-size: 14px; opacity: 0.7;">
-      © <?= date('Y') ?> Bản quyền thuộc về <?= htmlspecialchars($orgName) ?>.
+      © <?= date('Y') ?> Bản quyền thuộc về thành viên <?= htmlspecialchars($orgName) ?>.
     </div>
   </div>
 </footer>

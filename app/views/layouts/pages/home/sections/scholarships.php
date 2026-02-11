@@ -136,6 +136,84 @@
     border-radius: 4px;
   }
 
+  /* Navigation Buttons */
+  .swiper-nav-wrapper {
+    position: relative;
+  }
+
+  .scholar-swiper {
+    position: static !important;
+  }
+
+  .scholar-swiper .swiper-button-next,
+  .scholar-swiper .swiper-button-prev {
+    width: 40px !important;
+    height: 40px !important;
+    background: rgba(27, 153, 212, 0.15) !important;
+    border-radius: 30px !important;
+    margin-top: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+
+  /* Inner circle */
+  .scholar-swiper .swiper-button-next::before,
+  .scholar-swiper .swiper-button-prev::before {
+    content: '';
+    position: absolute;
+    width: 33.33px;
+    height: 33.33px;
+    background: #31A5DE;
+    border-radius: 30px;
+    z-index: -1;
+    transition: all 0.3s ease;
+  }
+
+  .scholar-swiper .swiper-button-next::after,
+  .scholar-swiper .swiper-button-prev::after {
+    font-family: "Font Awesome 6 Free", "Font Awesome 5 Free";
+    font-weight: 900;
+    font-size: 12px !important;
+    color: #FFFFFF !important;
+  }
+
+  .scholar-swiper .swiper-button-next::after {
+    content: '\f054' !important;
+  }
+
+  .scholar-swiper .swiper-button-prev::after {
+    content: '\f053' !important;
+  }
+
+  .scholar-swiper .swiper-button-next:hover::before,
+  .scholar-swiper .swiper-button-prev:hover::before {
+    background: #1B99D4;
+    transform: scale(1.1);
+  }
+
+  .scholar-swiper .swiper-button-next {
+    right: -20px !important;
+  }
+
+  .scholar-swiper .swiper-button-prev {
+    left: -20px !important;
+  }
+
+  @media (max-width: 1250px) {
+    .scholar-swiper .swiper-button-next {
+      right: 5px !important;
+    }
+
+    .scholar-swiper .swiper-button-prev {
+      left: 5px !important;
+    }
+  }
+
   /* Desktop Adjustments */
   @media (min-width: 992px) {
     .scholar-swiper {
@@ -170,24 +248,29 @@
       </div>
 
       <!-- SWIPER -->
-      <div class="swiper scholar-swiper">
-        <div class="swiper-wrapper">
+      <div class="swiper-nav-wrapper">
+        <div class="swiper scholar-swiper">
+          <div class="swiper-wrapper">
 
-          <?php if (!empty($scholarshipPosts)): ?>
-            <?php foreach ($scholarshipPosts as $c): ?>
-              <article class="swiper-slide" itemprop="itemListElement">
-                <?php partial('layouts/partials/post_card', ['post' => $c, 'base' => $base]); ?>
-              </article>
-            <?php endforeach; ?>
-          <?php else: ?>
-            <div class="swiper-slide text-center py-5">
-              <p class="text-secondary">Đang cập nhật các chương trình học bổng mới nhất...</p>
-            </div>
-          <?php endif; ?>
+            <?php if (!empty($scholarshipPosts)): ?>
+              <?php foreach ($scholarshipPosts as $c): ?>
+                <article class="swiper-slide" itemprop="itemListElement">
+                  <?php partial('layouts/partials/post_card', ['post' => $c, 'base' => $base]); ?>
+                </article>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <div class="swiper-slide text-center py-5">
+                <p class="text-secondary">Đang cập nhật các chương trình học bổng mới nhất...</p>
+              </div>
+            <?php endif; ?>
 
+          </div>
+          <!-- Add Pagination -->
+          <div class="swiper-pagination"></div>
+          <!-- Add Navigation -->
+          <div class="swiper-button-next"></div>
+          <div class="swiper-button-prev"></div>
         </div>
-        <!-- Add Pagination -->
-        <div class="swiper-pagination"></div>
       </div>
     </div>
   </section>
@@ -211,6 +294,10 @@
       pagination: {
         el: ".swiper-pagination",
         clickable: true,
+      },
+      navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
       },
       breakpoints: {
         768: {
