@@ -241,4 +241,9 @@ $siteUrl = $base ?: '';
 <!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script>
+  // Get config from server
+  <?php $firebaseConfig = Config::get('firebase') ?? []; ?>
+  window.firebaseConfig = <?= json_encode($firebaseConfig) ?>;
+</script>
 <script src="<?= $base ?>/assets/js/firebase-config.js"></script>

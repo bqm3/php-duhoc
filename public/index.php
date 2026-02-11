@@ -39,6 +39,7 @@ session_start();
  * CORE
  * -----------------------------------------------------
  */
+require __DIR__ . '/../app/core/Config.php';
 require __DIR__ . '/../app/core/Db.php';
 require __DIR__ . '/../app/core/Auth.php';
 require __DIR__ . '/../app/core/Csrf.php';
