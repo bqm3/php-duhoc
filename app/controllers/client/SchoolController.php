@@ -11,6 +11,7 @@ class SchoolController
         $countryId = isset($_GET['country_id']) ? (int) $_GET['country_id'] : 0;
         $cityId = isset($_GET['city_id']) ? (int) $_GET['city_id'] : 0;
         $eduLevelId = isset($_GET['edu_level_id']) ? (int) $_GET['edu_level_id'] : 0;
+        $is_scholarship = isset($_GET['is_scholarship']) ? $_GET['is_scholarship'] : '';
 
         // 2. Pagination Logic
         $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
@@ -38,6 +39,10 @@ class SchoolController
         if ($eduLevelId > 0) {
             $where[] = "s.education_level_id = ?";
             $params[] = $eduLevelId;
+        }
+        if ($is_scholarship !== '') {
+            $where[] = "s.is_scholarship = ?";
+            $params[] = (int) $is_scholarship;
         }
 
         $whereClause = implode(" AND ", $where);
@@ -91,7 +96,8 @@ class SchoolController
                 'keyword' => $keyword,
                 'country_id' => $countryId,
                 'city_id' => $cityId,
-                'edu_level_id' => $eduLevelId
+                'edu_level_id' => $eduLevelId,
+                'is_scholarship' => $is_scholarship
             ],
             'filterData' => [
                 'countries' => $countries,
