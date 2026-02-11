@@ -33,7 +33,7 @@
                                 <div class="form-group">
                                     <label>Slug</label>
                                     <input type="text" class="form-control" name="slug"
-                                        value="<?= htmlspecialchars($school['slug']) ?>">
+                                        value="<?= htmlspecialchars($school['slug']) ?>" readonly>
                                 </div>
 
                                 <div class="row">
@@ -203,6 +203,7 @@
             });
         }
 
+        /*
         document.querySelector('input[name="name"]').addEventListener('keyup', function () {
             var title = this.value;
             var slug = title.toLowerCase();
@@ -216,6 +217,7 @@
             slug = slug.replace(/[^a-z0-9 -]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-');
             document.querySelector('input[name="slug"]').value = slug;
         });
+        */
     </script>
 </body>
 

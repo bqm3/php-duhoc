@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <title>Sửa Thành Phố</title>
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="<?= $base ?>/assets/css/style.css">
     <link rel="stylesheet" href="<?= $base ?>/assets/css/fontawesome.css">
 </head>
+
 <body>
     <div class="container-fluid">
         <?php include __DIR__ . '/../../admin/header.php'; ?>
@@ -19,22 +21,24 @@
                         <div class="mt-1 mb-3 p-4 button-container bg-white border shadow-sm">
                             <form method="POST" action="<?= $base ?>/admin/cities/<?= $city['id'] ?>/update">
                                 <input type="hidden" name="_csrf" value="<?= $csrf ?>">
-                                
+
                                 <div class="form-group">
                                     <label>Tên Thành Phố <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="name" value="<?= htmlspecialchars($city['name']) ?>" required>
+                                    <input type="text" class="form-control" name="name"
+                                        value="<?= htmlspecialchars($city['name']) ?>" required>
                                 </div>
-                                
+
                                 <div class="form-group">
                                     <label>Slug</label>
-                                    <input type="text" class="form-control" name="slug" value="<?= htmlspecialchars($city['slug']) ?>">
+                                    <input type="text" class="form-control" name="slug"
+                                        value="<?= htmlspecialchars($city['slug']) ?>" readonly>
                                 </div>
 
                                 <div class="form-group">
                                     <label>Thuộc Danh Mục / Quốc Gia</label>
                                     <select class="form-control" name="country_id">
                                         <option value="">-- Chọn --</option>
-                                        <?php foreach($countries as $c): ?>
+                                        <?php foreach ($countries as $c): ?>
                                             <option value="<?= $c['id'] ?>" <?= $city['country_id'] == $c['id'] ? 'selected' : '' ?>>
                                                 <?= htmlspecialchars($c['name']) ?>
                                             </option>
@@ -44,7 +48,8 @@
 
                                 <div class="form-group">
                                     <label>Thứ tự hiển thị</label>
-                                    <input type="number" class="form-control" name="display_order" value="<?= $city['display_order'] ?>">
+                                    <input type="number" class="form-control" name="display_order"
+                                        value="<?= $city['display_order'] ?>">
                                 </div>
 
                                 <button type="submit" class="btn btn-primary">Cập nhật</button>
@@ -60,6 +65,7 @@
     <script src="<?= $base ?>/assets/js/bootstrap.min.js"></script>
     <script src="<?= $base ?>/assets/js/custom.js"></script>
     <script>
+        /*
         document.querySelector('input[name="name"]').addEventListener('keyup', function() {
             var title = this.value;
             var slug = title.toLowerCase();
@@ -73,6 +79,8 @@
             slug = slug.replace(/[^a-z0-9 -]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-');
             document.querySelector('input[name="slug"]').value = slug;
         });
+        */
     </script>
 </body>
+
 </html>

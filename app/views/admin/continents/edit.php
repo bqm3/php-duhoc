@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <title>Sửa Châu Lục</title>
@@ -8,6 +9,7 @@
     <link rel="stylesheet" href="<?= $base ?>/assets/css/fontawesome.css">
     <link rel="stylesheet" href="<?= $base ?>/assets/js/summernote/summernote-bs4.css">
 </head>
+
 <body>
     <div class="container-fluid">
         <?php include __DIR__ . '/../../admin/header.php'; ?>
@@ -18,35 +20,41 @@
                 <div class="row mt-3">
                     <div class="col-sm-12">
                         <div class="mt-1 mb-3 p-4 button-container bg-white border shadow-sm">
-                            <form method="POST" action="<?= $base ?>/admin/continents/<?= $continent['id'] ?>/update" enctype="multipart/form-data">
+                            <form method="POST" action="<?= $base ?>/admin/continents/<?= $continent['id'] ?>/update"
+                                enctype="multipart/form-data">
                                 <input type="hidden" name="_csrf" value="<?= $csrf ?>">
-                                
+
                                 <div class="form-group">
                                     <label>Tên Châu Lục <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="name" value="<?= htmlspecialchars($continent['name']) ?>" required>
+                                    <input type="text" class="form-control" name="name"
+                                        value="<?= htmlspecialchars($continent['name']) ?>" required>
                                 </div>
-                                
+
                                 <div class="form-group">
                                     <label>Slug</label>
-                                    <input type="text" class="form-control" name="slug" value="<?= htmlspecialchars($continent['slug']) ?>">
+                                    <input type="text" class="form-control" name="slug"
+                                        value="<?= htmlspecialchars($continent['slug']) ?>" readonly>
                                 </div>
 
                                 <div class="form-group">
                                     <label>Hình ảnh</label>
-                                    <?php if($continent['image_url']): ?>
-                                        <div class="mb-2"><img src="<?= $base . $continent['image_url'] ?>" style="max-width: 200px;"></div>
+                                    <?php if ($continent['image_url']): ?>
+                                        <div class="mb-2"><img src="<?= $base . $continent['image_url'] ?>"
+                                                style="max-width: 200px;"></div>
                                     <?php endif; ?>
                                     <input type="file" class="form-control" name="image">
                                 </div>
 
                                 <div class="form-group">
                                     <label>Thứ tự hiển thị</label>
-                                    <input type="number" class="form-control" name="display_order" value="<?= $continent['display_order'] ?>">
+                                    <input type="number" class="form-control" name="display_order"
+                                        value="<?= $continent['display_order'] ?>">
                                 </div>
 
                                 <div class="form-group">
                                     <label>Mô tả</label>
-                                    <textarea name="description" id="summernote" class="form-control"><?= htmlspecialchars($continent['description']) ?></textarea>
+                                    <textarea name="description" id="summernote"
+                                        class="form-control"><?= htmlspecialchars($continent['description']) ?></textarea>
                                 </div>
 
                                 <button type="submit" class="btn btn-primary">Cập nhật</button>
@@ -64,10 +72,11 @@
     <script src="<?= $base ?>/assets/js/summernote/summernote-bs4.js"></script>
     <script src="<?= $base ?>/assets/js/custom.js"></script>
     <script>
-        $(document).ready(function() {
-            $('#summernote').summernote({height: 200});
+        $(document).ready(function () {
+            $('#summernote').summernote({ height: 200 });
         });
 
+        /*
         document.querySelector('input[name="name"]').addEventListener('keyup', function() {
             var title = this.value;
             var slug = title.toLowerCase();
@@ -81,6 +90,8 @@
             slug = slug.replace(/[^a-z0-9 -]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-');
             document.querySelector('input[name="slug"]').value = slug;
         });
+        */
     </script>
 </body>
+
 </html>

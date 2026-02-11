@@ -54,8 +54,9 @@
                                     <label for="slug"><strong>Slug</strong></label>
                                     <input type="text" class="form-control" id="slug" name="slug"
                                         value="<?= htmlspecialchars($post['slug']) ?>"
-                                        placeholder="URL-friendly version">
-                                    <small class="form-text text-muted">URL-friendly version of the title.</small>
+                                        placeholder="URL-friendly version" readonly>
+                                    <small class="form-text text-muted">URL-friendly version of the title. (View only
+                                        during update)</small>
                                 </div>
 
                                 <div class="form-group">
@@ -314,7 +315,8 @@
         }
 
 
-        // Auto-generate slug from title
+        // Auto-generate slug from title (Removed on edit page to keep existing slugs)
+        /*
         document.getElementById('title').addEventListener('keyup', function () {
             var title = this.value;
             var slug = title.toLowerCase();
@@ -335,6 +337,7 @@
 
             document.getElementById('slug').value = slug;
         });
+        */
 
         // Submit form với AJAX để hiển thị lỗi đẹp
         document.getElementById('editPostForm').addEventListener('submit', function (e) {
