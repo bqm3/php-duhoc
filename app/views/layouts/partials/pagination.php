@@ -23,9 +23,12 @@ $end = min($totalPages, $currentPage + 2);
 
 <div class="vnpc-pagination">
     <div class="pagination-list">
+        <?php
+        $separator = (strpos($baseUrl, '?') !== false) ? '&' : '?';
+        ?>
         <!-- Previous Button -->
         <?php if ($currentPage > 1): ?>
-            <a href="<?= $baseUrl ?>?page=<?= $currentPage - 1 ?>" class="pagination-item prev">
+            <a href="<?= $baseUrl . $separator ?>page=<?= $currentPage - 1 ?>" class="pagination-item prev">
                 <i class="fa fa-chevron-left"></i>
             </a>
         <?php else: ?>
@@ -36,7 +39,7 @@ $end = min($totalPages, $currentPage + 2);
 
         <!-- First Page + Dots -->
         <?php if ($start > 1): ?>
-            <a href="<?= $baseUrl ?>?page=1" class="pagination-item">1</a>
+            <a href="<?= $baseUrl . $separator ?>page=1" class="pagination-item">1</a>
             <?php if ($start > 2): ?>
                 <span class="pagination-item dots">...</span>
             <?php endif; ?>
@@ -44,8 +47,8 @@ $end = min($totalPages, $currentPage + 2);
 
         <!-- Page Numbers -->
         <?php for ($i = $start; $i <= $end; $i++): ?>
-            <a href="<?= $baseUrl ?>?page=<?= $i ?>" 
-               class="pagination-item <?= $i == $currentPage ? 'active' : '' ?>">
+            <a href="<?= $baseUrl . $separator ?>page=<?= $i ?>"
+                class="pagination-item <?= $i == $currentPage ? 'active' : '' ?>">
                 <?= $i ?>
             </a>
         <?php endfor; ?>
@@ -55,14 +58,14 @@ $end = min($totalPages, $currentPage + 2);
             <?php if ($end < $totalPages - 1): ?>
                 <span class="pagination-item dots">...</span>
             <?php endif; ?>
-            <a href="<?= $baseUrl ?>?page=<?= $totalPages ?>" class="pagination-item">
+            <a href="<?= $baseUrl . $separator ?>page=<?= $totalPages ?>" class="pagination-item">
                 <?= $totalPages ?>
             </a>
         <?php endif; ?>
 
         <!-- Next Button -->
         <?php if ($currentPage < $totalPages): ?>
-            <a href="<?= $baseUrl ?>?page=<?= $currentPage + 1 ?>" class="pagination-item next">
+            <a href="<?= $baseUrl . $separator ?>page=<?= $currentPage + 1 ?>" class="pagination-item next">
                 <i class="fa fa-chevron-right"></i>
             </a>
         <?php else: ?>
@@ -74,88 +77,88 @@ $end = min($totalPages, $currentPage + 2);
 </div>
 
 <style>
-.vnpc-pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 40px;
-    width: 100%;
-}
+    .vnpc-pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 40px;
+        width: 100%;
+    }
 
-.pagination-list {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+    .pagination-list {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
 
-.pagination-item {
-    width: 35px;
-    height: 35px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #FFFFFF;
-    border: 1px solid #CCCCCC;
-    border-radius: 5px;
-    text-decoration: none;
-    color: #666666;
-    font-family: 'Inter', sans-serif;
-    font-weight: 500;
-    font-size: 16px;
-    transition: all 0.2s ease;
-}
+    .pagination-item {
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #FFFFFF;
+        border: 1px solid #CCCCCC;
+        border-radius: 5px;
+        text-decoration: none;
+        color: #666666;
+        font-family: 'Inter', sans-serif;
+        font-weight: 500;
+        font-size: 16px;
+        transition: all 0.2s ease;
+    }
 
-.pagination-item:hover {
-    border-color: #1B99D4;
-    color: #1B99D4;
-    background: #F5FBFF;
-}
+    .pagination-item:hover {
+        border-color: #1B99D4;
+        color: #1B99D4;
+        background: #F5FBFF;
+    }
 
-.pagination-item.active {
-    background: #1B99D4;
-    border-color: #1B99D4;
-    color: #FFFFFF;
-}
+    .pagination-item.active {
+        background: #1B99D4;
+        border-color: #1B99D4;
+        color: #FFFFFF;
+    }
 
-.pagination-item.dots {
-    border: none;
-    background: transparent;
-    cursor: default;
-    pointer-events: none;
-    color: #CCCCCC;
-}
+    .pagination-item.dots {
+        border: none;
+        background: transparent;
+        cursor: default;
+        pointer-events: none;
+        color: #CCCCCC;
+    }
 
-.pagination-item.dots:hover {
-    border: none;
-    background: transparent;
-    color: #CCCCCC;
-}
+    .pagination-item.dots:hover {
+        border: none;
+        background: transparent;
+        color: #CCCCCC;
+    }
 
-/* Previous & Next Buttons - Nổi bật hơn */
-.pagination-item.prev,
-.pagination-item.next {
-    background: #FFFFFF;
-    border: 1.5px solid #1B99D4;
-    color: #1B99D4;
-    font-weight: 600;
-}
+    /* Previous & Next Buttons - Nổi bật hơn */
+    .pagination-item.prev,
+    .pagination-item.next {
+        background: #FFFFFF;
+        border: 1.5px solid #1B99D4;
+        color: #1B99D4;
+        font-weight: 600;
+    }
 
-.pagination-item.prev:hover,
-.pagination-item.next:hover {
-    background: #1B99D4;
-    color: #FFFFFF;
-}
+    .pagination-item.prev:hover,
+    .pagination-item.next:hover {
+        background: #1B99D4;
+        color: #FFFFFF;
+    }
 
-/* Disabled state */
-.pagination-item.disabled {
-    background: #F5F5F5;
-    border-color: #E0E0E0;
-    color: #CCCCCC;
-    cursor: not-allowed;
-    pointer-events: none;
-}
+    /* Disabled state */
+    .pagination-item.disabled {
+        background: #F5F5F5;
+        border-color: #E0E0E0;
+        color: #CCCCCC;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
 
-.pagination-item i {
-    font-size: 14px;
-}
+    .pagination-item i {
+        font-size: 14px;
+    }
 </style>
