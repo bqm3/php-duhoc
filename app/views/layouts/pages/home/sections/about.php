@@ -80,7 +80,7 @@
       <!-- RIGHT: CONTENT -->
       <div class="col-lg-6">
         <h2 id="about-vnpc" class="vnpc-h2 mb-3">
-          Về Trung Tâm Tư Vấn Du Học VNPC
+          về chúng tôi
         </h2>
 
         <p class="vnpc-p mb-4" style="text-align: justify;">

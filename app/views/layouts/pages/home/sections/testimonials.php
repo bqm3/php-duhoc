@@ -1,36 +1,165 @@
+<?php if (!isset($base))
+  $base = ''; ?>
 <style>
-  /* Swiper Mobile Styles */
-  @media (max-width: 991px) {
+  .vnpc-testimonials {
+    min-height: 600px;
+    padding: 80px 0;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .vnpc-testimonials .vnpc-h2 {
+    color: #0E2A46;
+  }
+
+  .vnpc-testimonials .vnpc-p {
+    color: #0E2A46;
+  }
+
+  .testimonial-swiper {
+    padding-top: 40px !important;
+    padding-bottom: 50px !important;
+    overflow: visible !important;
+  }
+
+  /* Clip wrapper for swiper bleed */
+  .vnpc-testimonials .container-xxl {
+    overflow: hidden;
+  }
+
+  .vnpc-quote-card {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 24px;
+    gap: 16px;
+    isolation: isolate;
+    position: relative;
+    height: 100%;
+    border: 1px solid #17254E;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.95);
+  }
+
+  .quote-icon {
+    position: absolute;
+    width: 70.83px;
+    height: 45.03px;
+    left: -19px;
+    top: -24px;
+    z-index: 3;
+  }
+
+  .vnpc-quote {
+    text-align: justify;
+    color: #333931;
+    margin: 0;
+    flex: none;
+    order: 0;
+    align-self: stretch;
+    flex-grow: 0;
+  }
+
+  .vnpc-quote-user {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0px;
+    gap: 12px;
+    width: 100%;
+    margin-top: 0 !important;
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+  }
+
+  .vnpc-quote-user img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50px;
+    object-fit: cover;
+  }
+
+  .vnpc-quote-user-name {
+    color: #0E2A46;
+  }
+
+  .vnpc-quote-user-role {
+    display: block;
+  }
+
+  .testimonial-swiper .swiper-pagination {
+    bottom: 0 !important;
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+  }
+
+  .testimonial-swiper .swiper-pagination-bullet {
+    width: 8px;
+    height: 8px;
+    background: #6E6E6E;
+    opacity: 1;
+    margin: 0 !important;
+  }
+
+  .testimonial-swiper .swiper-pagination-bullet-active {
+    width: 33px;
+    height: 8px;
+    background: #1B99D4;
+    border-radius: 4px;
+  }
+
+  @media (min-width: 992px) {
     .testimonial-swiper {
-      padding-bottom: 40px !important;
-      overflow: hidden;
-    }
-
-    .testimonial-swiper .swiper-slide {
-      width: 100%;
-      height: auto;
-    }
-
-    .testimonial-swiper .swiper-pagination-bullet-active {
-      background: #17254E;
+      padding-left: 10px;
+      padding-right: 10px;
     }
   }
 
-  /* Desktop Grid Styles */
-  @media (min-width: 992px) {
+  /* Mobile Responsive Fixes */
+  @media (max-width: 767px) {
+    .vnpc-testimonials {
+      padding: 40px 0;
+    }
+
+    .vnpc-quote-card {
+      padding: 16px;
+      gap: 12px;
+    }
+
+    .quote-icon {
+      width: 46px;
+      height: 30px;
+      left: -10px;
+      top: -15px;
+    }
+
+    .vnpc-quote {
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .vnpc-quote-user img {
+      width: 40px;
+      height: 40px;
+    }
+
+    .vnpc-quote-user-name {
+      font-size: 14px;
+    }
+
     .testimonial-swiper {
-      overflow: visible;
+      padding-top: 25px !important;
     }
 
-    .testimonial-swiper .swiper-wrapper {
-      display: grid !important;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      transform: none !important;
+    .vnpc-testimonials .vnpc-h2 {
+      font-size: 24px;
     }
 
-    .testimonial-swiper .swiper-pagination {
-      display: none !important;
+    .vnpc-testimonials .vnpc-p {
+      font-size: 14px;
     }
   }
 </style>
@@ -48,29 +177,21 @@
     </header>
 
     <?php
-    $testimonials = [
-      [
-        'name' => 'Minh Khoa',
-        'img' => 'https://placehold.co/56x56',
-        'role' => 'Học viên du học Úc',
-        'rating' => 5,
-        'content' => 'Em vô tình biết đến VNPC qua Facebook, bản thân lại không tin tưởng mấy trung tâm tư vấn lắm nhưng vẫn liều tới thử xem sao. Nhưng thật sự, em đã bị thuyết phục bởi sự tận tâm, nhiệt tình, tính minh bạch và tốc độ xử lý hồ sơ của trung tâm. Cảm ơn trung tâm đã giúp em sớm thực hiện được giấc mơ du học Úc.'
-      ],
-      [
-        'name' => 'Hải Yến',
-        'img' => 'https://placehold.co/56x56',
-        'role' => 'Phụ huynh',
-        'rating' => 5,
-        'content' => 'Tôi có đưa con trai đến VNPC nhận tư vấn du học Úc và thấy khá hài lòng với cách tư vấn nhiệt tình, chuyên nghiệp của công ty. Công ty còn xử lý hồ sơ rất nhanh, minh bạch mọi khoản chi phí và rất có trách nhiệm.'
-      ],
-      [
-        'name' => 'Hoàng Quân',
-        'img' => 'https://placehold.co/56x56',
-        'role' => 'Khách hàng',
-        'rating' => 5,
-        'content' => 'Luôn ủng hộ VNPC, các bạn rất tận tình và có tâm trong công việc. Mình được bạn thân giới thiệu đến VNPC và vô cùng ấn tượng với phong cách làm việc chuyên nghiệp tại đây. Từ không gian văn phòng, thái độ nhân viên đến quy trình làm việc đều rất tốt. Chúc VNPC ngày càng phát triển hơn nữa trong tương lai.'
-      ],
-    ];
+    // Testimonials data passed from HomeController
+    $testimonials = $testimonials ?? [];
+
+    // Fallback if empty (optional, but good for design stability)
+    if (empty($testimonials)) {
+      $testimonials = [
+        [
+          'name' => 'Minh Khoa',
+          'image_url' => '/assets/img/client/img_home24.png',
+          'role' => 'Học viên du học Úc',
+          'rating' => 5,
+          'content' => 'Em vô tình biết đến VNPC qua Facebook, bản thân lại không tin tưởng mấy trung tâm tư vấn lắm nhưng vẫn liều tới thử xem sao. Nhưng thật sự, em đã bị thuyết phục bởi sự tận tâm, nhiệt tình, tính minh bạch và tốc độ xử lý hồ sơ của trung tâm. Cảm ơn trung tâm đã giúp em sớm thực hiện được giấc mơ du học Úc.'
+        ],
+      ];
+    }
 
     $avg = 0;
     foreach ($testimonials as $t)
@@ -97,7 +218,7 @@
           $name = $t['name'] ?? 'Khách hàng';
           $role = $t['role'] ?? 'Khách hàng';
           $content = $t['content'] ?? '';
-          $img = $t['img'] ?? '';
+          $img = (!empty($t['image_url'])) ? $base . $t['image_url'] : $base . '/assets/img/client/img_home24.png';
           $rating = (int) ($t['rating'] ?? 5);
           $cardId = 'review-' . ($i + 1);
           ?>
@@ -106,7 +227,7 @@
             aria-labelledby="<?= $cardId ?>-title" aria-describedby="<?= $cardId ?>-body">
             <div class="vnpc-quote-card">
               <img class="quote-icon" src="<?= $base ?>/assets/svgs/clients/ic_home12.svg" alt="Trích dẫn đánh giá"
-                width="24" height="24" loading="lazy" decoding="async" />
+                width="70" height="45" loading="lazy" decoding="async" />
 
               <div itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating">
                 <meta itemprop="ratingValue" content="<?= htmlspecialchars((string) $rating) ?>">
@@ -146,30 +267,34 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    let testimonialSwiper;
-
-    function initTestimonialSwiper() {
-      if (window.innerWidth < 992) {
-        if (!testimonialSwiper) {
-          testimonialSwiper = new Swiper(".testimonial-swiper", {
-            slidesPerView: 1,
-            spaceBetween: 20,
-            loop: true,
-            pagination: {
-              el: ".swiper-pagination",
-              clickable: true,
-            },
-          });
+    const testimonialSwiper = new Swiper(".testimonial-swiper", {
+      slidesPerView: 1,
+      spaceBetween: 24,
+      loop: true,
+      loopedSlides: 3, // Thêm dòng này - số slide tối đa hiển thị
+      centeredSlides: false,
+      autoplay: {
+        delay: 5000,
+        disableOnInteraction: false,
+      },
+      pagination: {
+        el: ".swiper-pagination",
+        clickable: true,
+      },
+      breakpoints: {
+        768: {
+          slidesPerView: 2,
+          loopedSlides: 2, // Thêm cho breakpoint
+        },
+        992: {
+          slidesPerView: 3,
+          loopedSlides: 3, // Thêm cho breakpoint
         }
-      } else {
-        if (testimonialSwiper) {
-          testimonialSwiper.destroy(true, true);
-          testimonialSwiper = undefined;
-        }
-      }
-    }
-
-    initTestimonialSwiper();
-    window.addEventListener('resize', initTestimonialSwiper);
+      },
+      // Thêm observer để recalculate khi DOM thay đổi
+      observer: true,
+      observeParents: true,
+      observeSlideChildren: true,
+    });
   });
 </script>

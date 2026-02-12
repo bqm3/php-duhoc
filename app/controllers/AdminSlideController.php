@@ -82,7 +82,7 @@ class AdminSlideController
         $image_url = '';
         if (isset($_FILES['image']) && $_FILES['image']['size'] > 0) {
             try {
-                $image_url = self::saveUploadedImage($_FILES['image'], 'slide_');
+                $image_url = Upload::saveUploadedImage($_FILES['image'], 'slide_', 'slides');
             } catch (Exception $e) {
                 Response::json(['error' => $e->getMessage()], 400);
                 return;
@@ -145,7 +145,7 @@ class AdminSlideController
 
         if (isset($_FILES['image']) && $_FILES['image']['size'] > 0) {
             try {
-                $image_url = self::saveUploadedImage($_FILES['image'], 'slide_');
+                $image_url = Upload::saveUploadedImage($_FILES['image'], 'slide_', 'slides');
             } catch (Exception $e) {
                 Response::json(['error' => $e->getMessage()], 400);
                 return;
@@ -206,35 +206,5 @@ class AdminSlideController
             Response::json(['error' => 'Lỗi hệ thống'], 500);
             exit;
         }
-    }
-    private static function saveUploadedImage($file, $prefix)
-    {
-        if (!isset($file['tmp_name']) || !is_uploaded_file($file['tmp_name'])) {
-            throw new Exception("File upload không hợp lệ");
-        }
-
-        $uploadDir = rtrim($_SERVER['DOCUMENT_ROOT'], '/')
-            . '/assets/uploads/slides';
-
-        if (!is_dir($uploadDir)) {
-            if (!mkdir($uploadDir, 0755, true) && !is_dir($uploadDir)) {
-                throw new Exception("Không tạo được thư mục upload: " . $uploadDir);
-            }
-        }
-
-        $ext = strtolower(pathinfo($file['name'] ?? '', PATHINFO_EXTENSION));
-        $allowed = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
-        if (!in_array($ext, $allowed, true)) {
-            throw new Exception("Định dạng ảnh không hỗ trợ: " . $ext);
-        }
-
-        $filename = $prefix . time() . '_' . random_int(1000, 9999) . '.' . $ext;
-        $dest = $uploadDir . '/' . $filename;
-
-        if (!move_uploaded_file($file['tmp_name'], $dest)) {
-            throw new Exception("Upload failed (move_uploaded_file). Kiểm tra quyền ghi folder assets/uploads.");
-        }
-
-        return '/assets/uploads/slides/' . $filename;
     }
 }

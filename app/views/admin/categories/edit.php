@@ -31,7 +31,7 @@
                     <div class="col-sm-12">
                         <div class="mt-1 mb-3 p-3 button-container bg-white border shadow-sm">
                             <?php if (isset($_GET['error']) && $_GET['error'] == 'empty_name'): ?>
-                            <div class="alert alert-danger">Tên danh mục không được để trống.</div>
+                                <div class="alert alert-danger">Tên danh mục không được để trống.</div>
                             <?php endif; ?>
 
                             <form action="<?= $base ?>/admin/categories/<?= $category['id'] ?>" method="POST">
@@ -40,17 +40,19 @@
                                 <div class="form-group">
                                     <label>Tên danh mục <span class="text-danger">*</span></label>
                                     <input type="text" name="name" id="name" class="form-control" required
-                                        value="<?= htmlspecialchars($category['name']) ?>" onkeyup="generateSlug()">
+                                        value="<?= htmlspecialchars($category['name']) ?>">
                                 </div>
 
                                 <div class="form-group">
                                     <label>Slug</label>
-                                    <input type="text" class="form-control" name="slug" value="<?= htmlspecialchars($category['slug']) ?>">
+                                    <input type="text" class="form-control" name="slug"
+                                        value="<?= htmlspecialchars($category['slug']) ?>" readonly>
                                 </div>
 
                                 <div class="form-group">
                                     <label>Thứ tự hiển thị</label>
-                                    <input type="number" class="form-control" name="display_order" value="<?= $category['display_order'] ?>">
+                                    <input type="number" class="form-control" name="display_order"
+                                        value="<?= $category['display_order'] ?>">
                                 </div>
 
                                 <button type="submit" class="btn btn-primary">Cập nhật</button>
@@ -69,25 +71,25 @@
     <script src="<?= $base ?>/assets/js/custom.js"></script>
 
     <script>
-    // Hàm tạo slug đơn giản phía client
-    function generateSlug() {
-        var name = document.getElementById('name').value;
-        var slug = name.toLowerCase();
+        // Hàm tạo slug đơn giản phía client
+        function generateSlug() {
+            var name = document.getElementById('name').value;
+            var slug = name.toLowerCase();
 
-        slug = slug.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/g, 'a');
-        slug = slug.replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/g, 'e');
-        slug = slug.replace(/i|í|ì|ỉ|ĩ|ị/g, 'i');
-        slug = slug.replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/g, 'o');
-        slug = slug.replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/g, 'u');
-        slug = slug.replace(/ý|ỳ|ỷ|ỹ|ỵ/g, 'y');
-        slug = slug.replace(/đ/g, 'd');
+            slug = slug.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/g, 'a');
+            slug = slug.replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/g, 'e');
+            slug = slug.replace(/i|í|ì|ỉ|ĩ|ị/g, 'i');
+            slug = slug.replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/g, 'o');
+            slug = slug.replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/g, 'u');
+            slug = slug.replace(/ý|ỳ|ỷ|ỹ|ỵ/g, 'y');
+            slug = slug.replace(/đ/g, 'd');
 
-        slug = slug.replace(/[^a-z0-9 -]/g, '')
-            .replace(/\s+/g, '-')
-            .replace(/-+/g, '-');
+            slug = slug.replace(/[^a-z0-9 -]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/-+/g, '-');
 
-        document.getElementById('slug').value = slug;
-    }
+            document.getElementById('slug').value = slug;
+        }
     </script>
 </body>
 

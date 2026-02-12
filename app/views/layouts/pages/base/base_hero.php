@@ -12,7 +12,7 @@
     <div class="container vnpc-about-hero-content">
         <h1 class="vnpc-about-hero-title animate-fade-in-up"><?= $title ?? 'Học Bổng Du Học' ?></h1>
         <?php if (isset($showSearch) && $showSearch): ?>
-            <form action="<?= $base ?>/hoc-bong" method="GET" class="vnpc-hero-search animate-fade-in-up"
+            <form action="<?= $base ?>/hoc-bong" method="GET" class="vnpc-hero-search d-none d-md-flex animate-fade-in-up"
                 style="animation-delay: 0.2s;">
                 <input type="text" name="keyword" value="<?= htmlspecialchars($_GET['keyword'] ?? '') ?>"
                     placeholder="Nhập từ khóa để tìm kiếm">
@@ -116,23 +116,6 @@
         .vnpc-about-hero-title {
             font-size: 28px;
             margin-bottom: 25px;
-        }
-
-        .vnpc-hero-search {
-            margin-bottom: 20px;
-            border-radius: 12px;
-            height: auto;
-        }
-
-        .vnpc-hero-search input {
-            padding: 12px 20px;
-            font-size: 14px;
-        }
-
-        .vnpc-hero-search button {
-            width: 60px;
-            height: 50px;
-            border-radius: 0 12px 12px 0;
         }
 
         .vnpc-breadcrumb {

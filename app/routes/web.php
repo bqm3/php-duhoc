@@ -60,7 +60,7 @@ if ($method === "GET" && preg_match('#^/api/menu-content/([a-z-]+)$#', $uri, $m)
   exit;
 }
 
-if ($uri === "/du-hoc" || $uri === "/visa-du-hoc" || $uri === "/ngoai-ngu-du-hoc" && $method === "GET") {
+if ($uri === "/du-hoc" || $uri === "/visa-du-hoc" || $uri === "/ngoai-ngu-du-hoc" || $uri === "/chi-phi" && $method === "GET") {
   (new HomeController())->index();
   exit;
 }
@@ -92,6 +92,12 @@ if ($uri === "/su-kien" && $method === "GET") {
 if (preg_match('#^/truong/([^/]+)$#', $uri, $m) && $method === 'GET') {
   require_once __DIR__ . '/../controllers/client/SchoolController.php';
   (new SchoolController())->detail($m[1]);
+  exit;
+}
+
+if ($uri === "/tim-kiem" && $method === "GET") {
+  require_once __DIR__ . '/../controllers/client/SearchController.php';
+  (new SearchController())->index();
   exit;
 }
 

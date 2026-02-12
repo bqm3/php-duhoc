@@ -301,6 +301,15 @@ $breadcrumbs[] = ['label' => $post['title'] ?? 'Chi tiết', 'url' => ''];
         </div>
       <?php endif; ?> -->
 
+      <div class="mb-3">
+        <button class="btn btn-success btn-sm" type="button">
+          <i class="fa fa-thumbs-up"></i> Like
+        </button>
+        <button class="btn btn-primary btn-sm" onclick="sharePost(<?= (int) ($post['id'] ?? 0) ?>)">
+          <i class="fa fa-share"></i> Facebook
+        </button>
+      </div>
+
       <!-- Frame 427324326: Country Quick Access -->
       <?php if (!empty($post['country_id']) && !empty($countryLinks)): ?>
         <div class="country-detail-box">
@@ -372,18 +381,21 @@ $breadcrumbs[] = ['label' => $post['title'] ?? 'Chi tiết', 'url' => ''];
       </div>
 
       <!-- Share Buttons -->
-      <div class="mt-5 pt-3 border-top">
+      <!-- <div class="mt-5 pt-3 border-top">
         <p class="font-weight-bold mb-2">Chia sẻ bài viết:</p>
+        <button class="btn btn-success btn-sm" type="button">
+          <i class="fa fa-thumbs-up"></i> Like
+        </button>
         <button class="btn btn-primary btn-sm" onclick="sharePost(<?= (int) ($post['id'] ?? 0) ?>)">
-          <i class="fa fa-facebook"></i> Facebook
+          <i class="fa fa-share"></i> Facebook
         </button>
         <button class="btn btn-info btn-sm" type="button">
-          <i class="fa fa-twitter"></i> Twitter
-        </button>
-      </div>
-
+      <i class="fa fa-share"></i> Twitter
+    </button> -->
     </div>
+
   </div>
+</div>
 </div>
 
 <script>

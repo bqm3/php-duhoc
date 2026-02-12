@@ -62,22 +62,8 @@
     box-shadow: 0 12px 28px rgba(15, 23, 42, .12);
   }
 
-  /* Swiper Mobile Styles */
+  /* Mobile Adjustments */
   @media (max-width: 991px) {
-    .scholar-swiper {
-      padding-bottom: 40px !important;
-      overflow: hidden;
-    }
-
-    .scholar-swiper .swiper-slide {
-      width: 100%;
-      height: auto;
-    }
-
-    .scholar-swiper .swiper-pagination-bullet-active {
-      background: #1d76d3;
-    }
-
     .scholar-header {
       flex-direction: column;
       align-items: center;
@@ -100,22 +86,146 @@
     }
   }
 
-  /* Desktop Grid simulation since we removed Bootstrap classes to avoid Swiper conflict */
+  .scholar-swiper {
+    padding-top: 10px !important;
+    padding-bottom: 50px !important;
+    overflow: hidden;
+    height: 880px;
+    /* Approximate height for 2 rows of cards + pagination */
+  }
+
+  /* Mobile height */
+  @media (max-width: 767px) {
+    .scholar-swiper {
+      height: 950px;
+      /* Cards might be taller on mobile */
+    }
+  }
+
+  .scholar-swiper .swiper-slide {
+    height: calc((100% - 24px) / 2) !important;
+    /* Specific for 2 rows with gap */
+    margin-top: 0 !important;
+    margin-bottom: 24px;
+  }
+
+  /* Clip wrapper for swiper bleed if needed, but for grid we might want hidden */
+  .scholar-section .container-xxl {
+    /* overflow: hidden; */
+  }
+
+  .scholar-swiper .swiper-pagination {
+    bottom: 0 !important;
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+  }
+
+  .scholar-swiper .swiper-pagination-bullet {
+    width: 8px;
+    height: 8px;
+    background: #6E6E6E;
+    opacity: 1;
+    margin: 0 !important;
+  }
+
+  .scholar-swiper .swiper-pagination-bullet-active {
+    width: 33px;
+    height: 8px;
+    background: #1B99D4;
+    border-radius: 4px;
+  }
+
+  /* Navigation Buttons */
+  .swiper-nav-wrapper {
+    position: relative;
+  }
+
+  .scholar-swiper {
+    position: static !important;
+  }
+
+  .scholar-swiper .swiper-button-next,
+  .scholar-swiper .swiper-button-prev {
+    width: 40px !important;
+    height: 40px !important;
+    background: rgba(27, 153, 212, 0.15) !important;
+    border-radius: 30px !important;
+    margin-top: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+
+  /* Inner circle */
+  .scholar-swiper .swiper-button-next::before,
+  .scholar-swiper .swiper-button-prev::before {
+    content: '';
+    position: absolute;
+    width: 33.33px;
+    height: 33.33px;
+    background: #31A5DE;
+    border-radius: 30px;
+    z-index: -1;
+    transition: all 0.3s ease;
+  }
+
+  .scholar-swiper .swiper-button-next::after,
+  .scholar-swiper .swiper-button-prev::after {
+    font-family: "Font Awesome 6 Free", "Font Awesome 5 Free";
+    font-weight: 900;
+    font-size: 12px !important;
+    color: #FFFFFF !important;
+  }
+
+  .scholar-swiper .swiper-button-next::after {
+    content: '\f054' !important;
+  }
+
+  .scholar-swiper .swiper-button-prev::after {
+    content: '\f053' !important;
+  }
+
+  .scholar-swiper .swiper-button-next:hover::before,
+  .scholar-swiper .swiper-button-prev:hover::before {
+    background: #1B99D4;
+    transform: scale(1.1);
+  }
+
+  .scholar-swiper .swiper-button-next {
+    right: -20px !important;
+  }
+
+  .scholar-swiper .swiper-button-prev {
+    left: -20px !important;
+  }
+
+  @media (max-width: 1250px) {
+    .scholar-swiper .swiper-button-next {
+      right: 5px !important;
+    }
+
+    .scholar-swiper .swiper-button-prev {
+      left: 5px !important;
+    }
+  }
+
+  /* Desktop Adjustments */
   @media (min-width: 992px) {
     .scholar-swiper {
-      overflow: visible;
+      padding-left: 2px;
+      padding-right: 2px;
     }
+  }
 
-    .scholar-swiper .swiper-wrapper {
-      display: grid !important;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      transform: none !important;
-    }
-
-    .scholar-swiper .swiper-pagination {
-      display: none !important;
-    }
+  /* Swiper Grid specifically needs these for 2 rows */
+  .scholar-swiper .swiper-wrapper {
+    flex-wrap: wrap;
+    /* Only for older versions, actually Swiper 11 handles it usually */
   }
 </style>
 
@@ -138,24 +248,29 @@
       </div>
 
       <!-- SWIPER -->
-      <div class="swiper scholar-swiper">
-        <div class="swiper-wrapper">
+      <div class="swiper-nav-wrapper">
+        <div class="swiper scholar-swiper">
+          <div class="swiper-wrapper">
 
-          <?php if (!empty($scholarshipPosts)): ?>
-            <?php foreach ($scholarshipPosts as $c): ?>
-              <article class="swiper-slide" itemprop="itemListElement">
-                <?php partial('layouts/partials/post_card', ['post' => $c, 'base' => $base]); ?>
-              </article>
-            <?php endforeach; ?>
-          <?php else: ?>
-            <div class="swiper-slide text-center py-5">
-              <p class="text-secondary">Đang cập nhật các chương trình học bổng mới nhất...</p>
-            </div>
-          <?php endif; ?>
+            <?php if (!empty($scholarshipPosts)): ?>
+              <?php foreach ($scholarshipPosts as $c): ?>
+                <article class="swiper-slide" itemprop="itemListElement">
+                  <?php partial('layouts/partials/post_card', ['post' => $c, 'base' => $base]); ?>
+                </article>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <div class="swiper-slide text-center py-5">
+                <p class="text-secondary">Đang cập nhật các chương trình học bổng mới nhất...</p>
+              </div>
+            <?php endif; ?>
 
+          </div>
+          <!-- Add Pagination -->
+          <div class="swiper-pagination"></div>
+          <!-- Add Navigation -->
+          <div class="swiper-button-next"></div>
+          <div class="swiper-button-prev"></div>
         </div>
-        <!-- Add Pagination -->
-        <div class="swiper-pagination"></div>
       </div>
     </div>
   </section>
@@ -163,30 +278,48 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    let scholarSwiper;
-
-    function initScholarSwiper() {
-      if (window.innerWidth < 992) {
-        if (!scholarSwiper) {
-          scholarSwiper = new Swiper(".scholar-swiper", {
-            slidesPerView: 1,
-            spaceBetween: 20,
-            loop: true,
-            pagination: {
-              el: ".swiper-pagination",
-              clickable: true,
-            },
-          });
+    const scholarSwiper = new Swiper(".scholar-swiper", {
+      slidesPerView: 1,
+      grid: {
+        rows: 2,
+        fill: 'row'
+      },
+      spaceBetween: 16,
+      // Loop does not work with multi-row grid layout in Swiper
+      loop: false,
+      autoplay: {
+        delay: 6000,
+        disableOnInteraction: false,
+      },
+      pagination: {
+        el: ".swiper-pagination",
+        clickable: true,
+      },
+      navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+      },
+      breakpoints: {
+        768: {
+          slidesPerView: 2,
+          spaceBetween: 20,
+          grid: {
+            rows: 2,
+            fill: 'row'
+          }
+        },
+        1200: {
+          slidesPerView: 3,
+          spaceBetween: 24,
+          grid: {
+            rows: 2,
+            fill: 'row'
+          }
         }
-      } else {
-        if (scholarSwiper) {
-          scholarSwiper.destroy(true, true);
-          scholarSwiper = undefined;
-        }
-      }
-    }
-
-    initScholarSwiper();
-    window.addEventListener('resize', initScholarSwiper);
+      },
+      observer: true,
+      observeParents: true,
+      observeSlideChildren: true,
+    });
   });
 </script>

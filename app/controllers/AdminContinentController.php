@@ -67,7 +67,7 @@ class AdminContinentController
         $image_url = null;
         try {
             if (isset($_FILES['image']) && $_FILES['image']['size'] > 0) {
-                $image_url = self::saveUploadedImage($_FILES['image'], 'continent_');
+                $image_url = Upload::saveUploadedImage($_FILES['image'], 'continent_', 'locations');
             }
         } catch (Exception $e) {
             Response::json(['error' => $e->getMessage()], 400);
@@ -129,7 +129,7 @@ class AdminContinentController
         $image_url = $old['image_url'];
         try {
             if (isset($_FILES['image']) && $_FILES['image']['size'] > 0) {
-                $image_url = self::saveUploadedImage($_FILES['image'], 'continent_');
+                $image_url = Upload::saveUploadedImage($_FILES['image'], 'continent_', 'locations');
             }
         } catch (Exception $e) {
             Response::json(['error' => $e->getMessage()], 400);

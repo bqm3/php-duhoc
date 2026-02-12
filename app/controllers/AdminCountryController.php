@@ -84,10 +84,10 @@ class AdminCountryController
         $image_url = null;
         try {
             if (isset($_FILES['flag']) && $_FILES['flag']['size'] > 0)
-                $flag_url = self::saveUploadedImage($_FILES['flag'], 'flag_');
+                $flag_url = Upload::saveUploadedImage($_FILES['flag'], 'flag_', 'locations');
 
             if (isset($_FILES['image']) && $_FILES['image']['size'] > 0)
-                $image_url = self::saveUploadedImage($_FILES['image'], 'country_');
+                $image_url = Upload::saveUploadedImage($_FILES['image'], 'country_', 'locations');
         } catch (Exception $e) {
             Response::json(['error' => $e->getMessage()], 400);
         }
@@ -160,10 +160,10 @@ class AdminCountryController
 
         try {
             if (isset($_FILES['flag']) && $_FILES['flag']['size'] > 0)
-                $flag_url = self::saveUploadedImage($_FILES['flag'], 'flag_');
+                $flag_url = Upload::saveUploadedImage($_FILES['flag'], 'flag_', 'locations');
 
             if (isset($_FILES['image']) && $_FILES['image']['size'] > 0)
-                $image_url = self::saveUploadedImage($_FILES['image'], 'country_');
+                $image_url = Upload::saveUploadedImage($_FILES['image'], 'country_', 'locations');
         } catch (Exception $e) {
             Response::json(['error' => $e->getMessage()], 400);
         }
@@ -355,31 +355,16 @@ class AdminCountryController
 
     private static function saveUploadedImage($file, $prefix)
     {
-        if (!isset($file['tmp_name']) || !is_uploaded_file($file['tmp_name'])) {
-            throw new Exception("File upload không hợp lệ");
+        $uploadDir = __DIR__ . '/../../public/assets/uploads/locations';
+        if (!is_dir($uploadDir))
+            mkdir($uploadDir, 0755, true);
+
+        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $filename = $prefix . time() . '_' . rand(1000, 9999) . '.' . $ext;
+
+        if (move_uploaded_file($file['tmp_name'], $uploadDir . '/' . $filename)) {
+            return '/assets/uploads/locations/' . $filename;
         }
-
-        $uploadDir = rtrim($_SERVER['DOCUMENT_ROOT'], '/') . '/assets/uploads/locations';
-
-        if (!is_dir($uploadDir)) {
-            if (!mkdir($uploadDir, 0755, true) && !is_dir($uploadDir)) {
-                throw new Exception("Không tạo được thư mục upload: " . $uploadDir);
-            }
-        }
-
-        $ext = strtolower(pathinfo($file['name'] ?? '', PATHINFO_EXTENSION));
-        $allowed = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
-        if (!in_array($ext, $allowed, true)) {
-            throw new Exception("Định dạng ảnh không hỗ trợ: " . $ext);
-        }
-
-        $filename = $prefix . time() . '_' . random_int(1000, 9999) . '.' . $ext;
-        $dest = $uploadDir . '/' . $filename;
-
-        if (!move_uploaded_file($file['tmp_name'], $dest)) {
-            throw new Exception("Upload failed (move_uploaded_file). Kiểm tra quyền ghi folder assets/uploads/locations.");
-        }
-
-        return '/assets/uploads/locations/' . $filename;
+        throw new Exception("Upload failed");
     }
 }

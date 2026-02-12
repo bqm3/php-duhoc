@@ -29,6 +29,7 @@
     ?>
     <div class="header-action-links">
       <a href="<?= $base ?>/su-kien" class="<?= $rel_path === '/su-kien' ? 'active' : '' ?>">Sự kiện</a>
+      <a href="<?= $base ?>/tim-truong" class="<?= $rel_path === '/tim-truong' ? 'active' : '' ?>">Tìm trường</a>
       <a href="<?= $base ?>/dang-ky" class="<?= $rel_path === '/dang-ky' ? 'active' : '' ?>">Đăng ký</a>
       <a href="<?= $base ?>/tuyen-dung" class="<?= $rel_path === '/tuyen-dung' ? 'active' : '' ?>">Tuyển dụng</a>
       <a href="<?= $base ?>/lien-he" class="<?= $rel_path === '/lien-he' ? 'active' : '' ?>">Liên hệ</a>

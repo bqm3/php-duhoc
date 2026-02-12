@@ -72,7 +72,7 @@ class HomeController
                         FROM posts p 
                         LEFT JOIN tags t ON p.tag_id = t.id
                         WHERE p.category_id = ? AND p.is_hidden = 0 
-                        ORDER BY RAND() LIMIT 3";
+                        ORDER BY RAND() LIMIT 18";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([$scholarshipCatId]);
                 $scholarshipPosts = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -109,6 +109,15 @@ class HomeController
         } catch (Exception $e) {
         }
 
+        // Fetch testimonials
+        $testimonials = [];
+        try {
+            $stmt = $pdo->prepare("SELECT * FROM testimonials WHERE is_hidden = 0 AND is_delete = 0 ORDER BY display_order ASC, created_at DESC");
+            $stmt->execute();
+            $testimonials = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+        }
+
         view('main', 'layouts/pages/home/index', [
             'title' => 'Trang chủ',
             'posts' => $posts,
@@ -118,6 +127,7 @@ class HomeController
             'internationalInfoPosts' => $internationalInfoPosts,
             'slides' => $slides,
             'partners' => $partners,
+            'testimonials' => $testimonials,
             'pageCss' => ['home.css'],
         ]);
     }

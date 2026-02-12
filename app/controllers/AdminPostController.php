@@ -192,7 +192,7 @@ class AdminPostController
         $featured_image = null;
         try {
             if (isset($_FILES['featured_image'])) {
-                $featured_image = self::saveUploadedImage($_FILES['featured_image'], 'post_cover_');
+                $featured_image = Upload::saveUploadedImage($_FILES['featured_image'], 'post_cover_', 'posts');
             }
         } catch (Exception $e) {
             Response::json(['error' => $e->getMessage()], 400);
@@ -371,7 +371,7 @@ class AdminPostController
         $newFeatured = $old['featured_image'] ?? null;
         try {
             if (isset($_FILES['featured_image']) && ($_FILES['featured_image']['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE) {
-                $newFeatured = self::saveUploadedImage($_FILES['featured_image'], 'post_cover_');
+                $newFeatured = Upload::saveUploadedImage($_FILES['featured_image'], 'post_cover_', 'posts');
 
                 // (tuỳ chọn) xoá file cũ trên disk nếu thuộc uploads của mình
                 if (!empty($old['featured_image']) && str_contains($old['featured_image'], '/assets/uploads/')) {
@@ -495,44 +495,6 @@ class AdminPostController
         ]);
     }
 
-    // Save uploaded image
-    private static function saveUploadedImage($file, $prefix)
-    {
-        if (!isset($file['error']) || $file['error'] === UPLOAD_ERR_NO_FILE) {
-            return null;
-        }
-
-        if ($file['error'] !== UPLOAD_ERR_OK) {
-            throw new Exception("File upload error: " . $file['error']);
-        }
-
-        if (!isset($file['tmp_name']) || !is_uploaded_file($file['tmp_name'])) {
-            throw new Exception("File upload không hợp lệ");
-        }
-
-        $uploadDir = rtrim($_SERVER['DOCUMENT_ROOT'], '/') . '/assets/uploads/posts';
-
-        if (!is_dir($uploadDir)) {
-            if (!mkdir($uploadDir, 0755, true) && !is_dir($uploadDir)) {
-                throw new Exception("Không tạo được thư mục upload: " . $uploadDir);
-            }
-        }
-
-        $ext = strtolower(pathinfo($file['name'] ?? '', PATHINFO_EXTENSION));
-        $allowed = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
-        if (!in_array($ext, $allowed, true)) {
-            throw new Exception("Định dạng ảnh không hỗ trợ: " . $ext);
-        }
-
-        $filename = $prefix . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
-        $dest = $uploadDir . '/' . $filename;
-
-        if (!move_uploaded_file($file['tmp_name'], $dest)) {
-            throw new Exception("Upload failed (move_uploaded_file). Kiểm tra quyền ghi folder assets/uploads/posts.");
-        }
-
-        return '/assets/uploads/posts/' . $filename;
-    }
 
 
     // Generate slug from title
@@ -754,30 +716,11 @@ class AdminPostController
         }
 
         try {
-            $file = $_FILES['upload'];
-            $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-            $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+            $url = Upload::saveUploadedImage($_FILES['upload'], 'post_', 'posts');
 
-            if (!in_array($ext, $allowed, true)) {
-                throw new Exception('Invalid file type');
+            if (!$url) {
+                throw new Exception('Upload failed');
             }
-
-            $filename = 'post_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
-
-            $uploadDir = rtrim($_SERVER['DOCUMENT_ROOT'], '/') . '/assets/uploads/posts';
-            if (!is_dir($uploadDir)) {
-                if (!mkdir($uploadDir, 0755, true) && !is_dir($uploadDir)) {
-                    throw new Exception("Không tạo được thư mục upload: " . $uploadDir);
-                }
-            }
-
-            $destPath = $uploadDir . '/' . $filename;
-
-            if (!move_uploaded_file($file['tmp_name'], $destPath)) {
-                throw new Exception('Failed to move file');
-            }
-
-            $url = '/assets/uploads/posts/' . $filename;
             if (ob_get_length())
                 ob_clean();
             header('Content-Type: application/json; charset=utf-8');

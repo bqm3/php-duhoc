@@ -2,7 +2,7 @@
     <section class="vnpc-blogs py-5">
         <div class="container-xxl">
             <div class="text-center mb-5">
-                <h2 class="section-title">Thông tin du học quốc tế</h2>
+                <h2 class="section-title">Thông Tin Du Học Quốc Tế</h2>
                 <p class="section-subtitle">Chia sẻ thông tin du học, học bổng của các trường đại học hàng đầu thế giới</p>
             </div>
 
@@ -16,21 +16,21 @@
                         ?>
                         <div
                             class="blog-big-card h-100 shadow-sm border-0 rounded-3 overflow-hidden d-flex flex-column bg-white">
-                            <a href="<?= $pUrl ?>" class="overflow-hidden">
+                            <div class="overflow-hidden">
                                 <img src="<?= $pImg ?>" alt="<?= htmlspecialchars($p['title']) ?>"
                                     class="img-fluid w-100 object-fit-cover" style="height: 486px;">
-                            </a>
+                            </div>
                             <div class="p-4 flex-grow-1 d-flex flex-column">
-                                <div class="d-flex align-items-center gap-3 text-muted mb-3 small">
+                                <!-- <div class="d-flex align-items-center gap-3 text-muted mb-3 small">
                                     <span><i class="far fa-eye me-1"></i> xem:
                                         <?= number_format($p['count_view'] ?? 0) ?>+
                                     </span>
                                     <span><i class="far fa-calendar-alt me-1"></i>
                                         <?= date('d/m/Y', strtotime($p['created_at'])) ?>
                                     </span>
-                                </div>
+                                </div> -->
                                 <h3 class="h4 fw-bold mb-3">
-                                    <a href="<?= $pUrl ?>" class="text-dark text-decoration-none hover-primary">
+                                    <a href="<?= $pUrl ?>" class="text-dark text-decoration-none hover-primary stretched-link">
                                         <?= htmlspecialchars($p['title']) ?>
                                     </a>
                                 </h3>
@@ -52,24 +52,24 @@
                                 $pUrl = $base . '/' . $p['slug'];
                                 ?>
                                 <div
-                                    class="blog-small-card shadow-sm bg-white rounded-3 p-3 d-flex gap-3 border-0 transition-hover">
-                                    <div class="flex-shrink-0" style="width: 190px; height: 190px;">
-                                        <a href="<?= $pUrl ?>">
-                                            <img src="<?= $pImg ?>" alt="<?= htmlspecialchars($p['title']) ?>"
-                                                class="w-100 h-100 rounded-2 object-fit-cover">
-                                        </a>
+                                    class="blog-small-card shadow-sm bg-white rounded-3 p-3 d-flex gap-3 border-0 transition-hover position-relative">
+                                    <div class="flex-shrink-0 overflow-hidden"
+                                        style="width: 190px; height: 190px; border-radius: 8px;">
+                                        <img src="<?= $pImg ?>" alt="<?= htmlspecialchars($p['title']) ?>"
+                                            class="w-100 h-100 rounded-2 object-fit-cover">
                                     </div>
                                     <div class="flex-grow-1">
-                                        <div class="d-flex align-items-center gap-3 text-muted mb-2 small">
+                                        <!-- <div class="d-flex align-items-center gap-3 text-muted mb-2 small">
                                             <span><i class="far fa-eye me-1"></i>
                                                 <?= number_format($p['count_view'] ?? 0) ?>+
                                             </span>
                                             <span><i class="far fa-calendar-alt me-1"></i>
                                                 <?= date('d/m/Y', strtotime($p['created_at'])) ?>
                                             </span>
-                                        </div>
+                                        </div> -->
                                         <h4 class="h6 fw-semibold mb-2 line-clamp-3">
-                                            <a href="<?= $pUrl ?>" class="text-dark text-decoration-none hover-primary">
+                                            <a href="<?= $pUrl ?>"
+                                                class="text-dark text-decoration-none hover-primary stretched-link">
                                                 <?= htmlspecialchars($p['title']) ?>
                                             </a>
                                         </h4>
@@ -108,12 +108,24 @@
         .blog-big-card,
         .blog-small-card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            cursor: pointer;
         }
 
         .blog-big-card:hover,
         .blog-small-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .blog-big-card img,
+        .blog-small-card img {
+            transition: transform 0.5s ease;
+        }
+
+        .blog-big-card:hover img,
+        .blog-small-card:hover img {
+            transform: scale(1.05);
         }
 
         .hover-primary:hover {

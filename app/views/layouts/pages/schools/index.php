@@ -19,7 +19,7 @@
                     placeholder="Nhập từ khóa">
             </div>
             <button type="submit" class="search-btn">Tìm kiếm</button>
-            <?php if (!empty($filters['keyword']) || $filters['country_id'] > 0 || $filters['city_id'] > 0 || $filters['edu_level_id'] > 0): ?>
+            <?php if (!empty($filters['keyword']) || $filters['country_id'] > 0 || $filters['city_id'] > 0 || $filters['edu_level_id'] > 0 || $filters['is_scholarship'] !== ''): ?>
                 <a href="<?= $base ?>/tim-truong" class="reset-btn" title="Bỏ lọc">
                     <i class="fa-solid fa-rotate-right"></i>
                 </a>
@@ -59,10 +59,10 @@
                 </select>
             </div>
             <div class="filter-select-group">
-                <select name="type" onchange="this.form.submit()">
-                    <option value="">Loại trường</option>
-                    <option value="Cong_lap">Công lập</option>
-                    <option value="Tu_thuc">Tư thục</option>
+                <select name="is_scholarship" onchange="this.form.submit()">
+                    <option value="">Học bổng</option>
+                    <option value="1" <?= $filters['is_scholarship'] === '1' ? 'selected' : '' ?>>Có</option>
+                    <option value="0" <?= $filters['is_scholarship'] === '0' ? 'selected' : '' ?>>Không</option>
                 </select>
             </div>
         </div>
