@@ -4,23 +4,64 @@
 class Upload
 {
     /**
+     * Tìm thư mục public webroot trên hosting kiểu:
+     * php-duhoc/ (code) ngang cấp public_html/ (webroot)
+     */
+    public static function publicRoot(): string
+    {
+        // Ưu tiên 1: nếu bạn define sẵn PUBLIC_ROOT ở bootstrap/config
+        if (defined('PUBLIC_ROOT') && is_dir(PUBLIC_ROOT)) {
+            return rtrim(PUBLIC_ROOT, '/\\');
+        }
+
+        // Ưu tiên 2: dùng DOCUMENT_ROOT (thường là .../public_html)
+        $docRoot = $_SERVER['DOCUMENT_ROOT'] ?? '';
+        if ($docRoot && is_dir($docRoot)) {
+            return rtrim($docRoot, '/\\');
+        }
+
+        // Ưu tiên 3: đoán theo cấu trúc: php-duhoc/app/core -> lên 3 cấp về php-duhoc -> sang ../public_html
+        // __DIR__ = php-duhoc/app/core
+        $guess = realpath(__DIR__ . '/../../../public_html');
+        if ($guess && is_dir($guess)) {
+            return rtrim($guess, '/\\');
+        }
+
+        // fallback cuối: thử ngay cạnh project
+        $guess2 = realpath(__DIR__ . '/../../../../public_html');
+        if ($guess2 && is_dir($guess2)) {
+            return rtrim($guess2, '/\\');
+        }
+
+        throw new Exception('Cannot locate public web root (public_html). Please define PUBLIC_ROOT.');
+    }
+
+    /**
+     * Map URL (/assets/uploads/...) -> filesystem path (public_html/assets/uploads/...)
+     */
+    public static function publicPathFromUrl(string $url): string
+    {
+        $path = parse_url($url, PHP_URL_PATH) ?? $url; // lấy phần path
+        $path = '/' . ltrim($path, '/');
+        return self::publicRoot() . $path;
+    }
+
+    /**
      * Save uploaded file
-     * 
+     *
      * @param array $file The $_FILES['name'] array
      * @param string $prefix Prefix for the filename
-     * @param string $subdir Subdirectory inside public/assets/uploads/
-     * @param array|null $allowed Allowed extensions. If null, allows common images + docs.
-     * @return string|null The relative path to the file for DB storage, or null if no file
+     * @param string $subdir Subdirectory inside public_html/assets/uploads/
+     * @param array|null $allowed Allowed extensions
+     * @return string|null Relative URL path for DB storage (e.g. /assets/uploads/posts/xxx.webp)
      * @throws Exception
      */
     public static function saveUploadedFile($file, $prefix = 'file_', $subdir = '', $allowed = null)
     {
-        // Check if file array structure is valid
         if (!isset($file) || !isset($file['error'])) {
             return null;
         }
 
-        // Check specifically for no file uploaded
         if ($file['error'] === UPLOAD_ERR_NO_FILE) {
             return null;
         }
@@ -48,49 +89,26 @@ class Upload
             throw new Exception($msg);
         }
 
-        if (!isset($file['tmp_name']) || empty($file['tmp_name'])) {
+        if (empty($file['tmp_name'])) {
             return null;
         }
 
         $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
 
         if ($allowed === null) {
-            $allowed = [
-                'jpg',
-                'jpeg',
-                'png',
-                'gif',
-                'webp',
-                'bmp',
-                'svg',
-                'pdf',
-                'doc',
-                'docx',
-                'xls',
-                'xlsx',
-                'ppt',
-                'pptx',
-                'zip',
-                'rar',
-                'txt',
-                'csv'
-            ];
+            $allowed = ['jpg','jpeg','png','gif','webp','bmp','svg','pdf','doc','docx','xls','xlsx','ppt','pptx','zip','rar','txt','csv'];
         }
 
         if (!in_array($ext, $allowed, true)) {
             throw new Exception('Invalid file type.');
         }
 
-        // Generate filename
         $filename = $prefix . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
 
-        // Base upload directory
-        $baseDir = realpath(__DIR__ . '/../../public') . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'uploads';
-        if ($baseDir === false) {
-            $baseDir = __DIR__ . '/../../public/assets/uploads';
-        }
+        // Base upload directory: public_html/assets/uploads
+        $publicRoot = self::publicRoot();
+        $baseDir = $publicRoot . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'uploads';
 
-        // Target directory with optional subdirectory
         $targetDir = $baseDir;
         if (!empty($subdir)) {
             $subdir = trim($subdir, '/\\');
@@ -107,7 +125,7 @@ class Upload
             throw new Exception('Failed to move uploaded file.');
         }
 
-        // Return relative path
+        // URL path lưu DB
         $relativePath = '/assets/uploads/';
         if (!empty($subdir)) {
             $relativePath .= $subdir . '/';
@@ -115,17 +133,11 @@ class Upload
         return $relativePath . $filename;
     }
 
-    /**
-     * Specialized for images
-     */
     public static function saveUploadedImage($file, $prefix = 'img_', $subdir = '')
     {
         return self::saveUploadedFile($file, $prefix, $subdir, ['jpg', 'jpeg', 'png', 'gif', 'webp']);
     }
 
-    /**
-     * Infer type (image|file) from URL/path
-     */
     public static function inferTypeFromUrl(string $url): string
     {
         $ext = strtolower(pathinfo(parse_url($url, PHP_URL_PATH) ?? $url, PATHINFO_EXTENSION));

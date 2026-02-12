@@ -137,33 +137,39 @@
   }
 
   /* Navigation Buttons */
+  /* Wrapper giữ nút không bị clip */
   .swiper-nav-wrapper {
     position: relative;
   }
 
+  /* giữ swiper overflow hidden để không “lòi” slide */
   .scholar-swiper {
-    position: static !important;
+    overflow: hidden;
+    /* có thể giữ */
+    position: relative;
   }
 
-  .scholar-swiper .swiper-button-next,
-  .scholar-swiper .swiper-button-prev {
-    width: 40px !important;
-    height: 40px !important;
-    background: rgba(27, 153, 212, 0.15) !important;
-    border-radius: 30px !important;
-    margin-top: 0;
+  /* style cho nút mới */
+  .scholar-button-next,
+  .scholar-button-prev {
+    position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    z-index: 10;
-    display: flex !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(27, 153, 212, 0.15);
+    border-radius: 30px;
+    z-index: 20;
+    display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
     transition: all 0.3s ease;
   }
 
   /* Inner circle */
-  .scholar-swiper .swiper-button-next::before,
-  .scholar-swiper .swiper-button-prev::before {
+  .scholar-button-next::before,
+  .scholar-button-prev::before {
     content: '';
     position: absolute;
     width: 33.33px;
@@ -174,45 +180,48 @@
     transition: all 0.3s ease;
   }
 
-  .scholar-swiper .swiper-button-next::after,
-  .scholar-swiper .swiper-button-prev::after {
+  /* icons */
+  .scholar-button-next::after,
+  .scholar-button-prev::after {
     font-family: "Font Awesome 6 Free", "Font Awesome 5 Free";
     font-weight: 900;
-    font-size: 12px !important;
-    color: #FFFFFF !important;
+    font-size: 12px;
+    color: #fff;
   }
 
-  .scholar-swiper .swiper-button-next::after {
-    content: '\f054' !important;
+  .scholar-button-next::after {
+    content: '\f054';
   }
 
-  .scholar-swiper .swiper-button-prev::after {
-    content: '\f053' !important;
+  .scholar-button-prev::after {
+    content: '\f053';
   }
 
-  .scholar-swiper .swiper-button-next:hover::before,
-  .scholar-swiper .swiper-button-prev:hover::before {
+  .scholar-button-next:hover::before,
+  .scholar-button-prev:hover::before {
     background: #1B99D4;
     transform: scale(1.1);
   }
 
-  .scholar-swiper .swiper-button-next {
-    right: -20px !important;
+  /* vị trí */
+  .scholar-button-next {
+    right: -20px;
   }
 
-  .scholar-swiper .swiper-button-prev {
-    left: -20px !important;
+  .scholar-button-prev {
+    left: -20px;
   }
 
   @media (max-width: 1250px) {
-    .scholar-swiper .swiper-button-next {
-      right: 5px !important;
+    .scholar-button-next {
+      right: 5px;
     }
 
-    .scholar-swiper .swiper-button-prev {
-      left: 5px !important;
+    .scholar-button-prev {
+      left: 5px;
     }
   }
+
 
   /* Desktop Adjustments */
   @media (min-width: 992px) {
@@ -251,7 +260,6 @@
       <div class="swiper-nav-wrapper">
         <div class="swiper scholar-swiper">
           <div class="swiper-wrapper">
-
             <?php if (!empty($scholarshipPosts)): ?>
               <?php foreach ($scholarshipPosts as $c): ?>
                 <article class="swiper-slide" itemprop="itemListElement">
@@ -263,21 +271,22 @@
                 <p class="text-secondary">Đang cập nhật các chương trình học bổng mới nhất...</p>
               </div>
             <?php endif; ?>
-
           </div>
-          <!-- Add Pagination -->
+
           <div class="swiper-pagination"></div>
-          <!-- Add Navigation -->
-          <div class="swiper-button-next"></div>
-          <div class="swiper-button-prev"></div>
         </div>
+
+        <!-- ✅ move nav OUTSIDE swiper to avoid being clipped -->
+        <div class="scholar-button-next"></div>
+        <div class="scholar-button-prev"></div>
       </div>
+
     </div>
   </section>
 </section>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener('DOMContentLoaded', function() {
     const scholarSwiper = new Swiper(".scholar-swiper", {
       slidesPerView: 1,
       grid: {
@@ -285,19 +294,18 @@
         fill: 'row'
       },
       spaceBetween: 16,
-      // Loop does not work with multi-row grid layout in Swiper
       loop: false,
       autoplay: {
         delay: 6000,
-        disableOnInteraction: false,
+        disableOnInteraction: false
       },
       pagination: {
-        el: ".swiper-pagination",
-        clickable: true,
+        el: ".scholar-swiper .swiper-pagination",
+        clickable: true
       },
       navigation: {
-        nextEl: ".swiper-button-next",
-        prevEl: ".swiper-button-prev",
+        nextEl: ".scholar-button-next",
+        prevEl: ".scholar-button-prev",
       },
       breakpoints: {
         768: {
@@ -315,7 +323,7 @@
             rows: 2,
             fill: 'row'
           }
-        }
+        },
       },
       observer: true,
       observeParents: true,

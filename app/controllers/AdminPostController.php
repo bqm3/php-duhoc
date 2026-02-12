@@ -375,9 +375,8 @@ class AdminPostController
 
                 // (tuỳ chọn) xoá file cũ trên disk nếu thuộc uploads của mình
                 if (!empty($old['featured_image']) && str_contains($old['featured_image'], '/assets/uploads/')) {
-                    $path = __DIR__ . '/../../public' . parse_url($old['featured_image'], PHP_URL_PATH);
-                    if (is_file($path))
-                        @unlink($path);
+                    $path = Upload::publicPathFromUrl($old['featured_image']);
+                    if (is_file($path)) @unlink($path);
                 }
             }
         } catch (Exception $e) {
@@ -728,7 +727,6 @@ class AdminPostController
                 'url' => $url,
             ]);
             exit;
-
         } catch (Exception $e) {
             header('Content-Type: application/json; charset=utf-8');
             http_response_code(500);
@@ -736,5 +734,4 @@ class AdminPostController
             exit;
         }
     }
-
 }
