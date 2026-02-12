@@ -10,11 +10,11 @@ header('Content-Type: text/html; charset=UTF-8');
 mb_internal_encoding('UTF-8');
 
 // ✅ đường dẫn gốc project nằm ngoài public_html
-$ROOT = realpath(__DIR__ . '../');
-if (!$ROOT) {
-    die('Project root not found');
-}
+$ROOT = dirname(__DIR__) . '/php-duhoc';
 
+if (!is_dir($ROOT)) {
+    die('Project root not found: ' . $ROOT);
+}
 /**
  * LOAD CONFIG
  */
@@ -34,6 +34,7 @@ require $ROOT . '/app/core/Db.php';
 require $ROOT . '/app/core/Auth.php';
 require $ROOT . '/app/core/Csrf.php';
 require $ROOT . '/app/core/Response.php';
+require $ROOT . '/app/core/Upload.php';
 
 /**
  * CONTROLLERS

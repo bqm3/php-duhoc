@@ -29,7 +29,6 @@ mb_internal_encoding('UTF-8');
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="<?= $base ?>/assets/css/home.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-  <script src="<?= $base ?>/assets/js/app.js"></script>
 
   <?php if (!empty($pageCss)): ?>
     <?php foreach ((array) $pageCss as $css): ?>
@@ -46,6 +45,7 @@ mb_internal_encoding('UTF-8');
     href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Sora:wght@400;600;700&family=Farro:wght@400;700&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
 </head>
 
 <body class="vnpc-body">
