@@ -24,7 +24,13 @@ mb_internal_encoding('UTF-8');
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
-  <title><?= htmlspecialchars($title ?? 'Client') ?></title>
+  <title><?= htmlspecialchars($meta_title ?? ($title ?? 'Client')) ?></title>
+  <?php if (!empty($meta_description)): ?>
+    <meta name="description" content="<?= htmlspecialchars($meta_description) ?>">
+  <?php endif; ?>
+  <?php if (!empty($meta_keywords)): ?>
+    <meta name="keywords" content="<?= htmlspecialchars($meta_keywords) ?>">
+  <?php endif; ?>
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="<?= $base ?>/assets/css/home.css" rel="stylesheet">

@@ -144,6 +144,27 @@
                                     <textarea name="content" id="summernote" class="form-control"></textarea>
                                 </div>
 
+                                <hr>
+                                <h6 class="mb-3"><strong>Cấu hình SEO</strong></h6>
+
+                                <div class="form-group">
+                                    <label for="meta_title"><strong>Meta Title</strong></label>
+                                    <input type="text" class="form-control" id="meta_title" name="meta_title"
+                                        placeholder="Tiêu đề hiển thị trên Google">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="meta_description"><strong>Meta Description</strong></label>
+                                    <textarea class="form-control" id="meta_description" name="meta_description"
+                                        rows="3" placeholder="Mô tả ngắn hiển thị trên Google"></textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="meta_keywords"><strong>Meta Keywords</strong></label>
+                                    <input type="text" class="form-control" id="meta_keywords" name="meta_keywords"
+                                        placeholder="Từ khóa SEO, cách nhau bởi dấu phẩy">
+                                </div>
+
                                 <div class="form-group mt-4">
                                     <button type="submit" class="btn btn-primary">
                                         <i class="fa fa-save"></i> Tạo bài viết

@@ -55,7 +55,8 @@
                                     <input type="text" class="form-control" id="slug" name="slug"
                                         value="<?= htmlspecialchars($post['slug']) ?>"
                                         placeholder="URL-friendly version" readonly>
-                                    <small class="form-text text-muted">Phiên bản tiêu đề thân thiện với URL. (Chỉ xem trong quá trình cập nhật)</small>
+                                    <small class="form-text text-muted">Phiên bản tiêu đề thân thiện với URL. (Chỉ xem
+                                        trong quá trình cập nhật)</small>
                                 </div>
 
                                 <div class="form-group">
@@ -197,6 +198,30 @@
                                     <label><strong>Content</strong></label>
                                     <textarea name="content" id="summernote"
                                         class="form-control"><?= htmlspecialchars($post['content']) ?></textarea>
+                                </div>
+
+                                <hr>
+                                <h6 class="mb-3"><strong>SEO Settings</strong></h6>
+
+                                <div class="form-group">
+                                    <label for="meta_title"><strong>Meta Title</strong></label>
+                                    <input type="text" class="form-control" id="meta_title" name="meta_title"
+                                        value="<?= htmlspecialchars($post['meta_title'] ?? '') ?>"
+                                        placeholder="SEO title">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="meta_description"><strong>Meta Description</strong></label>
+                                    <textarea class="form-control" id="meta_description" name="meta_description"
+                                        rows="3"
+                                        placeholder="SEO description"><?= htmlspecialchars($post['meta_description'] ?? '') ?></textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="meta_keywords"><strong>Meta Keywords</strong></label>
+                                    <input type="text" class="form-control" id="meta_keywords" name="meta_keywords"
+                                        value="<?= htmlspecialchars($post['meta_keywords'] ?? '') ?>"
+                                        placeholder="SEO keywords">
                                 </div>
 
                                 <div class="form-group mt-4">
