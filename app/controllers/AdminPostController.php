@@ -18,6 +18,16 @@ class AdminPostController
             if (!$stmt->fetch()) {
                 $db->exec("ALTER TABLE posts ADD COLUMN user_id INT NULL AFTER id");
             }
+
+            // SEO Columns
+            $seoColumns = ['meta_title', 'meta_description', 'meta_keywords'];
+            foreach ($seoColumns as $col) {
+                $stmt = $db->prepare("SHOW COLUMNS FROM posts LIKE '$col'");
+                $stmt->execute();
+                if (!$stmt->fetch()) {
+                    $db->exec("ALTER TABLE posts ADD COLUMN $col TEXT NULL");
+                }
+            }
         } catch (Exception $e) {
             // Ignore
         }
@@ -182,6 +192,10 @@ class AdminPostController
         $created_at = !empty($_POST['created_at']) ? $_POST['created_at'] : date('Y-m-d H:i:s');
         $updated_at = !empty($_POST['updated_at']) ? $_POST['updated_at'] : date('Y-m-d H:i:s');
 
+        $meta_title = trim($_POST['meta_title'] ?? '');
+        $meta_description = trim($_POST['meta_description'] ?? '');
+        $meta_keywords = trim($_POST['meta_keywords'] ?? '');
+
         $user = Auth::user();
         $user_id = $user ? $user['id'] : null;
 
@@ -233,11 +247,11 @@ class AdminPostController
         }
 
         $stmt = $db->prepare("
-            INSERT INTO posts (slug, title, summary, category_id, country_id, school_id, tag_id, is_hidden, content, user_id, featured_image, created_at, updated_at) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO posts (slug, title, summary, category_id, country_id, school_id, tag_id, is_hidden, content, user_id, featured_image, created_at, updated_at, meta_title, meta_description, meta_keywords) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
 
-        if ($stmt->execute([$slug, $title, $summary, $category_id, $country_id, $school_id, $tag_id, $is_hidden, $content, $user_id, $featured_image, $created_at, $updated_at])) {
+        if ($stmt->execute([$slug, $title, $summary, $category_id, $country_id, $school_id, $tag_id, $is_hidden, $content, $user_id, $featured_image, $created_at, $updated_at, $meta_title, $meta_description, $meta_keywords])) {
             Response::redirect('/admin/posts');
         } else {
             Response::json(['error' => 'Failed to create post'], 500);
@@ -304,6 +318,10 @@ class AdminPostController
         $content = $_POST['content'] ?? '';
         $created_at = !empty($_POST['created_at']) ? $_POST['created_at'] : null;
         $updated_at = !empty($_POST['updated_at']) ? $_POST['updated_at'] : null;
+
+        $meta_title = trim($_POST['meta_title'] ?? '');
+        $meta_description = trim($_POST['meta_description'] ?? '');
+        $meta_keywords = trim($_POST['meta_keywords'] ?? '');
 
         // ADMIN chỉnh tay view/share
         $count_view = isset($_POST['count_view']) ? (int) $_POST['count_view'] : 0;
@@ -386,11 +404,11 @@ class AdminPostController
 
         $stmt = $db->prepare("
             UPDATE posts 
-            SET slug = ?, title = ?, summary = ?, category_id = ?, country_id = ?, school_id = ?, tag_id = ?, is_hidden = ?, content = ?, featured_image = ?, count_view = ?, count_share = ?, created_at = ?, updated_at = ?
+            SET slug = ?, title = ?, summary = ?, category_id = ?, country_id = ?, school_id = ?, tag_id = ?, is_hidden = ?, content = ?, featured_image = ?, count_view = ?, count_share = ?, created_at = ?, updated_at = ?, meta_title = ?, meta_description = ?, meta_keywords = ?
             WHERE id = ?
         ");
 
-        if ($stmt->execute([$slug, $title, $summary, $category_id, $country_id, $school_id, $tag_id, $is_hidden, $content, $newFeatured, $count_view, $count_share, $created_at, $updated_at, $id])) {
+        if ($stmt->execute([$slug, $title, $summary, $category_id, $country_id, $school_id, $tag_id, $is_hidden, $content, $newFeatured, $count_view, $count_share, $created_at, $updated_at, $meta_title, $meta_description, $meta_keywords, $id])) {
             Response::redirect('/admin/posts');
         } else {
             Response::json(['error' => 'Failed to update post'], 500);

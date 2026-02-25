@@ -9,6 +9,21 @@ $breadcrumbs = [
 ];
 ?>
 
+<?php
+$title = $post['meta_title'] ?? $post['title'] ?? 'Bài viết';
+
+$meta_description = $post['meta_description'] 
+    ?? (!empty($post['summary']) ? strip_tags($post['summary']) : '');
+
+$meta_keywords = $post['meta_keywords'] ?? '';
+
+$meta_image = !empty($post['featured_image']) 
+    ? $base . $post['featured_image'] 
+    : $base . '/assets/images/no-image.jpg';
+
+$meta_url = $base . ($_SERVER['REQUEST_URI'] ?? '');
+?>
+
 <style>
     /* CSS cho Mục lục */
     .toc-container {

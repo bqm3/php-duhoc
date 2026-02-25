@@ -3,7 +3,7 @@
 
 <?php
 // Chuẩn hoá thông tin doanh nghiệp để dùng cho schema + hiển thị
-$orgName = 'VNPC - Văn Phòng Tư Vấn Du Học';
+$orgName = 'Top Du Học - Văn Phòng Tư Vấn Du Học';
 $phones = ['0979111222', '0902888999']; // số dạng digits để dùng tel:
 $phoneText = '0979 111 222 | 0902 888 999';
 
@@ -119,23 +119,22 @@ $siteUrl = $base ?: '';
 
         <h4 class="mb-3" style="font-size: 16px;">Kết nối với chúng tôi</h4>
 
-        <div class="d-flex gap-2" aria-label="Mạng xã hội">
-          <!-- NÊN: thay href link thật -->
+        <!-- <div class="d-flex gap-2" aria-label="Mạng xã hội">
           <a href="https://facebook.com/" target="_blank" rel="nofollow noopener" class="social-btn"
             aria-label="Facebook">
-            <span style="font-family: sans-serif; font-weight: 700;">f</span>
+            <span style="font-family: sans-serif; font-weight: 700;">F</span>
           </a>
 
           <a href="https://www.linkedin.com/" target="_blank" rel="nofollow noopener" class="social-btn"
             aria-label="LinkedIn">
-            <span style="font-family: sans-serif; font-weight: 700; font-size: 12px;">in</span>
+            <span style="font-family: sans-serif; font-weight: 700; font-size: 12px;">L</span>
           </a>
 
           <a href="https://www.youtube.com/" target="_blank" rel="nofollow noopener" class="social-btn"
             aria-label="YouTube">
-            <span style="font-family: sans-serif; font-weight: 700; font-size: 12px;">yt</span>
+            <span style="font-family: sans-serif; font-weight: 700; font-size: 12px;">Y</span>
           </a>
-        </div>
+        </div> -->
       </div>
     </div>
 

@@ -108,6 +108,9 @@ class StudyAbroadController
       'randomPosts' => $randomPosts,
       'countryLinks' => $countryLinks,
       'title' => $post['title'] ?? 'Chi tiết',
+      'meta_title' => $post['meta_title'] ?? null,
+      'meta_description' => $post['meta_description'] ?? null,
+      'meta_keywords' => $post['meta_keywords'] ?? null,
       'pageCss' => ['about.css']
     ]);
 

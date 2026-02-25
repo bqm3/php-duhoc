@@ -24,7 +24,13 @@ mb_internal_encoding('UTF-8');
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
-  <title><?= htmlspecialchars($title ?? 'Client') ?></title>
+  <title><?= htmlspecialchars($meta_title ?? ($title ?? 'Client')) ?></title>
+  <?php if (!empty($meta_description)): ?>
+    <meta name="description" content="<?= htmlspecialchars($meta_description) ?>">
+  <?php endif; ?>
+  <?php if (!empty($meta_keywords)): ?>
+    <meta name="keywords" content="<?= htmlspecialchars($meta_keywords) ?>">
+  <?php endif; ?>
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="<?= $base ?>/assets/css/home.css" rel="stylesheet">
@@ -37,6 +43,25 @@ mb_internal_encoding('UTF-8');
   <?php endif; ?>
   <link rel="icon" type="image/png" href="<?= $base ?>/assets/img/client/favicon.png">
   <link rel="apple-touch-icon" href="<?= $base ?>/assets/img/client/favicon.png">
+
+  <title><?= htmlspecialchars($title ?? 'Top Du Học') ?></title>
+
+  <meta name="description" content="<?= htmlspecialchars($meta_description ?? '') ?>">
+  <meta name="keywords" content="<?= htmlspecialchars($meta_keywords ?? '') ?>">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="<?= htmlspecialchars($title ?? '') ?>">
+  <meta property="og:description" content="<?= htmlspecialchars($meta_description ?? '') ?>">
+  <meta property="og:image" content="<?= htmlspecialchars($meta_image ?? '') ?>">
+  <meta property="og:url" content="<?= htmlspecialchars($meta_url ?? '') ?>">
+  <meta property="og:type" content="article">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="<?= htmlspecialchars($title ?? '') ?>">
+  <meta name="twitter:description" content="<?= htmlspecialchars($meta_description ?? '') ?>">
+  <meta name="twitter:image" content="<?= htmlspecialchars($meta_image ?? '') ?>">
 
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
