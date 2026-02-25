@@ -2,6 +2,8 @@
 // app/views//schools/index.php
 ?>
 
+
+
 <?php partial('layouts/pages/base/base_hero', [
     'title' => $title ?? 'Tìm trường',
     'breadcrumbs' => [
