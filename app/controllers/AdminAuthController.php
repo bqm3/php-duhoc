@@ -7,6 +7,15 @@ class AdminAuthController
     view("auth", "admin/login", ["csrf" => Csrf::token()]);
   }
 
+  public function dashboard()
+  {
+    Auth::requireAdmin();
+    $landingPage = Auth::getLandingPage();
+    $base = $GLOBALS['base'] ?? '';
+    header("Location: " . $base . $landingPage);
+    exit;
+  }
+
   public function login()
   {
     if (!Csrf::verify($_POST["_csrf"] ?? "")) {
@@ -42,8 +51,10 @@ class AdminAuthController
     }
 
     Auth::login($user);
-    $dashboard = $GLOBALS['base'] !== '' ? $GLOBALS['base'] . '/admin/users' : '/admin/users';
-    header("Location: " . $dashboard);
+
+    $landingPage = Auth::getLandingPage();
+    $base = $GLOBALS['base'] ?? '';
+    header("Location: " . $base . $landingPage);
     exit;
   }
 

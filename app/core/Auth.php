@@ -42,13 +42,50 @@ class Auth
     return in_array($permission, $permissions);
   }
 
+  public static function getLandingPage(): string
+  {
+    $user = self::user();
+    if (!$user)
+      return '/admin/login';
+
+    if ($user['role'] === 'admin')
+      return '/admin/users';
+
+    $permissions = $user['permissions'] ?? [];
+
+    // Order of preference
+    $priority = [
+      'posts' => '/admin/posts',
+      'users' => '/admin/users',
+      'categories' => '/admin/categories',
+      'consultations' => '/admin/consultations',
+      'partners' => '/admin/partners',
+      'schools' => '/admin/schools',
+    ];
+
+    foreach ($priority as $perm => $path) {
+      if (in_array($perm, $permissions))
+        return $path;
+    }
+
+    // If none of the priority ones exist, pick the first one available
+    if (!empty($permissions)) {
+      $first = reset($permissions);
+      return '/admin/' . str_replace('_', '-', $first);
+    }
+
+    return '/admin/profile';
+  }
+
   public static function requirePermission(string $permission): void
   {
     self::requireAdmin(); // First ensure they are logged in as admin/staff
     if (!self::hasPermission($permission)) {
       $_SESSION['flash_error'] = "Bạn không có quyền truy cập chức năng này.";
-      $dashboard = $GLOBALS['base'] !== '' ? $GLOBALS['base'] . '/admin/posts' : '/admin/posts';
-      header("Location: " . $dashboard);
+
+      $redirectPath = self::getLandingPage();
+      $base = $GLOBALS['base'] ?? '';
+      header("Location: " . $base . $redirectPath);
       exit;
     }
   }
