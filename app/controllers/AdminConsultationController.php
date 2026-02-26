@@ -96,9 +96,13 @@ class AdminConsultationController
             Response::notFound();
         }
 
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/consultations';
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
+
         view("admin", "admin/consultations/edit", [
             "consultation" => $consultation,
-            "csrf" => Csrf::token()
+            "csrf" => Csrf::token(),
+            "redirect_to" => $redirect_to
         ]);
     }
 
@@ -119,7 +123,8 @@ class AdminConsultationController
         $stmt = $db->prepare("UPDATE consultations SET status = ?, description = ? WHERE id = ?");
 
         if ($stmt->execute([$status, $description, $id])) {
-            Response::redirect('/admin/consultations');
+            $_SESSION['flash_success'] = 'Cập nhật yêu cầu tư vấn thành công!';
+            Response::redirect($_POST['redirect_to'] ?? '/admin/consultations');
         } else {
             // Handle error (redirect back or show error)
             Response::redirect("/admin/consultations/$id/edit?error=update_failed");

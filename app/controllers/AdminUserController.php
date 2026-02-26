@@ -54,8 +54,12 @@ class AdminUserController
     {
         Auth::requireAdmin();
 
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/users';
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
+
         view('admin', 'admin/users/create', [
-            'csrf' => Csrf::token()
+            'csrf' => Csrf::token(),
+            'redirect_to' => $redirect_to
         ]);
     }
 
@@ -121,7 +125,8 @@ class AdminUserController
         ");
 
         if ($stmt->execute([$email, $password_hash, $full_name, $role, $phone, $gender, $birth_date])) {
-            Response::redirect('/admin/users');
+            $_SESSION['flash_success'] = 'Thêm người dùng thành công!';
+            Response::redirect($_POST['redirect_to'] ?? '/admin/users');
         } else {
             view('admin', 'admin/users/create', [
                 'csrf' => Csrf::token(),
@@ -145,9 +150,13 @@ class AdminUserController
             Response::notFound();
         }
 
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/users';
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
+
         view('admin', 'admin/users/edit', [
             'user' => $user,
-            'csrf' => Csrf::token()
+            'csrf' => Csrf::token(),
+            'redirect_to' => $redirect_to
         ]);
     }
 
@@ -189,7 +198,8 @@ class AdminUserController
         }
 
         if ($stmt->execute($params)) {
-            Response::redirect('/admin/users');
+            $_SESSION['flash_success'] = 'Cập nhật người dùng thành công!';
+            Response::redirect($_POST['redirect_to'] ?? '/admin/users');
         } else {
             Response::json(['error' => 'Failed to update user'], 500);
         }

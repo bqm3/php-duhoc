@@ -54,9 +54,13 @@ class AdminCountryController
         $db = Db::getInstance()->pdo();
         $continents = $db->query("SELECT id, name FROM continents ORDER BY name")->fetchAll();
 
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/countries';
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
+
         view('admin', 'admin/countries/create', [
             'continents' => $continents,
-            'csrf' => Csrf::token()
+            'csrf' => Csrf::token(),
+            'redirect_to' => $redirect_to
         ]);
     }
 
@@ -105,7 +109,8 @@ class AdminCountryController
         $stmt = $db->prepare($sql);
 
         if ($stmt->execute([$continent_id, $name, $slug, $code, $description, $flag_url, $image_url, $display_order, $is_popular])) {
-            Response::redirect('/admin/countries');
+            $_SESSION['flash_success'] = 'Thêm quốc gia thành công!';
+            Response::redirect($_POST['redirect_to'] ?? '/admin/countries');
         } else {
             Response::json(['error' => 'Failed'], 500);
         }
@@ -125,10 +130,14 @@ class AdminCountryController
 
         $continents = $db->query("SELECT id, name FROM continents ORDER BY name")->fetchAll();
 
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/countries';
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
+
         view('admin', 'admin/countries/edit', [
             'country' => $country,
             'continents' => $continents,
-            'csrf' => Csrf::token()
+            'csrf' => Csrf::token(),
+            'redirect_to' => $redirect_to
         ]);
     }
 
@@ -178,7 +187,8 @@ class AdminCountryController
         $stmt = $db->prepare($sql);
 
         if ($stmt->execute([$continent_id, $name, $slug, $code, $description, $flag_url, $image_url, $display_order, $is_popular, $id])) {
-            Response::redirect('/admin/countries');
+            $_SESSION['flash_success'] = 'Cập nhật quốc gia thành công!';
+            Response::redirect($_POST['redirect_to'] ?? '/admin/countries');
         } else {
             Response::json(['error' => 'Failed'], 500);
         }

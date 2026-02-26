@@ -95,11 +95,15 @@ class AdminSchoolController
         $cities = $db->query("SELECT id, name, country_id FROM cities ORDER BY name")->fetchAll();
         $levels = $db->query("SELECT id, name FROM education_levels ORDER BY name")->fetchAll();
 
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/schools';
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
+
         view('admin', 'admin/schools/create', [
             'countries' => $countries,
             'cities' => $cities,
             'levels' => $levels,
-            'csrf' => Csrf::token()
+            'csrf' => Csrf::token(),
+            'redirect_to' => $redirect_to
         ]);
     }
 
@@ -146,7 +150,8 @@ class AdminSchoolController
         $stmt = $db->prepare($sql);
 
         if ($stmt->execute([$name, $slug, $country_id, $city_id, $education_level_id, $tuition_fee, $is_scholarship, $image_url, $description])) {
-            Response::redirect('/admin/schools');
+            $_SESSION['flash_success'] = 'Thêm trường học thành công!';
+            Response::redirect($_POST['redirect_to'] ?? '/admin/schools');
         } else {
             Response::json(['error' => 'Failed to create'], 500);
         }
@@ -168,12 +173,16 @@ class AdminSchoolController
         $cities = $db->query("SELECT id, name, country_id FROM cities ORDER BY name")->fetchAll();
         $levels = $db->query("SELECT id, name FROM education_levels ORDER BY name")->fetchAll();
 
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/schools';
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
+
         view('admin', 'admin/schools/edit', [
             'school' => $school,
             'countries' => $countries,
             'cities' => $cities,
             'levels' => $levels,
-            'csrf' => Csrf::token()
+            'csrf' => Csrf::token(),
+            'redirect_to' => $redirect_to
         ]);
     }
 
@@ -220,7 +229,8 @@ class AdminSchoolController
         $stmt = $db->prepare($sql);
 
         if ($stmt->execute([$name, $slug, $country_id, $city_id, $education_level_id, $tuition_fee, $is_scholarship, $image_url, $description, $id])) {
-            Response::redirect('/admin/schools');
+            $_SESSION['flash_success'] = 'Cập nhật trường học thành công!';
+            Response::redirect($_POST['redirect_to'] ?? '/admin/schools');
         } else {
             Response::json(['error' => 'Failed to update'], 500);
         }

@@ -60,8 +60,12 @@ class AdminTagController
     {
         Auth::requireAdmin();
 
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/tags';
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
+
         view('admin', 'admin/tags/create', [
-            'csrf' => Csrf::token()
+            'csrf' => Csrf::token(),
+            'redirect_to' => $redirect_to
         ]);
     }
 
@@ -88,7 +92,8 @@ class AdminTagController
         $stmt = $db->prepare("INSERT INTO tags (name, icon, created_at) VALUES (?, ?, NOW())");
 
         if ($stmt->execute([$name, $icon])) {
-            Response::redirect('/admin/tags');
+            $_SESSION['flash_success'] = 'Thêm thẻ thành công!';
+            Response::redirect($_POST['redirect_to'] ?? '/admin/tags');
         } else {
             view('admin', 'admin/tags/create', [
                 'csrf' => Csrf::token(),
@@ -112,9 +117,13 @@ class AdminTagController
             Response::notFound();
         }
 
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/tags';
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
+
         view('admin', 'admin/tags/edit', [
             'tag' => $tag,
-            'csrf' => Csrf::token()
+            'csrf' => Csrf::token(),
+            'redirect_to' => $redirect_to
         ]);
     }
 
@@ -137,7 +146,8 @@ class AdminTagController
         $stmt = $db->prepare("UPDATE tags SET name=?, icon=? WHERE id=?");
 
         if ($stmt->execute([$name, $icon, $id])) {
-            Response::redirect('/admin/tags');
+            $_SESSION['flash_success'] = 'Cập nhật thẻ thành công!';
+            Response::redirect($_POST['redirect_to'] ?? '/admin/tags');
         } else {
             Response::json(['error' => 'Failed to update tag'], 500);
         }

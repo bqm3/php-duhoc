@@ -63,8 +63,12 @@ class AdminCategoryController
     {
         Auth::requireAdmin();
 
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/categories';
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
+
         view('admin', 'admin/categories/create', [
-            'csrf' => Csrf::token()
+            'csrf' => Csrf::token(),
+            'redirect_to' => $redirect_to
         ]);
     }
 
@@ -105,7 +109,8 @@ class AdminCategoryController
         $stmt = $db->prepare("INSERT INTO categories (name, slug, display_order, created_at) VALUES (?, ?, ?, NOW())");
 
         if ($stmt->execute([$name, $slug, $display_order])) {
-            Response::redirect('/admin/categories');
+            $_SESSION['flash_success'] = 'Thêm danh mục thành công!';
+            Response::redirect($_POST['redirect_to'] ?? '/admin/categories');
         } else {
             view('admin', 'admin/categories/create', [
                 'csrf' => Csrf::token(),
@@ -129,9 +134,13 @@ class AdminCategoryController
             Response::notFound();
         }
 
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/categories';
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
+
         view('admin', 'admin/categories/edit', [
             'category' => $category,
-            'csrf' => Csrf::token()
+            'csrf' => Csrf::token(),
+            'redirect_to' => $redirect_to
         ]);
     }
 
@@ -166,7 +175,8 @@ class AdminCategoryController
         $stmt = $db->prepare("UPDATE categories SET name=?, slug=?, display_order=? WHERE id=?");
 
         if ($stmt->execute([$name, $slug, $display_order, $id])) {
-            Response::redirect('/admin/categories');
+            $_SESSION['flash_success'] = 'Cập nhật danh mục thành công!';
+            Response::redirect($_POST['redirect_to'] ?? '/admin/categories');
         } else {
             Response::json(['error' => 'Failed to update category'], 500);
         }

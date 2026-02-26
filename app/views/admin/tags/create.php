@@ -38,6 +38,8 @@
 
                             <form method="POST" action="<?= $base ?>/admin/tags">
                                 <input type="hidden" name="_csrf" value="<?= $csrf ?>">
+                                <input type="hidden" name="redirect_to"
+                                    value="<?= htmlspecialchars($redirect_to ?? '') ?>">
 
                                 <div class="form-group">
                                     <label for="name"><strong>Tên Tag</strong></label>

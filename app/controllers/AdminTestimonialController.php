@@ -46,8 +46,13 @@ class AdminTestimonialController
     public static function create()
     {
         Auth::requireAdmin();
+
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/testimonials';
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
+
         view('admin', 'admin/testimonials/create', [
-            'csrf' => Csrf::token()
+            'csrf' => Csrf::token(),
+            'redirect_to' => $redirect_to
         ]);
     }
 
@@ -82,7 +87,8 @@ class AdminTestimonialController
         $stmt = $db->prepare("INSERT INTO testimonials (name, image_url, role, rating, content, display_order, is_hidden) VALUES (?, ?, ?, ?, ?, ?, ?)");
 
         if ($stmt->execute([$name, $image_url, $role, $rating, $content, $display_order, $is_hidden])) {
-            Response::redirect('/admin/testimonials');
+            $_SESSION['flash_success'] = 'Thêm nhận xét thành công!';
+            Response::redirect($_POST['redirect_to'] ?? '/admin/testimonials');
         } else {
             view('admin', 'admin/testimonials/create', [
                 'csrf' => Csrf::token(),
@@ -105,9 +111,13 @@ class AdminTestimonialController
             Response::notFound();
         }
 
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/testimonials';
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
+
         view('admin', 'admin/testimonials/edit', [
             'testimonial' => $testimonial,
-            'csrf' => Csrf::token()
+            'csrf' => Csrf::token(),
+            'redirect_to' => $redirect_to
         ]);
     }
 
@@ -145,7 +155,8 @@ class AdminTestimonialController
 
         $stmt = $db->prepare("UPDATE testimonials SET name=?, image_url=?, role=?, rating=?, content=?, display_order=?, is_hidden=? WHERE id=?");
         if ($stmt->execute([$name, $image_url, $role, $rating, $content, $display_order, $is_hidden, $id])) {
-            Response::redirect('/admin/testimonials');
+            $_SESSION['flash_success'] = 'Cập nhật nhận xét thành công!';
+            Response::redirect($_POST['redirect_to'] ?? '/admin/testimonials');
         } else {
             Response::redirect("/admin/testimonials/$id/edit?error=system_error");
         }

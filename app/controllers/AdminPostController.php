@@ -164,12 +164,17 @@ class AdminPostController
         $stmt = $db->query("SELECT id, name FROM tags ORDER BY name");
         $tags = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/posts';
+        // If referer is the same as create page (maybe after an error), keep the original redirect_to if passed
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
+
         view('admin', 'admin/posts/create', [
             'categories' => $categories,
             'countries' => $countries,
             'schools' => $schools,
             'tags' => $tags,
             'selected_category_id' => $selectedCategoryId,
+            'redirect_to' => $redirect_to,
             'csrf' => Csrf::token()
         ]);
     }
@@ -252,7 +257,11 @@ class AdminPostController
         ");
 
         if ($stmt->execute([$slug, $title, $summary, $category_id, $country_id, $school_id, $tag_id, $is_hidden, $content, $user_id, $featured_image, $created_at, $updated_at, $meta_title, $meta_description, $meta_keywords])) {
-            Response::redirect('/admin/posts');
+            $_SESSION['flash_success'] = 'Tạo bài viết mới thành công!';
+            Response::json([
+                'success' => true,
+                'redirect_to' => $_POST['redirect_to'] ?? '/admin/posts'
+            ]);
         } else {
             Response::json(['error' => 'Failed to create post'], 500);
         }
@@ -287,12 +296,16 @@ class AdminPostController
         $stmt = $db->query("SELECT id, name FROM tags ORDER BY name");
         $tags = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/posts';
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
+
         view('admin', 'admin/posts/edit', [
             'post' => $post,
             'categories' => $categories,
             'countries' => $countries,
             'schools' => $schools,
             'tags' => $tags,
+            'redirect_to' => $redirect_to,
             'csrf' => Csrf::token()
         ]);
     }
@@ -410,7 +423,11 @@ class AdminPostController
         ");
 
         if ($stmt->execute([$slug, $title, $summary, $category_id, $country_id, $school_id, $tag_id, $is_hidden, $content, $newFeatured, $count_view, $count_share, $created_at, $updated_at, $meta_title, $meta_description, $meta_keywords, $id])) {
-            Response::redirect('/admin/posts');
+            $_SESSION['flash_success'] = 'Cập nhật bài viết thành công!';
+            Response::json([
+                'success' => true,
+                'redirect_to' => $_POST['redirect_to'] ?? '/admin/posts'
+            ]);
         } else {
             Response::json(['error' => 'Failed to update post'], 500);
         }

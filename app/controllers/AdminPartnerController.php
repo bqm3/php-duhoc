@@ -47,8 +47,13 @@ class AdminPartnerController
     public static function create()
     {
         Auth::requireAdmin();
+
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/partners';
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
+
         view('admin', 'admin/partners/create', [
-            'csrf' => Csrf::token()
+            'csrf' => Csrf::token(),
+            'redirect_to' => $redirect_to
         ]);
     }
 
@@ -83,7 +88,8 @@ class AdminPartnerController
         $stmt = $db->prepare($sql);
 
         if ($stmt->execute([$name, $image_url, $link_href, $is_hidden, $stt])) {
-            Response::redirect('/admin/partners');
+            $_SESSION['flash_success'] = 'Thêm đối tác thành công!';
+            Response::redirect($_POST['redirect_to'] ?? '/admin/partners');
         } else {
             Response::json(['error' => 'Lỗi hệ thống'], 500);
         }
@@ -101,9 +107,13 @@ class AdminPartnerController
         if (!$partner)
             Response::notFound();
 
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/partners';
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
+
         view('admin', 'admin/partners/edit', [
             'partner' => $partner,
-            'csrf' => Csrf::token()
+            'csrf' => Csrf::token(),
+            'redirect_to' => $redirect_to
         ]);
     }
 
@@ -136,7 +146,8 @@ class AdminPartnerController
         $stmt = $db->prepare($sql);
 
         if ($stmt->execute([$name, $image_url, $link_href, $is_hidden, $stt, $id])) {
-            Response::redirect('/admin/partners');
+            $_SESSION['flash_success'] = 'Cập nhật đối tác thành công!';
+            Response::redirect($_POST['redirect_to'] ?? '/admin/partners');
         } else {
             Response::json(['error' => 'Lỗi hệ thống'], 500);
         }

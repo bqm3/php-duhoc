@@ -43,7 +43,14 @@ class AdminContinentController
     public static function create()
     {
         Auth::requireAdmin();
-        view('admin', 'admin/continents/create', ['csrf' => Csrf::token()]);
+
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/continents';
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
+
+        view('admin', 'admin/continents/create', [
+            'csrf' => Csrf::token(),
+            'redirect_to' => $redirect_to
+        ]);
     }
 
     public static function store()
@@ -84,7 +91,8 @@ class AdminContinentController
         $stmt = $db->prepare("INSERT INTO continents (name, slug, description, image_url, display_order, created_at) VALUES (?, ?, ?, ?, ?, NOW())");
 
         if ($stmt->execute([$name, $slug, $description, $image_url, $display_order])) {
-            Response::redirect('/admin/continents');
+            $_SESSION['flash_success'] = 'Thêm châu lục thành công!';
+            Response::redirect($_POST['redirect_to'] ?? '/admin/continents');
         } else {
             Response::json(['error' => 'Failed to create continent'], 500);
         }
@@ -101,9 +109,13 @@ class AdminContinentController
         if (!$continent)
             Response::notFound();
 
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/continents';
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
+
         view('admin', 'admin/continents/edit', [
             'continent' => $continent,
-            'csrf' => Csrf::token()
+            'csrf' => Csrf::token(),
+            'redirect_to' => $redirect_to
         ]);
     }
 
@@ -144,7 +156,8 @@ class AdminContinentController
         $stmt = $db->prepare("UPDATE continents SET name=?, slug=?, description=?, image_url=?, display_order=?, updated_at=NOW() WHERE id=?");
 
         if ($stmt->execute([$name, $slug, $description, $image_url, $display_order, $id])) {
-            Response::redirect('/admin/continents');
+            $_SESSION['flash_success'] = 'Cập nhật châu lục thành công!';
+            Response::redirect($_POST['redirect_to'] ?? '/admin/continents');
         } else {
             Response::json(['error' => 'Failed to update continent'], 500);
         }

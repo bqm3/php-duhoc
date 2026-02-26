@@ -54,10 +54,14 @@ class AdminSlideController
         $countries = $db->query("SELECT id, name FROM countries ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
         $schools = $db->query("SELECT id, name FROM schools ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
 
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/slides';
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
+
         view('admin', 'admin/slides/create', [
             'countries' => $countries,
             'schools' => $schools,
-            'csrf' => Csrf::token()
+            'csrf' => Csrf::token(),
+            'redirect_to' => $redirect_to
         ]);
     }
 
@@ -95,7 +99,8 @@ class AdminSlideController
         $stmt = $db->prepare($sql);
 
         if ($stmt->execute([$name, $image_url, $link_href, $id_country, $id_school, $is_hidden, $stt, $ghi_chu])) {
-            Response::redirect('/admin/slides');
+            $_SESSION['flash_success'] = 'Thêm slide thành công!';
+            Response::redirect($_POST['redirect_to'] ?? '/admin/slides');
         } else {
             Response::json(['error' => 'Lỗi hệ thống'], 500);
         }
@@ -116,11 +121,15 @@ class AdminSlideController
         $countries = $db->query("SELECT id, name FROM countries ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
         $schools = $db->query("SELECT id, name FROM schools ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
 
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/slides';
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
+
         view('admin', 'admin/slides/edit', [
             'slide' => $slide,
             'countries' => $countries,
             'schools' => $schools,
-            'csrf' => Csrf::token()
+            'csrf' => Csrf::token(),
+            'redirect_to' => $redirect_to
         ]);
     }
 
@@ -156,7 +165,8 @@ class AdminSlideController
         $stmt = $db->prepare($sql);
 
         if ($stmt->execute([$name, $image_url, $link_href, $id_country, $id_school, $is_hidden, $stt, $ghi_chu, $id])) {
-            Response::redirect('/admin/slides');
+            $_SESSION['flash_success'] = 'Cập nhật slide thành công!';
+            Response::redirect($_POST['redirect_to'] ?? '/admin/slides');
         } else {
             Response::json(['error' => 'Lỗi hệ thống'], 500);
         }

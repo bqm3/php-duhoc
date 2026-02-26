@@ -24,38 +24,46 @@
             <div class="col-sm-9 col-xs-12 content pt-3 pl-0">
                 <div class="mb-3">
                     <h5 class="mb-0"><strong>Chi Tiết Yêu Cầu Tư Vấn</strong></h5>
-                    <span class="text-secondary">Dashboard <i class="fa fa-angle-right"></i> Consultations <i class="fa fa-angle-right"></i> Edit</span>
+                    <span class="text-secondary">Dashboard <i class="fa fa-angle-right"></i> Consultations <i
+                            class="fa fa-angle-right"></i> Edit</span>
                 </div>
 
                 <div class="row mt-3">
                     <div class="col-sm-12">
                         <div class="mt-1 mb-3 p-4 button-container bg-white border shadow-sm">
-                            <form method="POST" action="<?= $base ?>/admin/consultations/<?= $consultation['id'] ?>/update">
+                            <form method="POST"
+                                action="<?= $base ?>/admin/consultations/<?= $consultation['id'] ?>/update">
                                 <input type="hidden" name="_csrf" value="<?= $csrf ?>">
+                                <input type="hidden" name="redirect_to"
+                                    value="<?= htmlspecialchars($redirect_to ?? '') ?>">
 
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label><strong>Họ Tên</strong></label>
-                                            <input type="text" class="form-control" value="<?= htmlspecialchars($consultation['full_name']) ?>" readonly>
+                                            <input type="text" class="form-control"
+                                                value="<?= htmlspecialchars($consultation['full_name']) ?>" readonly>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label><strong>Số Điện Thoại</strong></label>
-                                            <input type="text" class="form-control" value="<?= htmlspecialchars($consultation['phone']) ?>" readonly>
+                                            <input type="text" class="form-control"
+                                                value="<?= htmlspecialchars($consultation['phone']) ?>" readonly>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label><strong>Email</strong></label>
-                                    <input type="text" class="form-control" value="<?= htmlspecialchars($consultation['email']) ?>" readonly>
+                                    <input type="text" class="form-control"
+                                        value="<?= htmlspecialchars($consultation['email']) ?>" readonly>
                                 </div>
 
                                 <div class="form-group">
                                     <label><strong>Nội Dung Yêu Cầu (Từ khách hàng)</strong></label>
-                                    <textarea class="form-control" rows="4" readonly><?= htmlspecialchars($consultation['message']) ?></textarea>
+                                    <textarea class="form-control" rows="4"
+                                        readonly><?= htmlspecialchars($consultation['message']) ?></textarea>
                                 </div>
 
                                 <hr>
@@ -72,7 +80,8 @@
 
                                 <div class="form-group">
                                     <label for="description"><strong>Ghi Chú / Nhật Ký Xử Lý (Admin)</strong></label>
-                                    <textarea name="description" id="summernote" class="form-control"><?= htmlspecialchars($consultation['description'] ?? '') ?></textarea>
+                                    <textarea name="description" id="summernote"
+                                        class="form-control"><?= htmlspecialchars($consultation['description'] ?? '') ?></textarea>
                                 </div>
 
                                 <div class="form-group mt-4">
@@ -98,7 +107,7 @@
     <script src="<?= $base ?>/assets/js/custom.js"></script>
 
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#summernote').summernote({
                 height: 200,
                 // toolbar: [

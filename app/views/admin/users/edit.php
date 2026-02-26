@@ -31,11 +31,13 @@
                     <div class="col-sm-12">
                         <div class="mt-1 mb-3 p-3 button-container bg-white border shadow-sm">
                             <?php if (isset($_GET['error']) && $_GET['error'] == 'password_too_short'): ?>
-                            <div class="alert alert-danger">Mật khẩu mới phải có ít nhất 6 ký tự.</div>
+                                <div class="alert alert-danger">Mật khẩu mới phải có ít nhất 6 ký tự.</div>
                             <?php endif; ?>
 
                             <form action="<?= $base ?>/admin/users/<?= $user['id'] ?>" method="POST">
                                 <input type="hidden" name="_csrf" value="<?= $csrf ?>">
+                                <input type="hidden" name="redirect_to"
+                                    value="<?= htmlspecialchars($redirect_to ?? '') ?>">
 
                                 <div class="form-group">
                                     <label>Email (Không thể thay đổi)</label>

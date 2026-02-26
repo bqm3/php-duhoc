@@ -51,6 +51,8 @@
                             <form action="<?= $base ?>/admin/testimonials/<?= $testimonial['id'] ?>/update"
                                 method="POST" enctype="multipart/form-data">
                                 <input type="hidden" name="_csrf" value="<?= $csrf ?>">
+                                <input type="hidden" name="redirect_to"
+                                    value="<?= htmlspecialchars($redirect_to ?? '') ?>">
 
                                 <div class="row">
                                     <div class="col-md-8">

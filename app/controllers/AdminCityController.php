@@ -55,9 +55,13 @@ class AdminCityController
         // Get countries for dropdown
         $countries = $db->query("SELECT id, name FROM countries ORDER BY name")->fetchAll();
 
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/cities';
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
+
         view('admin', 'admin/cities/create', [
             'countries' => $countries,
-            'csrf' => Csrf::token()
+            'csrf' => Csrf::token(),
+            'redirect_to' => $redirect_to
         ]);
     }
 
@@ -88,7 +92,8 @@ class AdminCityController
         $stmt = $db->prepare("INSERT INTO cities (country_id, name, slug, display_order, created_at) VALUES (?, ?, ?, ?, NOW())");
 
         if ($stmt->execute([$country_id, $name, $slug, $display_order])) {
-            Response::redirect('/admin/cities');
+            $_SESSION['flash_success'] = 'Thêm tỉnh thành thành công!';
+            Response::redirect($_POST['redirect_to'] ?? '/admin/cities');
         } else {
             Response::json(['error' => 'Failed to create'], 500);
         }
@@ -108,10 +113,14 @@ class AdminCityController
 
         $countries = $db->query("SELECT id, name FROM countries ORDER BY name")->fetchAll();
 
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/cities';
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
+
         view('admin', 'admin/cities/edit', [
             'city' => $city,
             'countries' => $countries,
-            'csrf' => Csrf::token()
+            'csrf' => Csrf::token(),
+            'redirect_to' => $redirect_to
         ]);
     }
 
@@ -139,7 +148,8 @@ class AdminCityController
         $stmt = $db->prepare("UPDATE cities SET country_id=?, name=?, slug=?, display_order=?, updated_at=NOW() WHERE id=?");
 
         if ($stmt->execute([$country_id, $name, $slug, $display_order, $id])) {
-            Response::redirect('/admin/cities');
+            $_SESSION['flash_success'] = 'Cập nhật tỉnh thành thành công!';
+            Response::redirect($_POST['redirect_to'] ?? '/admin/cities');
         } else {
             Response::json(['error' => 'Failed to update'], 500);
         }

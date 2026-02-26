@@ -43,6 +43,7 @@
                             <form id="createPostForm" method="POST" action="<?= $base ?>/admin/posts"
                                 enctype="multipart/form-data">
                                 <input type="hidden" name="_csrf" value="<?= $csrf ?>">
+                                <input type="hidden" name="redirect_to" value="<?= htmlspecialchars($redirect_to) ?>">
 
                                 <div class="form-group">
                                     <label for="title"><strong>Tiêu đề</strong> <span
@@ -309,8 +310,8 @@
                                 throw new Error(data.error);
                             }
                             // Nếu không có error, có thể là success
-                            if (data.success) {
-                                window.location.href = '<?= $base ?>/admin/posts';
+                            if (data.success || data.redirect_to) {
+                                window.location.href = data.redirect_to || '<?= $base ?>/admin/posts';
                                 return;
                             }
                             throw new Error('Có lỗi xảy ra');
@@ -319,8 +320,8 @@
 
                     // Nếu không phải JSON, kiểm tra status
                     if (response.status >= 200 && response.status < 300) {
-                        // Thành công, redirect về danh sách
-                        window.location.href = '<?= $base ?>/admin/posts';
+                        // Thành công, redirect về danh sách hoặc trang trước đó
+                        window.location.href = '<?= htmlspecialchars($redirect_to) ?>';
                         return;
                     }
 
