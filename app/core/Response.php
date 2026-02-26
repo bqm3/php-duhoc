@@ -14,7 +14,19 @@ class Response
     public static function redirect($path)
     {
         $base = $GLOBALS['base'] ?? '';
-        header('Location: ' . $base . $path);
+
+        // If path is already a full URL, don't prepend base
+        if (strpos($path, 'http://') === 0 || strpos($path, 'https://') === 0) {
+            header('Location: ' . $path);
+            exit;
+        }
+
+        // If path already starts with base, don't prepend it again
+        if ($base !== '' && strpos($path, $base) === 0) {
+            header('Location: ' . $path);
+        } else {
+            header('Location: ' . $base . $path);
+        }
         exit;
     }
 

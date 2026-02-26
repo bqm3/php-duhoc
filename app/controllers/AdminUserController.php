@@ -78,7 +78,10 @@ class AdminUserController
     public static function store()
     {
         Auth::requirePermission('users');
-        Csrf::verify($_POST['_csrf'] ?? '');
+        if (!Csrf::verify($_POST['_csrf'] ?? '')) {
+            Response::json(['error' => 'Invalid CSRF token'], 403);
+        }
+
 
         $email = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
@@ -176,7 +179,10 @@ class AdminUserController
     public static function update($id)
     {
         Auth::requirePermission('users');
-        Csrf::verify($_POST['_csrf'] ?? '');
+        if (!Csrf::verify($_POST['_csrf'] ?? '')) {
+            Response::json(['error' => 'Invalid CSRF token'], 403);
+        }
+
 
         $full_name = trim($_POST['full_name'] ?? '');
         $role = $_POST['role'] ?? 'staff';
@@ -214,6 +220,8 @@ class AdminUserController
             // Update session if editing self
             if (Auth::user()['id'] == $id) {
                 $_SESSION['user']['role'] = $role;
+                // Nếu là Admin thì gán full quyền (mặc định empty array vì logic check role admin đã auto hasPermission)
+                // Hoặc nếu có post permissions thì gán vào
                 $_SESSION['user']['permissions'] = isset($_POST['permissions']) ? $_POST['permissions'] : [];
             }
             $_SESSION['flash_success'] = 'Cập nhật người dùng thành công!';
