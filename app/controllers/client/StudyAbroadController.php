@@ -96,6 +96,20 @@ class StudyAbroadController
       ");
       $stmt->execute();
       $randomPosts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } elseif (($post['category_slug'] ?? '') === 'du-hoc') {
+      // Fetch posts where category is 'tin-tuc' AND second_category is 'du-hoc'
+      $stmt = $pdo->prepare("
+        SELECT p.*, c.name AS category_name, t.name AS tag_name, t.icon AS tag_icon
+        FROM posts p
+        LEFT JOIN categories c ON p.category_id = c.id
+        LEFT JOIN categories c2 ON p.second_category_id = c2.id
+        LEFT JOIN tags t ON p.tag_id = t.id
+        WHERE c.slug = 'tin-tuc' AND c2.slug = 'du-hoc' AND p.is_hidden = 0 AND p.is_delete = 0
+        ORDER BY p.created_at DESC, p.id DESC
+        LIMIT 10
+      ");
+      $stmt->execute();
+      $randomPosts = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     $viewPath = (($post['category_slug'] ?? '') === 'tin-tuc')

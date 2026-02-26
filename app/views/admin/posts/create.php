@@ -61,11 +61,23 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="category_id"><strong>Danh mục</strong></label>
+                                    <label for="category_id"><strong>Danh mục chính</strong></label>
                                     <select class="form-control" id="category_id" name="category_id">
                                         <option value="">-- Chọn danh mục --</option>
                                         <?php foreach ($categories as $cat): ?>
                                             <option value="<?= $cat['id'] ?>" <?= (isset($selected_category_id) && $selected_category_id == $cat['id']) ? 'selected' : '' ?>>
+                                                <?= htmlspecialchars($cat['name']) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="second_category_id"><strong>Danh mục phụ</strong></label>
+                                    <select class="form-control" id="second_category_id" name="second_category_id">
+                                        <option value="">-- Chọn danh mục phụ (Tùy chọn) --</option>
+                                        <?php foreach ($categories as $cat): ?>
+                                            <option value="<?= $cat['id'] ?>">
                                                 <?= htmlspecialchars($cat['name']) ?>
                                             </option>
                                         <?php endforeach; ?>

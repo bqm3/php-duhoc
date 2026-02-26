@@ -28,6 +28,12 @@ class AdminPostController
                     $db->exec("ALTER TABLE posts ADD COLUMN $col TEXT NULL");
                 }
             }
+            // Second category column
+            $stmt = $db->prepare("SHOW COLUMNS FROM posts LIKE 'second_category_id'");
+            $stmt->execute();
+            if (!$stmt->fetch()) {
+                $db->exec("ALTER TABLE posts ADD COLUMN second_category_id INT NULL AFTER category_id");
+            }
         } catch (Exception $e) {
             // Ignore
         }
@@ -109,9 +115,10 @@ class AdminPostController
 
         // Fetch records
         $sql = "
-            SELECT p.*, c.name as category_name, u.full_name as creator_name, ctry.name as country_name, s.name as school_name, t.name as tag_name, t.icon as tag_icon
+            SELECT p.*, c.name as category_name, c2.name as second_category_name, u.full_name as creator_name, ctry.name as country_name, s.name as school_name, t.name as tag_name, t.icon as tag_icon
             FROM posts p 
             LEFT JOIN categories c ON p.category_id = c.id 
+            LEFT JOIN categories c2 ON p.second_category_id = c2.id
             LEFT JOIN users u ON p.user_id = u.id
             LEFT JOIN countries ctry ON p.country_id = ctry.id
             LEFT JOIN schools s ON p.school_id = s.id
@@ -189,6 +196,7 @@ class AdminPostController
         $summary = $_POST['summary'] ?? '';
         $slug = self::generateSlug($_POST['slug'] ?? $title);
         $category_id = !empty($_POST['category_id']) ? (int) $_POST['category_id'] : null;
+        $second_category_id = !empty($_POST['second_category_id']) ? (int) $_POST['second_category_id'] : null;
         $country_id = !empty($_POST['country_id']) ? (int) $_POST['country_id'] : null;
         $school_id = !empty($_POST['school_id']) ? (int) $_POST['school_id'] : null;
         $tag_id = !empty($_POST['tag_id']) ? (int) $_POST['tag_id'] : null;
@@ -252,11 +260,11 @@ class AdminPostController
         }
 
         $stmt = $db->prepare("
-            INSERT INTO posts (slug, title, summary, category_id, country_id, school_id, tag_id, is_hidden, content, user_id, featured_image, created_at, updated_at, meta_title, meta_description, meta_keywords) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO posts (slug, title, summary, category_id, second_category_id, country_id, school_id, tag_id, is_hidden, content, user_id, featured_image, created_at, updated_at, meta_title, meta_description, meta_keywords) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
 
-        if ($stmt->execute([$slug, $title, $summary, $category_id, $country_id, $school_id, $tag_id, $is_hidden, $content, $user_id, $featured_image, $created_at, $updated_at, $meta_title, $meta_description, $meta_keywords])) {
+        if ($stmt->execute([$slug, $title, $summary, $category_id, $second_category_id, $country_id, $school_id, $tag_id, $is_hidden, $content, $user_id, $featured_image, $created_at, $updated_at, $meta_title, $meta_description, $meta_keywords])) {
             $_SESSION['flash_success'] = 'Tạo bài viết mới thành công!';
             Response::json([
                 'success' => true,
@@ -324,6 +332,7 @@ class AdminPostController
         $summary = $_POST['summary'] ?? '';
         $slug = self::generateSlug($_POST['slug'] ?? $title);
         $category_id = !empty($_POST['category_id']) ? (int) $_POST['category_id'] : null;
+        $second_category_id = !empty($_POST['second_category_id']) ? (int) $_POST['second_category_id'] : null;
         $country_id = !empty($_POST['country_id']) ? (int) $_POST['country_id'] : null;
         $school_id = !empty($_POST['school_id']) ? (int) $_POST['school_id'] : null;
         $tag_id = !empty($_POST['tag_id']) ? (int) $_POST['tag_id'] : null;
@@ -418,11 +427,11 @@ class AdminPostController
 
         $stmt = $db->prepare("
             UPDATE posts 
-            SET slug = ?, title = ?, summary = ?, category_id = ?, country_id = ?, school_id = ?, tag_id = ?, is_hidden = ?, content = ?, featured_image = ?, count_view = ?, count_share = ?, created_at = ?, updated_at = ?, meta_title = ?, meta_description = ?, meta_keywords = ?
+            SET slug = ?, title = ?, summary = ?, category_id = ?, second_category_id = ?, country_id = ?, school_id = ?, tag_id = ?, is_hidden = ?, content = ?, featured_image = ?, count_view = ?, count_share = ?, created_at = ?, updated_at = ?, meta_title = ?, meta_description = ?, meta_keywords = ?
             WHERE id = ?
         ");
 
-        if ($stmt->execute([$slug, $title, $summary, $category_id, $country_id, $school_id, $tag_id, $is_hidden, $content, $newFeatured, $count_view, $count_share, $created_at, $updated_at, $meta_title, $meta_description, $meta_keywords, $id])) {
+        if ($stmt->execute([$slug, $title, $summary, $category_id, $second_category_id, $country_id, $school_id, $tag_id, $is_hidden, $content, $newFeatured, $count_view, $count_share, $created_at, $updated_at, $meta_title, $meta_description, $meta_keywords, $id])) {
             $_SESSION['flash_success'] = 'Cập nhật bài viết thành công!';
             Response::json([
                 'success' => true,
