@@ -5,7 +5,7 @@ class AdminSchoolController
 
     public static function index()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('schools');
         $db = Db::getInstance()->pdo();
 
         $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
@@ -88,7 +88,7 @@ class AdminSchoolController
 
     public static function create()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('schools');
         $db = Db::getInstance()->pdo();
 
         $countries = $db->query("SELECT id, name FROM countries ORDER BY name")->fetchAll();
@@ -109,7 +109,7 @@ class AdminSchoolController
 
     public static function store()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('schools');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $name = trim($_POST['name'] ?? '');
@@ -159,7 +159,7 @@ class AdminSchoolController
 
     public static function edit($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('schools');
         $db = Db::getInstance()->pdo();
 
         $school = $db->prepare("SELECT * FROM schools WHERE id = ? AND is_delete = 0");
@@ -188,7 +188,7 @@ class AdminSchoolController
 
     public static function update($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('schools');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $name = trim($_POST['name'] ?? '');
@@ -238,7 +238,7 @@ class AdminSchoolController
 
     public static function delete($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('schools');
         Csrf::verify($_POST['_csrf'] ?? '');
         $db = Db::getInstance()->pdo();
 

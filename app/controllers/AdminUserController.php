@@ -7,9 +7,20 @@ class AdminUserController
     // List all users
     public static function index()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('users');
 
         $db = Db::getInstance()->pdo();
+
+        // Lazy migration: Ensure permissions column exists
+        try {
+            $stmt = $db->prepare("SHOW COLUMNS FROM users LIKE 'permissions'");
+            $stmt->execute();
+            if (!$stmt->fetch()) {
+                $db->exec("ALTER TABLE users ADD COLUMN permissions TEXT NULL");
+            }
+        } catch (Exception $e) {
+            // Ignore
+        }
 
         // Pagination & Search Logic
         $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
@@ -52,7 +63,7 @@ class AdminUserController
     // Show create form
     public static function create()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('users');
 
         $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/users';
         $redirect_to = $_GET['redirect_to'] ?? $referer;
@@ -66,7 +77,7 @@ class AdminUserController
     // Store new user
     public static function store()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('users');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $email = trim($_POST['email'] ?? '');
@@ -118,13 +129,14 @@ class AdminUserController
         }
 
         $password_hash = password_hash($password, PASSWORD_BCRYPT);
+        $permissions = isset($_POST['permissions']) ? json_encode($_POST['permissions']) : null;
 
         $stmt = $db->prepare("
-            INSERT INTO users (email, password_hash, full_name, role, phone, gender, birth_date, created_at) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, NOW())
+            INSERT INTO users (email, password_hash, full_name, role, phone, gender, birth_date, permissions, created_at) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())
         ");
 
-        if ($stmt->execute([$email, $password_hash, $full_name, $role, $phone, $gender, $birth_date])) {
+        if ($stmt->execute([$email, $password_hash, $full_name, $role, $phone, $gender, $birth_date, $permissions])) {
             $_SESSION['flash_success'] = 'Thêm người dùng thành công!';
             Response::redirect($_POST['redirect_to'] ?? '/admin/users');
         } else {
@@ -139,7 +151,7 @@ class AdminUserController
     // Show edit form
     public static function edit($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('users');
 
         $db = Db::getInstance()->pdo();
         $stmt = $db->prepare("SELECT * FROM users WHERE id = ?");
@@ -163,7 +175,7 @@ class AdminUserController
     // Update user
     public static function update($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('users');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $full_name = trim($_POST['full_name'] ?? '');
@@ -181,6 +193,7 @@ class AdminUserController
         }
 
         $db = Db::getInstance()->pdo();
+        $permissions = isset($_POST['permissions']) ? json_encode($_POST['permissions']) : null;
 
         // Build query dynamically based on password update
         if (!empty($password)) {
@@ -190,14 +203,19 @@ class AdminUserController
                 return;
             }
             $password_hash = password_hash($password, PASSWORD_BCRYPT);
-            $stmt = $db->prepare("UPDATE users SET full_name=?, role=?, phone=?, gender=?, birth_date=?, password_hash=? WHERE id=?");
-            $params = [$full_name, $role, $phone, $gender, $birth_date, $password_hash, $id];
+            $stmt = $db->prepare("UPDATE users SET full_name=?, role=?, phone=?, gender=?, birth_date=?, permissions=?, password_hash=? WHERE id=?");
+            $params = [$full_name, $role, $phone, $gender, $birth_date, $permissions, $password_hash, $id];
         } else {
-            $stmt = $db->prepare("UPDATE users SET full_name=?, role=?, phone=?, gender=?, birth_date=? WHERE id=?");
-            $params = [$full_name, $role, $phone, $gender, $birth_date, $id];
+            $stmt = $db->prepare("UPDATE users SET full_name=?, role=?, phone=?, gender=?, birth_date=?, permissions=? WHERE id=?");
+            $params = [$full_name, $role, $phone, $gender, $birth_date, $permissions, $id];
         }
 
         if ($stmt->execute($params)) {
+            // Update session if editing self
+            if (Auth::user()['id'] == $id) {
+                $_SESSION['user']['role'] = $role;
+                $_SESSION['user']['permissions'] = isset($_POST['permissions']) ? $_POST['permissions'] : [];
+            }
             $_SESSION['flash_success'] = 'Cập nhật người dùng thành công!';
             Response::redirect($_POST['redirect_to'] ?? '/admin/users');
         } else {
@@ -208,7 +226,7 @@ class AdminUserController
     // Delete user
     public static function delete($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('users');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         // Prevent deleting self

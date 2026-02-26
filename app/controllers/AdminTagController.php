@@ -7,7 +7,7 @@ class AdminTagController
     // List all tags
     public static function index()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('tags');
 
         $db = Db::getInstance()->pdo();
 
@@ -58,7 +58,7 @@ class AdminTagController
     // Show create form
     public static function create()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('tags');
 
         $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/tags';
         $redirect_to = $_GET['redirect_to'] ?? $referer;
@@ -72,7 +72,7 @@ class AdminTagController
     // Store new tag
     public static function store()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('tags');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $name = trim($_POST['name'] ?? '');
@@ -106,7 +106,7 @@ class AdminTagController
     // Show edit form
     public static function edit($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('tags');
 
         $db = Db::getInstance()->pdo();
         $stmt = $db->prepare("SELECT * FROM tags WHERE id = ? AND is_delete = 0");
@@ -130,7 +130,7 @@ class AdminTagController
     // Update tag
     public static function update($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('tags');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $name = trim($_POST['name'] ?? '');
@@ -156,7 +156,7 @@ class AdminTagController
     // Delete tag
     public static function delete($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('tags');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $db = Db::getInstance()->pdo();

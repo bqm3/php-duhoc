@@ -7,7 +7,7 @@ class AdminPostController
     // List all posts
     public static function index()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('posts');
 
         $db = Db::getInstance()->pdo();
 
@@ -154,7 +154,7 @@ class AdminPostController
     // Show create form
     public static function create()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('posts');
 
         $selectedCategoryId = isset($_GET['category_id']) ? (int) $_GET['category_id'] : 0;
 
@@ -189,7 +189,7 @@ class AdminPostController
     // Store new post
     public static function store()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('posts');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $title = trim($_POST['title'] ?? '');
@@ -278,7 +278,7 @@ class AdminPostController
     // Show edit form
     public static function edit($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('posts');
 
         $db = Db::getInstance()->pdo();
 
@@ -321,7 +321,7 @@ class AdminPostController
     // Update post
     public static function update($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('posts');
 
         if (!Csrf::verify($_POST['_csrf'] ?? '')) {
             Response::json(['error' => 'Invalid CSRF token'], 403);
@@ -446,7 +446,7 @@ class AdminPostController
     // Delete post
     public static function delete($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('posts');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $db = Db::getInstance()->pdo();
@@ -707,7 +707,7 @@ class AdminPostController
     // Toggle hidden status
     public static function toggleHidden($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('posts');
 
         if (!Csrf::verify($_POST['_csrf'] ?? '')) {
             Response::json(['error' => 'Invalid CSRF token'], 403);
@@ -731,7 +731,7 @@ class AdminPostController
     // Upload image for CKEditor
     public static function uploadImage()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('posts');
 
         if (!Csrf::verify($_POST['_csrf'] ?? '')) {
             if (ob_get_length())

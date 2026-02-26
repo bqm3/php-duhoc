@@ -5,7 +5,7 @@ class AdminCountryController
 
     public static function index()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('countries');
         $db = Db::getInstance()->pdo();
 
         $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
@@ -50,7 +50,7 @@ class AdminCountryController
 
     public static function create()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('countries');
         $db = Db::getInstance()->pdo();
         $continents = $db->query("SELECT id, name FROM continents ORDER BY name")->fetchAll();
 
@@ -66,7 +66,7 @@ class AdminCountryController
 
     public static function store()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('countries');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $name = trim($_POST['name'] ?? '');
@@ -118,7 +118,7 @@ class AdminCountryController
 
     public static function edit($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('countries');
         $db = Db::getInstance()->pdo();
 
         $country = $db->prepare("SELECT * FROM countries WHERE id = ? AND is_delete = 0");
@@ -143,7 +143,7 @@ class AdminCountryController
 
     public static function update($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('countries');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $name = trim($_POST['name'] ?? '');
@@ -196,7 +196,7 @@ class AdminCountryController
 
     public static function delete($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('countries');
         Csrf::verify($_POST['_csrf'] ?? '');
         $db = Db::getInstance()->pdo();
 

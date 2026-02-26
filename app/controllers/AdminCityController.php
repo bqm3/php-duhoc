@@ -5,7 +5,7 @@ class AdminCityController
 
     public static function index()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('cities');
         $db = Db::getInstance()->pdo();
 
         $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
@@ -50,7 +50,7 @@ class AdminCityController
 
     public static function create()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('cities');
         $db = Db::getInstance()->pdo();
         // Get countries for dropdown
         $countries = $db->query("SELECT id, name FROM countries ORDER BY name")->fetchAll();
@@ -67,7 +67,7 @@ class AdminCityController
 
     public static function store()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('cities');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $name = trim($_POST['name'] ?? '');
@@ -101,7 +101,7 @@ class AdminCityController
 
     public static function edit($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('cities');
         $db = Db::getInstance()->pdo();
 
         $city = $db->prepare("SELECT * FROM cities WHERE id = ? AND is_delete = 0");
@@ -126,7 +126,7 @@ class AdminCityController
 
     public static function update($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('cities');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $name = trim($_POST['name'] ?? '');
@@ -157,7 +157,7 @@ class AdminCityController
 
     public static function delete($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('cities');
         Csrf::verify($_POST['_csrf'] ?? '');
         $db = Db::getInstance()->pdo();
 

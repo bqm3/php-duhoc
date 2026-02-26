@@ -3,7 +3,7 @@ class AdminConsultationController
 {
     public static function index()
     {
-        Auth::requireAdmin(); // Ensure only logged-in users can access
+        Auth::requirePermission('consultations'); // Ensure only logged-in users can access
 
         $db = Db::getInstance()->pdo();
 
@@ -86,7 +86,7 @@ class AdminConsultationController
 
     public static function edit($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('consultations');
         $db = Db::getInstance()->pdo();
         $stmt = $db->prepare("SELECT * FROM consultations WHERE id = ? AND is_delete = 0");
         $stmt->execute([$id]);
@@ -108,7 +108,7 @@ class AdminConsultationController
 
     public static function update($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('consultations');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $status = $_POST['status'] ?? 'new';
@@ -133,7 +133,7 @@ class AdminConsultationController
 
     public static function delete($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('consultations');
         Csrf::verify($_POST['_csrf'] ?? '');
         $db = Db::getInstance()->pdo();
 

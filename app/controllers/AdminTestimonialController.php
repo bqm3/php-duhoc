@@ -6,7 +6,7 @@ class AdminTestimonialController
     // List all testimonials
     public static function index()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('testimonials');
         $db = Db::getInstance()->pdo();
 
         $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
@@ -45,7 +45,7 @@ class AdminTestimonialController
     // Show create form
     public static function create()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('testimonials');
 
         $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/testimonials';
         $redirect_to = $_GET['redirect_to'] ?? $referer;
@@ -59,7 +59,7 @@ class AdminTestimonialController
     // Store new testimonial
     public static function store()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('testimonials');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $name = trim($_POST['name'] ?? '');
@@ -101,7 +101,7 @@ class AdminTestimonialController
     // Show edit form
     public static function edit($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('testimonials');
         $db = Db::getInstance()->pdo();
         $stmt = $db->prepare("SELECT * FROM testimonials WHERE id = ? AND is_delete = 0");
         $stmt->execute([$id]);
@@ -124,7 +124,7 @@ class AdminTestimonialController
     // Update testimonial
     public static function update($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('testimonials');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $name = trim($_POST['name'] ?? '');
@@ -165,7 +165,7 @@ class AdminTestimonialController
     // Toggle hidden status
     public static function toggleHidden($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('testimonials');
         $db = Db::getInstance()->pdo();
         $stmt = $db->prepare("UPDATE testimonials SET is_hidden = 1 - is_hidden WHERE id = ?");
         if ($stmt->execute([$id])) {
@@ -178,7 +178,7 @@ class AdminTestimonialController
     // Delete testimonial (Soft delete)
     public static function delete($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('testimonials');
         $db = Db::getInstance()->pdo();
         $stmt = $db->prepare("UPDATE testimonials SET is_delete = 1 WHERE id = ?");
         if ($stmt->execute([$id])) {

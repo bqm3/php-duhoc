@@ -1,11 +1,14 @@
 <?php
 require_once __DIR__ . '/../utils/createLog.php';
-class AdminAuthController {
-  public function showLogin() {
+class AdminAuthController
+{
+  public function showLogin()
+  {
     view("auth", "admin/login", ["csrf" => Csrf::token()]);
   }
 
-  public function login() {
+  public function login()
+  {
     if (!Csrf::verify($_POST["_csrf"] ?? "")) {
       view("auth", "admin/login", ["error" => "CSRF invalid", "csrf" => Csrf::token()]);
     }
@@ -14,6 +17,17 @@ class AdminAuthController {
     $password = $_POST["password"] ?? "";
 
     $pdo = Db::getInstance()->pdo();
+
+    // Lazy migration: Ensure permissions column exists
+    try {
+      $stmt = $pdo->prepare("SHOW COLUMNS FROM users LIKE 'permissions'");
+      $stmt->execute();
+      if (!$stmt->fetch()) {
+        $pdo->exec("ALTER TABLE users ADD COLUMN permissions TEXT NULL");
+      }
+    } catch (Exception $e) {
+    }
+
     $stmt = $pdo->prepare("SELECT * FROM users WHERE email=? LIMIT 1");
     $stmt->execute([$email]);
     $user = $stmt->fetch();
@@ -22,8 +36,8 @@ class AdminAuthController {
       view("auth", "admin/login", ["error" => "Sai email hoặc mật khẩu", "csrf" => Csrf::token()]);
     }
 
-    // require admin role to access admin area
-    if (($user["role"] ?? "") !== "admin") {
+    // require direct role or staff to access admin area
+    if ($user["role"] !== "admin" && $user["role"] !== "staff") {
       view("auth", "admin/login", ["error" => "Tài khoản này không có quyền truy cập trang quản trị", "csrf" => Csrf::token()]);
     }
 
@@ -33,7 +47,8 @@ class AdminAuthController {
     exit;
   }
 
-  public function logout() {
+  public function logout()
+  {
     if (!Csrf::verify($_POST["_csrf"] ?? "")) {
       $posts = $GLOBALS['base'] !== '' ? $GLOBALS['base'] . '/admin/posts' : '/admin/posts';
       header("Location: " . $posts);

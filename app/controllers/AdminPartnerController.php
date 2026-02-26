@@ -5,7 +5,7 @@ class AdminPartnerController
 {
     public static function index()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('partners');
         $db = Db::getInstance()->pdo();
 
         $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
@@ -46,7 +46,7 @@ class AdminPartnerController
 
     public static function create()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('partners');
 
         $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/partners';
         $redirect_to = $_GET['redirect_to'] ?? $referer;
@@ -59,7 +59,7 @@ class AdminPartnerController
 
     public static function store()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('partners');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $name = trim($_POST['name'] ?? '');
@@ -97,7 +97,7 @@ class AdminPartnerController
 
     public static function edit($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('partners');
         $db = Db::getInstance()->pdo();
 
         $stmt = $db->prepare("SELECT * FROM partners WHERE id = ? AND is_delete = 0");
@@ -119,7 +119,7 @@ class AdminPartnerController
 
     public static function update($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('partners');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $name = trim($_POST['name'] ?? '');
@@ -155,7 +155,7 @@ class AdminPartnerController
 
     public static function delete($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('partners');
         Csrf::verify($_POST['_csrf'] ?? '');
         $db = Db::getInstance()->pdo();
         $stmt = $db->prepare("UPDATE partners SET is_delete = 1 WHERE id = ?");
@@ -172,7 +172,7 @@ class AdminPartnerController
 
     public static function toggleHidden($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('partners');
         Csrf::verify($_POST['_csrf'] ?? '');
         $db = Db::getInstance()->pdo();
 

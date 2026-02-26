@@ -7,7 +7,7 @@ class AdminCategoryController
     // List all categories
     public static function index()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('categories');
 
         $db = Db::getInstance()->pdo();
 
@@ -61,7 +61,7 @@ class AdminCategoryController
     // Show create form
     public static function create()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('categories');
 
         $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/categories';
         $redirect_to = $_GET['redirect_to'] ?? $referer;
@@ -75,7 +75,7 @@ class AdminCategoryController
     // Store new category
     public static function store()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('categories');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $name = trim($_POST['name'] ?? '');
@@ -123,7 +123,7 @@ class AdminCategoryController
     // Show edit form
     public static function edit($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('categories');
 
         $db = Db::getInstance()->pdo();
         $stmt = $db->prepare("SELECT * FROM categories WHERE id = ? AND is_delete = 0");
@@ -147,7 +147,7 @@ class AdminCategoryController
     // Update category
     public static function update($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('categories');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $name = trim($_POST['name'] ?? '');
@@ -185,7 +185,7 @@ class AdminCategoryController
     // Delete category
     public static function delete($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('categories');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $db = Db::getInstance()->pdo();

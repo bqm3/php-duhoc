@@ -5,7 +5,7 @@ class AdminEducationLevelController
 
     public static function index()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('education_levels');
         $db = Db::getInstance()->pdo();
 
         $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
@@ -42,7 +42,7 @@ class AdminEducationLevelController
 
     public static function create()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('education_levels');
 
         $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/education-levels';
         $redirect_to = $_GET['redirect_to'] ?? $referer;
@@ -55,7 +55,7 @@ class AdminEducationLevelController
 
     public static function store()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('education_levels');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $name = trim($_POST['name'] ?? '');
@@ -88,7 +88,7 @@ class AdminEducationLevelController
 
     public static function edit($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('education_levels');
         $db = Db::getInstance()->pdo();
         $stmt = $db->prepare("SELECT * FROM education_levels WHERE id = ? AND is_delete = 0");
         $stmt->execute([$id]);
@@ -109,7 +109,7 @@ class AdminEducationLevelController
 
     public static function update($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('education_levels');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $name = trim($_POST['name'] ?? '');
@@ -138,7 +138,7 @@ class AdminEducationLevelController
 
     public static function delete($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('education_levels');
         Csrf::verify($_POST['_csrf'] ?? '');
         $db = Db::getInstance()->pdo();
 

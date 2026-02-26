@@ -5,7 +5,7 @@ class AdminSlideController
 {
     public static function index()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('slides');
         $db = Db::getInstance()->pdo();
 
         $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
@@ -48,7 +48,7 @@ class AdminSlideController
 
     public static function create()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('slides');
         $db = Db::getInstance()->pdo();
 
         $countries = $db->query("SELECT id, name FROM countries ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
@@ -67,7 +67,7 @@ class AdminSlideController
 
     public static function store()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('slides');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $name = trim($_POST['name'] ?? '');
@@ -108,7 +108,7 @@ class AdminSlideController
 
     public static function edit($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('slides');
         $db = Db::getInstance()->pdo();
 
         $stmt = $db->prepare("SELECT * FROM slides WHERE id = ? AND is_delete = 0");
@@ -135,7 +135,7 @@ class AdminSlideController
 
     public static function update($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('slides');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $name = trim($_POST['name'] ?? '');
@@ -174,7 +174,7 @@ class AdminSlideController
 
     public static function delete($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('slides');
         Csrf::verify($_POST['_csrf'] ?? '');
         $db = Db::getInstance()->pdo();
         $stmt = $db->prepare("UPDATE slides SET is_delete = 1 WHERE id = ?");
@@ -191,7 +191,7 @@ class AdminSlideController
 
     public static function toggleHidden($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('slides');
         Csrf::verify($_POST['_csrf'] ?? '');
         $db = Db::getInstance()->pdo();
 

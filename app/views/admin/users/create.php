@@ -79,10 +79,46 @@
 
                                 <div class="form-group">
                                     <label>Vai trò</label>
-                                    <select name="role" class="form-control">
+                                    <select name="role" class="form-control" id="userRole">
                                         <option value="staff" <?= (isset($old['role']) && $old['role'] == 'staff') ? 'selected' : '' ?>>Staff</option>
                                         <option value="admin" <?= (isset($old['role']) && $old['role'] == 'admin') ? 'selected' : '' ?>>Admin</option>
                                     </select>
+                                </div>
+
+                                <div id="permissionSection"
+                                    style="<?= (isset($old['role']) && $old['role'] == 'admin') ? 'display:none;' : '' ?>">
+                                    <label><strong>Phân quyền truy cập</strong></label>
+                                    <div class="row">
+                                        <?php
+                                        $perms = [
+                                            'users' => 'Quản lý người dùng',
+                                            'posts' => 'Quản lý bài viết',
+                                            'categories' => 'Quản lý danh mục',
+                                            'slides' => 'Quản lý slide',
+                                            'tags' => 'Quản lý tags',
+                                            'continents' => 'Quản lý châu lục',
+                                            'countries' => 'Quản lý quốc gia',
+                                            'cities' => 'Quản lý thành phố',
+                                            'education_levels' => 'Quản lý bậc học',
+                                            'schools' => 'Quản lý trường học',
+                                            'consultations' => 'Quản lý tư vấn',
+                                            'partners' => 'Quản lý đối tác',
+                                            'testimonials' => 'Quản lý ý kiến khách hàng',
+                                            'files' => 'Quản lý files'
+                                        ];
+                                        foreach ($perms as $key => $label): ?>
+                                            <div class="col-md-4 mb-2">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" name="permissions[]" value="<?= $key ?>"
+                                                        class="custom-control-input" id="p_<?= $key ?>"
+                                                        <?= (isset($old['permissions']) && in_array($key, $old['permissions'])) ? 'checked' : '' ?>>
+                                                    <label class="custom-control-label"
+                                                        for="p_<?= $key ?>"><?= $label ?></label>
+                                                </div>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    </div>
+                                    <hr>
                                 </div>
 
                                 <button type="submit" class="btn btn-primary">Tạo người dùng</button>
@@ -99,6 +135,17 @@
     <script src="<?= $base ?>/assets/js/popper.min.js"></script>
     <script src="<?= $base ?>/assets/js/bootstrap.min.js"></script>
     <script src="<?= $base ?>/assets/js/custom.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#userRole').change(function () {
+                if ($(this).val() === 'admin') {
+                    $('#permissionSection').hide();
+                } else {
+                    $('#permissionSection').show();
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

@@ -5,7 +5,7 @@ class AdminFileController
 {
     public static function index()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('files');
 
         $db = Db::getInstance()->pdo();
 
@@ -84,7 +84,7 @@ class AdminFileController
 
     public static function create()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('files');
 
         $db = Db::getInstance()->pdo();
         $categories = $db->query("SELECT * FROM categories ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
@@ -99,7 +99,7 @@ class AdminFileController
 
     public static function store()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('files');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $title = trim($_POST['title'] ?? '');
@@ -152,7 +152,7 @@ class AdminFileController
 
     public static function edit($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('files');
 
         $db = Db::getInstance()->pdo();
 
@@ -176,7 +176,7 @@ class AdminFileController
 
     public static function update($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('files');
 
         if (!Csrf::verify($_POST['_csrf'] ?? '')) {
             Response::json(['error' => 'Invalid CSRF token'], 403);
@@ -247,7 +247,7 @@ class AdminFileController
 
     public static function delete($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('files');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $db = Db::getInstance()->pdo();

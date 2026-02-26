@@ -5,7 +5,7 @@ class AdminContinentController
 
     public static function index()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('continents');
         $db = Db::getInstance()->pdo();
 
         $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
@@ -42,7 +42,7 @@ class AdminContinentController
 
     public static function create()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('continents');
 
         $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/continents';
         $redirect_to = $_GET['redirect_to'] ?? $referer;
@@ -55,7 +55,7 @@ class AdminContinentController
 
     public static function store()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('continents');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $name = trim($_POST['name'] ?? '');
@@ -100,7 +100,7 @@ class AdminContinentController
 
     public static function edit($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('continents');
         $db = Db::getInstance()->pdo();
         $stmt = $db->prepare("SELECT * FROM continents WHERE id = ? AND is_delete = 0");
         $stmt->execute([$id]);
@@ -121,7 +121,7 @@ class AdminContinentController
 
     public static function update($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('continents');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $name = trim($_POST['name'] ?? '');
@@ -165,7 +165,7 @@ class AdminContinentController
 
     public static function delete($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('continents');
         Csrf::verify($_POST['_csrf'] ?? '');
         $db = Db::getInstance()->pdo();
 

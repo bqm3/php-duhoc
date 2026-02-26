@@ -95,14 +95,17 @@ $open_pages = isGroupActive(['email', 'login', 'register', 'lockscreen', 'forgot
         <div class="sidebar-menu-container">
             <ul class="sidebar-menu mt-4 mb-4">
                 <!-- STAFF / USERS -->
+                <?php if (Auth::hasPermission('users')): ?>
                 <li class="parent">
                     <a href="<?= $base ?>/admin/users" class="<?= activeClass('/admin/users') ?>">
                         <i class="fa fa-users mr-3"></i>
                         <span class="none"> Quản lý người dùng </span>
                     </a>
                 </li>
+                <?php endif; ?>
 
                 <!-- POSTS -->
+                <?php if (Auth::hasPermission('posts')): ?>
                 <?php
                 // Fetch categories for sidebar menu
                 $sidebarCategories = [];
@@ -147,32 +150,40 @@ $open_pages = isGroupActive(['email', 'login', 'register', 'lockscreen', 'forgot
                         </li>
                     </ul>
                 </li>
+                <?php endif; ?>
 
                 <!-- CATEGORIES -->
+                <?php if (Auth::hasPermission('categories')): ?>
                 <li class="parent">
                     <a href="<?= $base ?>/admin/categories" class="<?= activeClass('/admin/categories') ?>">
                         <i class="fa fa-tags mr-3"></i>
                         <span class="none"> Quản lý danh mục </span>
                     </a>
                 </li>
+                <?php endif; ?>
 
                 <!-- SLIDES -->
+                <?php if (Auth::hasPermission('slides')): ?>
                 <li class="parent">
                     <a href="<?= $base ?>/admin/slides" class="<?= activeClass('/admin/slides') ?>">
                         <i class="fa fa-sliders mr-3"></i>
                         <span class="none"> Quản lý Slide </span>
                     </a>
                 </li>
+                <?php endif; ?>
 
                 <!-- TAGS -->
+                <?php if (Auth::hasPermission('tags')): ?>
                 <li class="parent">
                     <a href="<?= $base ?>/admin/tags" class="<?= activeClass('/admin/tags') ?>">
                         <i class="fa fa-bookmark mr-3"></i>
                         <span class="none"> Quản lý Cập nhật (Tags) </span>
                     </a>
                 </li>
+                <?php endif; ?>
 
                 <!-- LOCATIONS -->
+                <?php if (Auth::hasPermission('continents') || Auth::hasPermission('countries') || Auth::hasPermission('cities')): ?>
                 <li class="parent">
                     <a href="#" onclick="toggle_menu('locations'); return false" class="">
                         <i class="fa fa-globe mr-3"></i>
@@ -180,19 +191,27 @@ $open_pages = isGroupActive(['email', 'login', 'register', 'lockscreen', 'forgot
                                 class="fa fa-angle-down pull-right align-bottom"></i></span>
                     </a>
                     <ul class="children" id="locations" style="display: none;">
+                        <?php if (Auth::hasPermission('continents')): ?>
                         <li class="child"><a href="<?= $base ?>/admin/continents"
                                 class="ml-4 <?= activeClass('/admin/continents') ?>"><i
                                     class="fa fa-angle-right mr-2"></i> Châu Lục</a></li>
+                        <?php endif; ?>
+                        <?php if (Auth::hasPermission('countries')): ?>
                         <li class="child"><a href="<?= $base ?>/admin/countries"
                                 class="ml-4 <?= activeClass('/admin/countries') ?>"><i
                                     class="fa fa-angle-right mr-2"></i> Quốc Gia</a></li>
+                        <?php endif; ?>
+                        <?php if (Auth::hasPermission('cities')): ?>
                         <li class="child"><a href="<?= $base ?>/admin/cities"
                                 class="ml-4 <?= activeClass('/admin/cities') ?>"><i class="fa fa-angle-right mr-2"></i>
                                 Thành Phố</a></li>
+                        <?php endif; ?>
                     </ul>
                 </li>
+                <?php endif; ?>
 
                 <!-- EDUCATION -->
+                <?php if (Auth::hasPermission('education_levels') || Auth::hasPermission('schools')): ?>
                 <li class="parent">
                     <a href="#" onclick="toggle_menu('education'); return false" class="">
                         <i class="fa fa-graduation-cap mr-3"></i>
@@ -200,47 +219,60 @@ $open_pages = isGroupActive(['email', 'login', 'register', 'lockscreen', 'forgot
                                 class="fa fa-angle-down pull-right align-bottom"></i></span>
                     </a>
                     <ul class="children" id="education" style="display: none;">
+                        <?php if (Auth::hasPermission('education_levels')): ?>
                         <li class="child"><a href="<?= $base ?>/admin/education-levels"
                                 class="ml-4 <?= activeClass('/admin/education-levels') ?>"><i
                                     class="fa fa-angle-right mr-2"></i> Bậc Học</a></li>
+                        <?php endif; ?>
+                        <?php if (Auth::hasPermission('schools')): ?>
                         <li class="child"><a href="<?= $base ?>/admin/schools"
                                 class="ml-4 <?= activeClass('/admin/schools') ?>"><i class="fa fa-angle-right mr-2"></i>
                                 Trường Học</a></li>
+                        <?php endif; ?>
                     </ul>
                 </li>
+                <?php endif; ?>
 
                 <!-- CONSULTATIONS -->
+                <?php if (Auth::hasPermission('consultations')): ?>
                 <li class="parent">
                     <a href="<?= $base ?>/admin/consultations" class="<?= activeClass('/admin/consultations') ?>">
                         <i class="fa fa-commenting mr-3"></i>
                         <span class="none"> Danh sách tư vấn </span>
                     </a>
                 </li>
+                <?php endif; ?>
 
                 <!-- PARTNERS -->
+                <?php if (Auth::hasPermission('partners')): ?>
                 <li class="parent">
                     <a href="<?= $base ?>/admin/partners" class="<?= activeClass('/admin/partners') ?>">
                         <i class="fa fa-briefcase mr-3"></i>
                         <span class="none"> Danh sách đối tác </span>
                     </a>
                 </li>
+                <?php endif; ?>
 
                 <!-- TESTIMONIALS -->
+                <?php if (Auth::hasPermission('testimonials')): ?>
                 <li class="parent">
                     <a href="<?= $base ?>/admin/testimonials" class="<?= activeClass('/admin/testimonials') ?>">
                         <i class="fa fa-comments mr-3"></i>
                         <span class="none"> Ý kiến khách hàng </span>
                     </a>
                 </li>
+                <?php endif; ?>
 
 
                 <!-- FILES -->
+                <?php if (Auth::hasPermission('files')): ?>
                 <li class="parent">
                     <a href="<?= $base ?>/admin/files" class="<?= activeClass('/admin/files') ?>">
                         <i class="fa fa-file mr-3"></i>
                         <span class="none"> Danh sách files </span>
                     </a>
                 </li>
+                <?php endif; ?>
 
                 <!-- DASHBOARD -->
                 <!-- <li class="parent">
