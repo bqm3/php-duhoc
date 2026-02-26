@@ -5,7 +5,7 @@ class AdminCountryController
 
     public static function index()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('countries');
         $db = Db::getInstance()->pdo();
 
         $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
@@ -50,19 +50,23 @@ class AdminCountryController
 
     public static function create()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('countries');
         $db = Db::getInstance()->pdo();
         $continents = $db->query("SELECT id, name FROM continents ORDER BY name")->fetchAll();
 
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/countries';
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
+
         view('admin', 'admin/countries/create', [
             'continents' => $continents,
-            'csrf' => Csrf::token()
+            'csrf' => Csrf::token(),
+            'redirect_to' => $redirect_to
         ]);
     }
 
     public static function store()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('countries');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $name = trim($_POST['name'] ?? '');
@@ -105,7 +109,8 @@ class AdminCountryController
         $stmt = $db->prepare($sql);
 
         if ($stmt->execute([$continent_id, $name, $slug, $code, $description, $flag_url, $image_url, $display_order, $is_popular])) {
-            Response::redirect('/admin/countries');
+            $_SESSION['flash_success'] = 'Thêm quốc gia thành công!';
+            Response::redirect($_POST['redirect_to'] ?? '/admin/countries');
         } else {
             Response::json(['error' => 'Failed'], 500);
         }
@@ -113,7 +118,7 @@ class AdminCountryController
 
     public static function edit($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('countries');
         $db = Db::getInstance()->pdo();
 
         $country = $db->prepare("SELECT * FROM countries WHERE id = ? AND is_delete = 0");
@@ -125,16 +130,20 @@ class AdminCountryController
 
         $continents = $db->query("SELECT id, name FROM continents ORDER BY name")->fetchAll();
 
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/countries';
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
+
         view('admin', 'admin/countries/edit', [
             'country' => $country,
             'continents' => $continents,
-            'csrf' => Csrf::token()
+            'csrf' => Csrf::token(),
+            'redirect_to' => $redirect_to
         ]);
     }
 
     public static function update($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('countries');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $name = trim($_POST['name'] ?? '');
@@ -178,7 +187,8 @@ class AdminCountryController
         $stmt = $db->prepare($sql);
 
         if ($stmt->execute([$continent_id, $name, $slug, $code, $description, $flag_url, $image_url, $display_order, $is_popular, $id])) {
-            Response::redirect('/admin/countries');
+            $_SESSION['flash_success'] = 'Cập nhật quốc gia thành công!';
+            Response::redirect($_POST['redirect_to'] ?? '/admin/countries');
         } else {
             Response::json(['error' => 'Failed'], 500);
         }
@@ -186,7 +196,7 @@ class AdminCountryController
 
     public static function delete($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('countries');
         Csrf::verify($_POST['_csrf'] ?? '');
         $db = Db::getInstance()->pdo();
 

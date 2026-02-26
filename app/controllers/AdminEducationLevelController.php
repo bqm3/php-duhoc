@@ -5,7 +5,7 @@ class AdminEducationLevelController
 
     public static function index()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('education_levels');
         $db = Db::getInstance()->pdo();
 
         $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
@@ -42,13 +42,20 @@ class AdminEducationLevelController
 
     public static function create()
     {
-        Auth::requireAdmin();
-        view('admin', 'admin/education_levels/create', ['csrf' => Csrf::token()]);
+        Auth::requirePermission('education_levels');
+
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/education-levels';
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
+
+        view('admin', 'admin/education_levels/create', [
+            'csrf' => Csrf::token(),
+            'redirect_to' => $redirect_to
+        ]);
     }
 
     public static function store()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('education_levels');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $name = trim($_POST['name'] ?? '');
@@ -72,7 +79,8 @@ class AdminEducationLevelController
         $stmt = $db->prepare("INSERT INTO education_levels (name, slug, display_order, created_at) VALUES (?, ?, ?, NOW())");
 
         if ($stmt->execute([$name, $slug, $display_order])) {
-            Response::redirect('/admin/education-levels');
+            $_SESSION['flash_success'] = 'Thêm trình độ học vấn thành công!';
+            Response::redirect($_POST['redirect_to'] ?? '/admin/education-levels');
         } else {
             Response::json(['error' => 'Failed to create'], 500);
         }
@@ -80,7 +88,7 @@ class AdminEducationLevelController
 
     public static function edit($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('education_levels');
         $db = Db::getInstance()->pdo();
         $stmt = $db->prepare("SELECT * FROM education_levels WHERE id = ? AND is_delete = 0");
         $stmt->execute([$id]);
@@ -89,15 +97,19 @@ class AdminEducationLevelController
         if (!$level)
             Response::notFound();
 
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/education-levels';
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
+
         view('admin', 'admin/education_levels/edit', [
             'level' => $level,
-            'csrf' => Csrf::token()
+            'csrf' => Csrf::token(),
+            'redirect_to' => $redirect_to
         ]);
     }
 
     public static function update($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('education_levels');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $name = trim($_POST['name'] ?? '');
@@ -117,7 +129,8 @@ class AdminEducationLevelController
         $stmt = $db->prepare("UPDATE education_levels SET name=?, slug=?, display_order=?, updated_at=NOW() WHERE id=?");
 
         if ($stmt->execute([$name, $slug, $display_order, $id])) {
-            Response::redirect('/admin/education-levels');
+            $_SESSION['flash_success'] = 'Cập nhật trình độ học vấn thành công!';
+            Response::redirect($_POST['redirect_to'] ?? '/admin/education-levels');
         } else {
             Response::json(['error' => 'Failed to update'], 500);
         }
@@ -125,7 +138,7 @@ class AdminEducationLevelController
 
     public static function delete($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('education_levels');
         Csrf::verify($_POST['_csrf'] ?? '');
         $db = Db::getInstance()->pdo();
 

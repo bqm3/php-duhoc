@@ -16,14 +16,14 @@ $breadcrumbs[] = ['label' => $post['title'] ?? 'Chi tiết', 'url' => ''];
 <?php
 $title = $post['meta_title'] ?? $post['title'] ?? 'Bài viết';
 
-$meta_description = $post['meta_description'] 
-    ?? (!empty($post['summary']) ? strip_tags($post['summary']) : '');
+$meta_description = $post['meta_description']
+  ?? (!empty($post['summary']) ? strip_tags($post['summary']) : '');
 
 $meta_keywords = $post['meta_keywords'] ?? '';
 
-$meta_image = !empty($post['featured_image']) 
-    ? $base . $post['featured_image'] 
-    : $base . '/assets/images/no-image.jpg';
+$meta_image = !empty($post['featured_image'])
+  ? $base . $post['featured_image']
+  : $base . '/assets/images/no-image.jpg';
 
 $meta_url = $base . ($_SERVER['REQUEST_URI'] ?? '');
 ?>
@@ -194,7 +194,34 @@ $meta_url = $base . ($_SERVER['REQUEST_URI'] ?? '');
     </div>
 
   </div>
-</div>
+
+  <?php if (!empty($randomPosts)): ?>
+    <!-- Related News Section -->
+    <div class="mt-5 pt-5 border-top">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold mb-0">Tin tức liên quan khác</h3>
+        <a href="<?= $base ?>/tin-tuc" class="text-primary text-decoration-none fw-bold">Xem tất cả <i
+            class="fa fa-angle-right ms-1"></i></a>
+      </div>
+
+      <div class="swiper-nav-wrapper mt-3">
+        <div class="swiper news-swiper">
+          <div class="swiper-wrapper">
+            <?php foreach ($randomPosts as $rp): ?>
+              <div class="swiper-slide h-auto p-2">
+                <?php partial('layouts/partials/post_card', ['post' => $rp, 'base' => $base]); ?>
+              </div>
+            <?php endforeach; ?>
+          </div>
+          <!-- Pagination -->
+          <div class="swiper-pagination"></div>
+          <!-- Navigation -->
+          <div class="swiper-button-next"></div>
+          <div class="swiper-button-prev"></div>
+        </div>
+      </div>
+    </div>
+  <?php endif; ?>
 </div>
 
 <script>
@@ -296,6 +323,40 @@ $meta_url = $base . ($_SERVER['REQUEST_URI'] ?? '');
   function sharePost(id) {
     alert('Đã chia sẻ bài viết ' + id);
   }
+
+  // Related News Swiper
+  document.addEventListener("DOMContentLoaded", function () {
+    const newsSwiperEl = document.querySelector('.news-swiper');
+    if (typeof Swiper !== 'undefined' && newsSwiperEl) {
+      const postCount = <?= count($randomPosts ?? []) ?>;
+      new Swiper('.news-swiper', {
+        slidesPerView: 1,
+        spaceBetween: 25,
+        loop: postCount > 3,
+        watchOverflow: true,
+        grabCursor: true,
+        autoplay: {
+          delay: 3500,
+          disableOnInteraction: false,
+          pauseOnMouseEnter: true,
+        },
+        pagination: {
+          el: '.swiper-pagination',
+          clickable: true,
+          dynamicBullets: true
+        },
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
+        },
+        breakpoints: {
+          576: { slidesPerView: 1 },
+          768: { slidesPerView: 2 },
+          1024: { slidesPerView: 3 }
+        }
+      });
+    }
+  });
 </script>
 
 
@@ -511,6 +572,89 @@ $meta_url = $base . ($_SERVER['REQUEST_URI'] ?? '');
   @media (max-width: 576px) {
     .country-category-grid {
       grid-template-columns: 1fr;
+    }
+  }
+
+  /* Swiper Related News Styling */
+  .news-swiper {
+    padding-bottom: 60px !important;
+    position: static !important;
+  }
+
+  .swiper-nav-wrapper {
+    position: relative;
+  }
+
+  .news-swiper .swiper-button-next,
+  .news-swiper .swiper-button-prev {
+    width: 40px !important;
+    height: 40px !important;
+    background: rgba(27, 153, 212, 0.15) !important;
+    border-radius: 30px !important;
+    margin-top: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+
+  .swiper-button-lock,
+  .swiper-pagination-lock {
+    display: none !important;
+  }
+
+  .news-swiper .swiper-button-next::before,
+  .news-swiper .swiper-button-prev::before {
+    content: '';
+    position: absolute;
+    width: 33.33px;
+    height: 33.33px;
+    background: #31A5DE;
+    border-radius: 30px;
+    z-index: -1;
+    transition: all 0.3s ease;
+  }
+
+  .news-swiper .swiper-button-next::after,
+  .news-swiper .swiper-button-prev::after {
+    font-family: "Font Awesome 6 Free", "Font Awesome 5 Free";
+    font-weight: 900;
+    font-size: 12px !important;
+    color: #FFFFFF !important;
+  }
+
+  .news-swiper .swiper-button-next::after {
+    content: '\f054' !important;
+  }
+
+  .news-swiper .swiper-button-prev::after {
+    content: '\f053' !important;
+  }
+
+  .news-swiper .swiper-button-next:hover::before,
+  .news-swiper .swiper-button-prev:hover::before {
+    background: #1B99D4;
+    transform: scale(1.1);
+  }
+
+  .news-swiper .swiper-button-next {
+    right: -20px !important;
+  }
+
+  .news-swiper .swiper-button-prev {
+    left: -20px !important;
+  }
+
+  @media (max-width: 1200px) {
+    .news-swiper .swiper-button-next {
+      right: 5px !important;
+    }
+
+    .news-swiper .swiper-button-prev {
+      left: 5px !important;
     }
   }
 </style>

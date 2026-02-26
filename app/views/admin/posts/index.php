@@ -101,7 +101,8 @@
                                     <button class="btn btn-info btn-sm flex-grow-1 mr-2" type="submit">
                                         <i class="fa fa-filter"></i> Lọc
                                     </button>
-                                    <a href="<?= $base ?>/admin/posts" class="btn btn-outline-secondary btn-sm flex-grow-1" title="Xóa tất cả bộ lọc">
+                                    <a href="<?= $base ?>/admin/posts"
+                                        class="btn btn-outline-secondary btn-sm flex-grow-1" title="Xóa tất cả bộ lọc">
                                         <i class="fa fa-refresh"></i> Xóa lọc
                                     </a>
                                 </div>
@@ -152,7 +153,16 @@
                                                         <code><?= htmlspecialchars($post['slug']) ?></code>
                                                     </td>
                                                     <td>
-                                                        <?= $post['category_name'] ? htmlspecialchars($post['category_name']) : '<em class="text-muted">No category</em>' ?>
+                                                        <div class="mb-1">
+                                                            <?= $post['category_name'] ? htmlspecialchars($post['category_name']) : '<em class="text-muted">No category</em>' ?>
+                                                        </div>
+                                                        <?php if (!empty($post['second_category_name'])): ?>
+                                                            <div>
+                                                                <span class="badge badge-secondary" title="Danh mục phụ">
+                                                                    <?= htmlspecialchars($post['second_category_name']) ?>
+                                                                </span>
+                                                            </div>
+                                                        <?php endif; ?>
                                                     </td>
                                                     <td>
                                                         <?php
@@ -169,10 +179,12 @@
                                                     </td>
                                                     <td class="small" style="white-space: nowrap;">
                                                         <div class="mb-1" title="Created At">
-                                                            <i class="fa fa-clock-o text-muted"></i> <?= date('d/m/Y H:i', strtotime($post['created_at'])) ?>
+                                                            <i class="fa fa-clock-o text-muted"></i>
+                                                            <?= date('d/m/Y H:i', strtotime($post['created_at'])) ?>
                                                         </div>
                                                         <div title="Updated At">
-                                                            <i class="fa fa-history text-info"></i> <?= date('d/m/Y H:i', strtotime($post['updated_at'])) ?>
+                                                            <i class="fa fa-history text-info"></i>
+                                                            <?= date('d/m/Y H:i', strtotime($post['updated_at'])) ?>
                                                         </div>
                                                     </td>
                                                     <td>

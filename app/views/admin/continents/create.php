@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <title>Thêm Châu Lục</title>
@@ -8,6 +9,7 @@
     <link rel="stylesheet" href="<?= $base ?>/assets/css/fontawesome.css">
     <link rel="stylesheet" href="<?= $base ?>/assets/js/summernote/summernote-bs4.css">
 </head>
+
 <body>
     <div class="container-fluid">
         <?php include __DIR__ . '/../../admin/header.php'; ?>
@@ -20,12 +22,14 @@
                         <div class="mt-1 mb-3 p-4 button-container bg-white border shadow-sm">
                             <form method="POST" action="<?= $base ?>/admin/continents" enctype="multipart/form-data">
                                 <input type="hidden" name="_csrf" value="<?= $csrf ?>">
-                                
+                                <input type="hidden" name="redirect_to"
+                                    value="<?= htmlspecialchars($redirect_to ?? '') ?>">
+
                                 <div class="form-group">
                                     <label>Tên Châu Lục <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" name="name" required>
                                 </div>
-                                
+
                                 <div class="form-group">
                                     <label>Slug (tùy chọn)</label>
                                     <input type="text" class="form-control" name="slug">
@@ -61,11 +65,11 @@
     <script src="<?= $base ?>/assets/js/summernote/summernote-bs4.js"></script>
     <script src="<?= $base ?>/assets/js/custom.js"></script>
     <script>
-        $(document).ready(function() {
-            $('#summernote').summernote({height: 200});
+        $(document).ready(function () {
+            $('#summernote').summernote({ height: 200 });
         });
 
-        document.querySelector('input[name="name"]').addEventListener('keyup', function() {
+        document.querySelector('input[name="name"]').addEventListener('keyup', function () {
             var title = this.value;
             var slug = title.toLowerCase();
             slug = slug.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/g, 'a');
@@ -80,4 +84,5 @@
         });
     </script>
 </body>
+
 </html>

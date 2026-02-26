@@ -5,7 +5,7 @@ class AdminPartnerController
 {
     public static function index()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('partners');
         $db = Db::getInstance()->pdo();
 
         $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
@@ -46,15 +46,20 @@ class AdminPartnerController
 
     public static function create()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('partners');
+
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/partners';
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
+
         view('admin', 'admin/partners/create', [
-            'csrf' => Csrf::token()
+            'csrf' => Csrf::token(),
+            'redirect_to' => $redirect_to
         ]);
     }
 
     public static function store()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('partners');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $name = trim($_POST['name'] ?? '');
@@ -83,7 +88,8 @@ class AdminPartnerController
         $stmt = $db->prepare($sql);
 
         if ($stmt->execute([$name, $image_url, $link_href, $is_hidden, $stt])) {
-            Response::redirect('/admin/partners');
+            $_SESSION['flash_success'] = 'Thêm đối tác thành công!';
+            Response::redirect($_POST['redirect_to'] ?? '/admin/partners');
         } else {
             Response::json(['error' => 'Lỗi hệ thống'], 500);
         }
@@ -91,7 +97,7 @@ class AdminPartnerController
 
     public static function edit($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('partners');
         $db = Db::getInstance()->pdo();
 
         $stmt = $db->prepare("SELECT * FROM partners WHERE id = ? AND is_delete = 0");
@@ -101,15 +107,19 @@ class AdminPartnerController
         if (!$partner)
             Response::notFound();
 
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/partners';
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
+
         view('admin', 'admin/partners/edit', [
             'partner' => $partner,
-            'csrf' => Csrf::token()
+            'csrf' => Csrf::token(),
+            'redirect_to' => $redirect_to
         ]);
     }
 
     public static function update($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('partners');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $name = trim($_POST['name'] ?? '');
@@ -136,7 +146,8 @@ class AdminPartnerController
         $stmt = $db->prepare($sql);
 
         if ($stmt->execute([$name, $image_url, $link_href, $is_hidden, $stt, $id])) {
-            Response::redirect('/admin/partners');
+            $_SESSION['flash_success'] = 'Cập nhật đối tác thành công!';
+            Response::redirect($_POST['redirect_to'] ?? '/admin/partners');
         } else {
             Response::json(['error' => 'Lỗi hệ thống'], 500);
         }
@@ -144,7 +155,7 @@ class AdminPartnerController
 
     public static function delete($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('partners');
         Csrf::verify($_POST['_csrf'] ?? '');
         $db = Db::getInstance()->pdo();
         $stmt = $db->prepare("UPDATE partners SET is_delete = 1 WHERE id = ?");
@@ -161,7 +172,7 @@ class AdminPartnerController
 
     public static function toggleHidden($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('partners');
         Csrf::verify($_POST['_csrf'] ?? '');
         $db = Db::getInstance()->pdo();
 

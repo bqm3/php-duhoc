@@ -21,6 +21,8 @@
                         <div class="mt-1 mb-3 p-4 button-container bg-white border shadow-sm">
                             <form method="POST" action="<?= $base ?>/admin/cities/<?= $city['id'] ?>/update">
                                 <input type="hidden" name="_csrf" value="<?= $csrf ?>">
+                                <input type="hidden" name="redirect_to"
+                                    value="<?= htmlspecialchars($redirect_to ?? '') ?>">
 
                                 <div class="form-group">
                                     <label>Tên Thành Phố <span class="text-danger">*</span></label>

@@ -5,7 +5,7 @@ class AdminSlideController
 {
     public static function index()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('slides');
         $db = Db::getInstance()->pdo();
 
         $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
@@ -48,22 +48,26 @@ class AdminSlideController
 
     public static function create()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('slides');
         $db = Db::getInstance()->pdo();
 
         $countries = $db->query("SELECT id, name FROM countries ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
         $schools = $db->query("SELECT id, name FROM schools ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
 
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/slides';
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
+
         view('admin', 'admin/slides/create', [
             'countries' => $countries,
             'schools' => $schools,
-            'csrf' => Csrf::token()
+            'csrf' => Csrf::token(),
+            'redirect_to' => $redirect_to
         ]);
     }
 
     public static function store()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('slides');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $name = trim($_POST['name'] ?? '');
@@ -95,7 +99,8 @@ class AdminSlideController
         $stmt = $db->prepare($sql);
 
         if ($stmt->execute([$name, $image_url, $link_href, $id_country, $id_school, $is_hidden, $stt, $ghi_chu])) {
-            Response::redirect('/admin/slides');
+            $_SESSION['flash_success'] = 'Thêm slide thành công!';
+            Response::redirect($_POST['redirect_to'] ?? '/admin/slides');
         } else {
             Response::json(['error' => 'Lỗi hệ thống'], 500);
         }
@@ -103,7 +108,7 @@ class AdminSlideController
 
     public static function edit($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('slides');
         $db = Db::getInstance()->pdo();
 
         $stmt = $db->prepare("SELECT * FROM slides WHERE id = ? AND is_delete = 0");
@@ -116,17 +121,21 @@ class AdminSlideController
         $countries = $db->query("SELECT id, name FROM countries ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
         $schools = $db->query("SELECT id, name FROM schools ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
 
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/slides';
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
+
         view('admin', 'admin/slides/edit', [
             'slide' => $slide,
             'countries' => $countries,
             'schools' => $schools,
-            'csrf' => Csrf::token()
+            'csrf' => Csrf::token(),
+            'redirect_to' => $redirect_to
         ]);
     }
 
     public static function update($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('slides');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $name = trim($_POST['name'] ?? '');
@@ -156,7 +165,8 @@ class AdminSlideController
         $stmt = $db->prepare($sql);
 
         if ($stmt->execute([$name, $image_url, $link_href, $id_country, $id_school, $is_hidden, $stt, $ghi_chu, $id])) {
-            Response::redirect('/admin/slides');
+            $_SESSION['flash_success'] = 'Cập nhật slide thành công!';
+            Response::redirect($_POST['redirect_to'] ?? '/admin/slides');
         } else {
             Response::json(['error' => 'Lỗi hệ thống'], 500);
         }
@@ -164,7 +174,7 @@ class AdminSlideController
 
     public static function delete($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('slides');
         Csrf::verify($_POST['_csrf'] ?? '');
         $db = Db::getInstance()->pdo();
         $stmt = $db->prepare("UPDATE slides SET is_delete = 1 WHERE id = ?");
@@ -181,7 +191,7 @@ class AdminSlideController
 
     public static function toggleHidden($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('slides');
         Csrf::verify($_POST['_csrf'] ?? '');
         $db = Db::getInstance()->pdo();
 

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <title>Thêm Thành Phố</title>
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="<?= $base ?>/assets/css/style.css">
     <link rel="stylesheet" href="<?= $base ?>/assets/css/fontawesome.css">
 </head>
+
 <body>
     <div class="container-fluid">
         <?php include __DIR__ . '/../../admin/header.php'; ?>
@@ -19,12 +21,14 @@
                         <div class="mt-1 mb-3 p-4 button-container bg-white border shadow-sm">
                             <form method="POST" action="<?= $base ?>/admin/cities">
                                 <input type="hidden" name="_csrf" value="<?= $csrf ?>">
-                                
+                                <input type="hidden" name="redirect_to"
+                                    value="<?= htmlspecialchars($redirect_to ?? '') ?>">
+
                                 <div class="form-group">
                                     <label>Tên Thành Phố <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" name="name" required>
                                 </div>
-                                
+
                                 <div class="form-group">
                                     <label>Slug (tùy chọn)</label>
                                     <input type="text" class="form-control" name="slug">
@@ -34,7 +38,7 @@
                                     <label>Thuộc Danh Mục / Quốc Gia</label>
                                     <select class="form-control" name="country_id">
                                         <option value="">-- Chọn --</option>
-                                        <?php foreach($countries as $c): ?>
+                                        <?php foreach ($countries as $c): ?>
                                             <option value="<?= $c['id'] ?>"><?= htmlspecialchars($c['name']) ?></option>
                                         <?php endforeach; ?>
                                     </select>
@@ -58,7 +62,7 @@
     <script src="<?= $base ?>/assets/js/bootstrap.min.js"></script>
     <script src="<?= $base ?>/assets/js/custom.js"></script>
     <script>
-        document.querySelector('input[name="name"]').addEventListener('keyup', function() {
+        document.querySelector('input[name="name"]').addEventListener('keyup', function () {
             var title = this.value;
             var slug = title.toLowerCase();
             slug = slug.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/g, 'a');
@@ -73,4 +77,5 @@
         });
     </script>
 </body>
+
 </html>

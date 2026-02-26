@@ -31,11 +31,13 @@
                     <div class="col-sm-12">
                         <div class="mt-1 mb-3 p-3 button-container bg-white border shadow-sm">
                             <?php if (isset($_GET['error']) && $_GET['error'] == 'password_too_short'): ?>
-                            <div class="alert alert-danger">Mật khẩu mới phải có ít nhất 6 ký tự.</div>
+                                <div class="alert alert-danger">Mật khẩu mới phải có ít nhất 6 ký tự.</div>
                             <?php endif; ?>
 
                             <form action="<?= $base ?>/admin/users/<?= $user['id'] ?>" method="POST">
                                 <input type="hidden" name="_csrf" value="<?= $csrf ?>">
+                                <input type="hidden" name="redirect_to"
+                                    value="<?= htmlspecialchars($redirect_to ?? '') ?>">
 
                                 <div class="form-group">
                                     <label>Email (Không thể thay đổi)</label>
@@ -99,14 +101,52 @@
                                         placeholder="******">
                                 </div>
 
-                                <div class="form-group">
+                                 <div class="form-group">
                                     <label>Vai trò</label>
-                                    <select name="role" class="form-control">
-                                        <option value="staff" <?= $user['role'] == 'staff' ? 'selected' : '' ?>>Staff
-                                        </option>
-                                        <option value="admin" <?= $user['role'] == 'admin' ? 'selected' : '' ?>>Admin
-                                        </option>
+                                    <select name="role" class="form-control" id="userRole">
+                                        <option value="staff" <?= $user['role'] == 'staff' ? 'selected' : '' ?>>Staff</option>
+                                        <option value="admin" <?= $user['role'] == 'admin' ? 'selected' : '' ?>>Admin</option>
                                     </select>
+                                </div>
+
+                                <?php 
+                                    $userPermissions = [];
+                                    if (!empty($user['permissions'])) {
+                                        $userPermissions = json_decode($user['permissions'], true) ?: [];
+                                    }
+                                ?>
+                                <div id="permissionSection" style="<?= $user['role'] == 'admin' ? 'display:none;' : '' ?>">
+                                    <label><strong>Phân quyền truy cập</strong></label>
+                                    <div class="row">
+                                        <?php 
+                                        $perms = [
+                                            'users' => 'Quản lý người dùng',
+                                            'posts' => 'Quản lý bài viết',
+                                            'categories' => 'Quản lý danh mục',
+                                            'slides' => 'Quản lý slide',
+                                            'tags' => 'Quản lý tags',
+                                            'continents' => 'Quản lý châu lục',
+                                            'countries' => 'Quản lý quốc gia',
+                                            'cities' => 'Quản lý thành phố',
+                                            'education_levels' => 'Quản lý bậc học',
+                                            'schools' => 'Quản lý trường học',
+                                            'consultations' => 'Quản lý tư vấn',
+                                            'partners' => 'Quản lý đối tác',
+                                            'testimonials' => 'Quản lý ý kiến khách hàng',
+                                            'files' => 'Quản lý files'
+                                        ];
+                                        foreach ($perms as $key => $label): ?>
+                                            <div class="col-md-4 mb-2">
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" name="permissions[]" value="<?= $key ?>" 
+                                                        class="custom-control-input" id="p_<?= $key ?>"
+                                                        <?= in_array($key, $userPermissions) ? 'checked' : '' ?>>
+                                                    <label class="custom-control-label" for="p_<?= $key ?>"><?= $label ?></label>
+                                                </div>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    </div>
+                                    <hr>
                                 </div>
 
                                 <button type="submit" class="btn btn-primary">Cập nhật</button>
@@ -123,6 +163,17 @@
     <script src="<?= $base ?>/assets/js/popper.min.js"></script>
     <script src="<?= $base ?>/assets/js/bootstrap.min.js"></script>
     <script src="<?= $base ?>/assets/js/custom.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#userRole').change(function() {
+                if ($(this).val() === 'admin') {
+                    $('#permissionSection').hide();
+                } else {
+                    $('#permissionSection').show();
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

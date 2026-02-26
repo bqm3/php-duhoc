@@ -1,5 +1,10 @@
 <?php
 // Admin authentication routes
+if ($uri === "/admin" || $uri === "/admin/") {
+  (new AdminAuthController())->dashboard();
+  exit;
+}
+
 if ($uri === "/admin/login" && $method === "GET") {
   (new AdminAuthController())->showLogin();
 }

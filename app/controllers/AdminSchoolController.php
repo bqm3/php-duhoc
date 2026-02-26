@@ -5,7 +5,7 @@ class AdminSchoolController
 
     public static function index()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('schools');
         $db = Db::getInstance()->pdo();
 
         $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
@@ -88,24 +88,28 @@ class AdminSchoolController
 
     public static function create()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('schools');
         $db = Db::getInstance()->pdo();
 
         $countries = $db->query("SELECT id, name FROM countries ORDER BY name")->fetchAll();
         $cities = $db->query("SELECT id, name, country_id FROM cities ORDER BY name")->fetchAll();
         $levels = $db->query("SELECT id, name FROM education_levels ORDER BY name")->fetchAll();
 
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/schools';
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
+
         view('admin', 'admin/schools/create', [
             'countries' => $countries,
             'cities' => $cities,
             'levels' => $levels,
-            'csrf' => Csrf::token()
+            'csrf' => Csrf::token(),
+            'redirect_to' => $redirect_to
         ]);
     }
 
     public static function store()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('schools');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $name = trim($_POST['name'] ?? '');
@@ -146,7 +150,8 @@ class AdminSchoolController
         $stmt = $db->prepare($sql);
 
         if ($stmt->execute([$name, $slug, $country_id, $city_id, $education_level_id, $tuition_fee, $is_scholarship, $image_url, $description])) {
-            Response::redirect('/admin/schools');
+            $_SESSION['flash_success'] = 'Thêm trường học thành công!';
+            Response::redirect($_POST['redirect_to'] ?? '/admin/schools');
         } else {
             Response::json(['error' => 'Failed to create'], 500);
         }
@@ -154,7 +159,7 @@ class AdminSchoolController
 
     public static function edit($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('schools');
         $db = Db::getInstance()->pdo();
 
         $school = $db->prepare("SELECT * FROM schools WHERE id = ? AND is_delete = 0");
@@ -168,18 +173,22 @@ class AdminSchoolController
         $cities = $db->query("SELECT id, name, country_id FROM cities ORDER BY name")->fetchAll();
         $levels = $db->query("SELECT id, name FROM education_levels ORDER BY name")->fetchAll();
 
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/schools';
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
+
         view('admin', 'admin/schools/edit', [
             'school' => $school,
             'countries' => $countries,
             'cities' => $cities,
             'levels' => $levels,
-            'csrf' => Csrf::token()
+            'csrf' => Csrf::token(),
+            'redirect_to' => $redirect_to
         ]);
     }
 
     public static function update($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('schools');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $name = trim($_POST['name'] ?? '');
@@ -220,7 +229,8 @@ class AdminSchoolController
         $stmt = $db->prepare($sql);
 
         if ($stmt->execute([$name, $slug, $country_id, $city_id, $education_level_id, $tuition_fee, $is_scholarship, $image_url, $description, $id])) {
-            Response::redirect('/admin/schools');
+            $_SESSION['flash_success'] = 'Cập nhật trường học thành công!';
+            Response::redirect($_POST['redirect_to'] ?? '/admin/schools');
         } else {
             Response::json(['error' => 'Failed to update'], 500);
         }
@@ -228,7 +238,7 @@ class AdminSchoolController
 
     public static function delete($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('schools');
         Csrf::verify($_POST['_csrf'] ?? '');
         $db = Db::getInstance()->pdo();
 

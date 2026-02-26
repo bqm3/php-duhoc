@@ -36,6 +36,8 @@
 
                             <form action="<?= $base ?>/admin/categories/<?= $category['id'] ?>" method="POST">
                                 <input type="hidden" name="_csrf" value="<?= $csrf ?>">
+                                <input type="hidden" name="redirect_to"
+                                    value="<?= htmlspecialchars($redirect_to ?? '') ?>">
 
                                 <div class="form-group">
                                     <label>Tên danh mục <span class="text-danger">*</span></label>

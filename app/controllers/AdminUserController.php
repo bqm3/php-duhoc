@@ -7,9 +7,20 @@ class AdminUserController
     // List all users
     public static function index()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('users');
 
         $db = Db::getInstance()->pdo();
+
+        // Lazy migration: Ensure permissions column exists
+        try {
+            $stmt = $db->prepare("SHOW COLUMNS FROM users LIKE 'permissions'");
+            $stmt->execute();
+            if (!$stmt->fetch()) {
+                $db->exec("ALTER TABLE users ADD COLUMN permissions TEXT NULL");
+            }
+        } catch (Exception $e) {
+            // Ignore
+        }
 
         // Pagination & Search Logic
         $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
@@ -52,18 +63,25 @@ class AdminUserController
     // Show create form
     public static function create()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('users');
+
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/users';
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
 
         view('admin', 'admin/users/create', [
-            'csrf' => Csrf::token()
+            'csrf' => Csrf::token(),
+            'redirect_to' => $redirect_to
         ]);
     }
 
     // Store new user
     public static function store()
     {
-        Auth::requireAdmin();
-        Csrf::verify($_POST['_csrf'] ?? '');
+        Auth::requirePermission('users');
+        if (!Csrf::verify($_POST['_csrf'] ?? '')) {
+            Response::json(['error' => 'Invalid CSRF token'], 403);
+        }
+
 
         $email = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
@@ -114,14 +132,16 @@ class AdminUserController
         }
 
         $password_hash = password_hash($password, PASSWORD_BCRYPT);
+        $permissions = isset($_POST['permissions']) ? json_encode($_POST['permissions']) : null;
 
         $stmt = $db->prepare("
-            INSERT INTO users (email, password_hash, full_name, role, phone, gender, birth_date, created_at) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, NOW())
+            INSERT INTO users (email, password_hash, full_name, role, phone, gender, birth_date, permissions, created_at) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())
         ");
 
-        if ($stmt->execute([$email, $password_hash, $full_name, $role, $phone, $gender, $birth_date])) {
-            Response::redirect('/admin/users');
+        if ($stmt->execute([$email, $password_hash, $full_name, $role, $phone, $gender, $birth_date, $permissions])) {
+            $_SESSION['flash_success'] = 'Thêm người dùng thành công!';
+            Response::redirect($_POST['redirect_to'] ?? '/admin/users');
         } else {
             view('admin', 'admin/users/create', [
                 'csrf' => Csrf::token(),
@@ -134,7 +154,7 @@ class AdminUserController
     // Show edit form
     public static function edit($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('users');
 
         $db = Db::getInstance()->pdo();
         $stmt = $db->prepare("SELECT * FROM users WHERE id = ?");
@@ -145,17 +165,24 @@ class AdminUserController
             Response::notFound();
         }
 
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/users';
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
+
         view('admin', 'admin/users/edit', [
             'user' => $user,
-            'csrf' => Csrf::token()
+            'csrf' => Csrf::token(),
+            'redirect_to' => $redirect_to
         ]);
     }
 
     // Update user
     public static function update($id)
     {
-        Auth::requireAdmin();
-        Csrf::verify($_POST['_csrf'] ?? '');
+        Auth::requirePermission('users');
+        if (!Csrf::verify($_POST['_csrf'] ?? '')) {
+            Response::json(['error' => 'Invalid CSRF token'], 403);
+        }
+
 
         $full_name = trim($_POST['full_name'] ?? '');
         $role = $_POST['role'] ?? 'staff';
@@ -172,6 +199,7 @@ class AdminUserController
         }
 
         $db = Db::getInstance()->pdo();
+        $permissions = isset($_POST['permissions']) ? json_encode($_POST['permissions']) : null;
 
         // Build query dynamically based on password update
         if (!empty($password)) {
@@ -181,15 +209,23 @@ class AdminUserController
                 return;
             }
             $password_hash = password_hash($password, PASSWORD_BCRYPT);
-            $stmt = $db->prepare("UPDATE users SET full_name=?, role=?, phone=?, gender=?, birth_date=?, password_hash=? WHERE id=?");
-            $params = [$full_name, $role, $phone, $gender, $birth_date, $password_hash, $id];
+            $stmt = $db->prepare("UPDATE users SET full_name=?, role=?, phone=?, gender=?, birth_date=?, permissions=?, password_hash=? WHERE id=?");
+            $params = [$full_name, $role, $phone, $gender, $birth_date, $permissions, $password_hash, $id];
         } else {
-            $stmt = $db->prepare("UPDATE users SET full_name=?, role=?, phone=?, gender=?, birth_date=? WHERE id=?");
-            $params = [$full_name, $role, $phone, $gender, $birth_date, $id];
+            $stmt = $db->prepare("UPDATE users SET full_name=?, role=?, phone=?, gender=?, birth_date=?, permissions=? WHERE id=?");
+            $params = [$full_name, $role, $phone, $gender, $birth_date, $permissions, $id];
         }
 
         if ($stmt->execute($params)) {
-            Response::redirect('/admin/users');
+            // Update session if editing self
+            if (Auth::user()['id'] == $id) {
+                $_SESSION['user']['role'] = $role;
+                // Nếu là Admin thì gán full quyền (mặc định empty array vì logic check role admin đã auto hasPermission)
+                // Hoặc nếu có post permissions thì gán vào
+                $_SESSION['user']['permissions'] = isset($_POST['permissions']) ? $_POST['permissions'] : [];
+            }
+            $_SESSION['flash_success'] = 'Cập nhật người dùng thành công!';
+            Response::redirect($_POST['redirect_to'] ?? '/admin/users');
         } else {
             Response::json(['error' => 'Failed to update user'], 500);
         }
@@ -198,7 +234,7 @@ class AdminUserController
     // Delete user
     public static function delete($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('users');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         // Prevent deleting self
@@ -219,6 +255,75 @@ class AdminUserController
             ob_clean();
             Response::json(['error' => 'Failed to delete user'], 500);
             exit;
+        }
+    }
+
+    // Show profile form
+    public static function profile()
+    {
+        Auth::requireAdmin(); // Requires being logged in
+        $user = Auth::user();
+
+        $db = Db::getInstance()->pdo();
+        $stmt = $db->prepare("SELECT * FROM users WHERE id = ?");
+        $stmt->execute([$user['id']]);
+        $userData = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        view('admin', 'admin/profile/index', [
+            'user' => $userData,
+            'csrf' => Csrf::token()
+        ]);
+    }
+
+    // Update profile
+    public static function updateProfile()
+    {
+        Auth::requireAdmin();
+        if (!Csrf::verify($_POST['_csrf'] ?? '')) {
+            Response::json(['error' => 'Invalid CSRF token'], 403);
+        }
+
+        $currentUser = Auth::user();
+        $id = $currentUser['id'];
+
+        $full_name = trim($_POST['full_name'] ?? '');
+        $phone = trim($_POST['phone'] ?? '');
+        $gender = $_POST['gender'] ?? 'other';
+        $birth_date = $_POST['birth_date'] ?? null;
+        if (empty($birth_date))
+            $birth_date = null;
+
+        $password = $_POST['password'] ?? '';
+
+        if (empty($full_name)) {
+            $_SESSION['flash_error'] = 'Họ tên không được để trống.';
+            Response::redirect('/admin/profile');
+        }
+
+        $db = Db::getInstance()->pdo();
+
+        if (!empty($password)) {
+            if (strlen($password) < 6) {
+                $_SESSION['flash_error'] = 'Mật khẩu phải có ít nhất 6 ký tự.';
+                Response::redirect('/admin/profile');
+            }
+            $password_hash = password_hash($password, PASSWORD_BCRYPT);
+            $stmt = $db->prepare("UPDATE users SET full_name=?, phone=?, gender=?, birth_date=?, password_hash=? WHERE id=?");
+            $params = [$full_name, $phone, $gender, $birth_date, $password_hash, $id];
+        } else {
+            $stmt = $db->prepare("UPDATE users SET full_name=?, phone=?, gender=?, birth_date=? WHERE id=?");
+            $params = [$full_name, $phone, $gender, $birth_date, $id];
+        }
+
+        if ($stmt->execute($params)) {
+            // Update session
+            $_SESSION['user']['full_name'] = $full_name;
+
+            $_SESSION['flash_success'] = 'Cập nhật thông tin cá nhân thành công!';
+            Response::redirect('/admin/profile');
+        } else {
+            $_SESSION['flash_error'] = 'Lỗi hệ thống, không thể cập nhật.';
+            Response::redirect('/admin/profile');
         }
     }
 }

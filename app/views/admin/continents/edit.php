@@ -23,6 +23,8 @@
                             <form method="POST" action="<?= $base ?>/admin/continents/<?= $continent['id'] ?>/update"
                                 enctype="multipart/form-data">
                                 <input type="hidden" name="_csrf" value="<?= $csrf ?>">
+                                <input type="hidden" name="redirect_to"
+                                    value="<?= htmlspecialchars($redirect_to ?? '') ?>">
 
                                 <div class="form-group">
                                     <label>Tên Châu Lục <span class="text-danger">*</span></label>

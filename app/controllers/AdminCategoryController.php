@@ -7,7 +7,7 @@ class AdminCategoryController
     // List all categories
     public static function index()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('categories');
 
         $db = Db::getInstance()->pdo();
 
@@ -61,17 +61,21 @@ class AdminCategoryController
     // Show create form
     public static function create()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('categories');
+
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/categories';
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
 
         view('admin', 'admin/categories/create', [
-            'csrf' => Csrf::token()
+            'csrf' => Csrf::token(),
+            'redirect_to' => $redirect_to
         ]);
     }
 
     // Store new category
     public static function store()
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('categories');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $name = trim($_POST['name'] ?? '');
@@ -105,7 +109,8 @@ class AdminCategoryController
         $stmt = $db->prepare("INSERT INTO categories (name, slug, display_order, created_at) VALUES (?, ?, ?, NOW())");
 
         if ($stmt->execute([$name, $slug, $display_order])) {
-            Response::redirect('/admin/categories');
+            $_SESSION['flash_success'] = 'Thêm danh mục thành công!';
+            Response::redirect($_POST['redirect_to'] ?? '/admin/categories');
         } else {
             view('admin', 'admin/categories/create', [
                 'csrf' => Csrf::token(),
@@ -118,7 +123,7 @@ class AdminCategoryController
     // Show edit form
     public static function edit($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('categories');
 
         $db = Db::getInstance()->pdo();
         $stmt = $db->prepare("SELECT * FROM categories WHERE id = ? AND is_delete = 0");
@@ -129,16 +134,20 @@ class AdminCategoryController
             Response::notFound();
         }
 
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/categories';
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
+
         view('admin', 'admin/categories/edit', [
             'category' => $category,
-            'csrf' => Csrf::token()
+            'csrf' => Csrf::token(),
+            'redirect_to' => $redirect_to
         ]);
     }
 
     // Update category
     public static function update($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('categories');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $name = trim($_POST['name'] ?? '');
@@ -166,7 +175,8 @@ class AdminCategoryController
         $stmt = $db->prepare("UPDATE categories SET name=?, slug=?, display_order=? WHERE id=?");
 
         if ($stmt->execute([$name, $slug, $display_order, $id])) {
-            Response::redirect('/admin/categories');
+            $_SESSION['flash_success'] = 'Cập nhật danh mục thành công!';
+            Response::redirect($_POST['redirect_to'] ?? '/admin/categories');
         } else {
             Response::json(['error' => 'Failed to update category'], 500);
         }
@@ -175,7 +185,7 @@ class AdminCategoryController
     // Delete category
     public static function delete($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('categories');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $db = Db::getInstance()->pdo();

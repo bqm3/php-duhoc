@@ -3,7 +3,7 @@ class AdminConsultationController
 {
     public static function index()
     {
-        Auth::requireAdmin(); // Ensure only logged-in users can access
+        Auth::requirePermission('consultations'); // Ensure only logged-in users can access
 
         $db = Db::getInstance()->pdo();
 
@@ -86,7 +86,7 @@ class AdminConsultationController
 
     public static function edit($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('consultations');
         $db = Db::getInstance()->pdo();
         $stmt = $db->prepare("SELECT * FROM consultations WHERE id = ? AND is_delete = 0");
         $stmt->execute([$id]);
@@ -96,15 +96,19 @@ class AdminConsultationController
             Response::notFound();
         }
 
+        $referer = $_SERVER['HTTP_REFERER'] ?? '/admin/consultations';
+        $redirect_to = $_GET['redirect_to'] ?? $referer;
+
         view("admin", "admin/consultations/edit", [
             "consultation" => $consultation,
-            "csrf" => Csrf::token()
+            "csrf" => Csrf::token(),
+            "redirect_to" => $redirect_to
         ]);
     }
 
     public static function update($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('consultations');
         Csrf::verify($_POST['_csrf'] ?? '');
 
         $status = $_POST['status'] ?? 'new';
@@ -119,7 +123,8 @@ class AdminConsultationController
         $stmt = $db->prepare("UPDATE consultations SET status = ?, description = ? WHERE id = ?");
 
         if ($stmt->execute([$status, $description, $id])) {
-            Response::redirect('/admin/consultations');
+            $_SESSION['flash_success'] = 'Cập nhật yêu cầu tư vấn thành công!';
+            Response::redirect($_POST['redirect_to'] ?? '/admin/consultations');
         } else {
             // Handle error (redirect back or show error)
             Response::redirect("/admin/consultations/$id/edit?error=update_failed");
@@ -128,7 +133,7 @@ class AdminConsultationController
 
     public static function delete($id)
     {
-        Auth::requireAdmin();
+        Auth::requirePermission('consultations');
         Csrf::verify($_POST['_csrf'] ?? '');
         $db = Db::getInstance()->pdo();
 
