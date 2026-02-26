@@ -257,4 +257,73 @@ class AdminUserController
             exit;
         }
     }
+
+    // Show profile form
+    public static function profile()
+    {
+        Auth::requireAdmin(); // Requires being logged in
+        $user = Auth::user();
+
+        $db = Db::getInstance()->pdo();
+        $stmt = $db->prepare("SELECT * FROM users WHERE id = ?");
+        $stmt->execute([$user['id']]);
+        $userData = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        view('admin', 'admin/profile/index', [
+            'user' => $userData,
+            'csrf' => Csrf::token()
+        ]);
+    }
+
+    // Update profile
+    public static function updateProfile()
+    {
+        Auth::requireAdmin();
+        if (!Csrf::verify($_POST['_csrf'] ?? '')) {
+            Response::json(['error' => 'Invalid CSRF token'], 403);
+        }
+
+        $currentUser = Auth::user();
+        $id = $currentUser['id'];
+
+        $full_name = trim($_POST['full_name'] ?? '');
+        $phone = trim($_POST['phone'] ?? '');
+        $gender = $_POST['gender'] ?? 'other';
+        $birth_date = $_POST['birth_date'] ?? null;
+        if (empty($birth_date))
+            $birth_date = null;
+
+        $password = $_POST['password'] ?? '';
+
+        if (empty($full_name)) {
+            $_SESSION['flash_error'] = 'Họ tên không được để trống.';
+            Response::redirect('/admin/profile');
+        }
+
+        $db = Db::getInstance()->pdo();
+
+        if (!empty($password)) {
+            if (strlen($password) < 6) {
+                $_SESSION['flash_error'] = 'Mật khẩu phải có ít nhất 6 ký tự.';
+                Response::redirect('/admin/profile');
+            }
+            $password_hash = password_hash($password, PASSWORD_BCRYPT);
+            $stmt = $db->prepare("UPDATE users SET full_name=?, phone=?, gender=?, birth_date=?, password_hash=? WHERE id=?");
+            $params = [$full_name, $phone, $gender, $birth_date, $password_hash, $id];
+        } else {
+            $stmt = $db->prepare("UPDATE users SET full_name=?, phone=?, gender=?, birth_date=? WHERE id=?");
+            $params = [$full_name, $phone, $gender, $birth_date, $id];
+        }
+
+        if ($stmt->execute($params)) {
+            // Update session
+            $_SESSION['user']['full_name'] = $full_name;
+
+            $_SESSION['flash_success'] = 'Cập nhật thông tin cá nhân thành công!';
+            Response::redirect('/admin/profile');
+        } else {
+            $_SESSION['flash_error'] = 'Lỗi hệ thống, không thể cập nhật.';
+            Response::redirect('/admin/profile');
+        }
+    }
 }
