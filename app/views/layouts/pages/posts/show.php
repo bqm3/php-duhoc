@@ -1,13 +1,45 @@
 <?php
 // app/views/client/posts/show.php
 ?>
+
+<?php
+$title = $post['meta_title'] ?? $post['title'] ?? 'Bài viết';
+
+$meta_description = $post['meta_description']
+    ?? (!empty($post['summary']) ? strip_tags($post['summary']) : '');
+
+$meta_keywords = $post['meta_keywords'] ?? '';
+
+$meta_image = !empty($post['featured_image'])
+    ? $base . $post['featured_image']
+    : $base . '/assets/images/no-image.jpg';
+
+$meta_url = $base . ($_SERVER['REQUEST_URI'] ?? '');
+?>
 <!DOCTYPE html>
 <html lang="vi">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($post['title']) ?></title>
+    <title><?= htmlspecialchars($title ?? 'Top Du Học') ?></title>
+
+    <meta name="description" content="<?= htmlspecialchars($meta_description ?? '') ?>">
+    <meta name="keywords" content="<?= htmlspecialchars($meta_keywords ?? '') ?>">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="<?= htmlspecialchars($title ?? '') ?>">
+    <meta property="og:description" content="<?= htmlspecialchars($meta_description ?? '') ?>">
+    <meta property="og:image" content="<?= htmlspecialchars($meta_image ?? '') ?>">
+    <meta property="og:url" content="<?= htmlspecialchars($meta_url ?? '') ?>">
+    <meta property="og:type" content="article">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<?= htmlspecialchars($title ?? '') ?>">
+    <meta name="twitter:description" content="<?= htmlspecialchars($meta_description ?? '') ?>">
+    <meta name="twitter:image" content="<?= htmlspecialchars($meta_image ?? '') ?>">
     <link rel="stylesheet" href="<?= $base ?>/assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?= $base ?>/assets/css/fontawesome.css">
 
@@ -169,7 +201,7 @@
     <script src="<?= $base ?>/assets/js/bootstrap.min.js"></script>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             // 1. Tìm container nội dung
             const content = document.getElementById('post-content');
             const tocList = document.getElementById('toc-list');
@@ -205,7 +237,7 @@
                     }
 
                     // Smooth scroll click handler (Dự phòng cho browser cũ)
-                    a.addEventListener('click', function (e) {
+                    a.addEventListener('click', function(e) {
                         e.preventDefault();
                         document.querySelector(this.getAttribute('href')).scrollIntoView({
                             behavior: 'smooth'
