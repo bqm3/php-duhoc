@@ -97,6 +97,7 @@ class AdminCountryController
         }
 
         $db = Db::getInstance()->pdo();
+        $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
 
         // Check slug
         $stmt = $db->prepare("SELECT id FROM countries WHERE slug = ?");
@@ -120,6 +121,7 @@ class AdminCountryController
     {
         Auth::requirePermission('countries');
         $db = Db::getInstance()->pdo();
+        $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
 
         $country = $db->prepare("SELECT * FROM countries WHERE id = ? AND is_delete = 0");
         $country->execute([$id]);
@@ -158,6 +160,7 @@ class AdminCountryController
         $is_popular = isset($_POST['is_popular']) ? 1 : 0;
 
         $db = Db::getInstance()->pdo();
+        $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
 
         // Get old files
         $stmt = $db->prepare("SELECT flag_url, image_url FROM countries WHERE id = ?");
