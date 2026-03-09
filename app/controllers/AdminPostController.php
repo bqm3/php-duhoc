@@ -233,7 +233,7 @@ class AdminPostController
         if ($category_id) {
             // Kiểm tra duplicate với country_id
             if ($country_id) {
-                $checkStmt = $db->prepare("SELECT id FROM posts WHERE category_id = ? AND country_id = ? LIMIT 1");
+                $checkStmt = $db->prepare("SELECT id FROM posts WHERE category_id = ? AND country_id = ? AND is_delete = 0 LIMIT 1");
                 $checkStmt->execute([$category_id, $country_id]);
                 if ($checkStmt->fetch()) {
                     Response::json(['error' => 'Đã tồn tại bài viết với cùng danh mục và quốc gia này. Vui lòng ẩn hoặc xóa bài viết cũ trước khi tạo mới.'], 400);
@@ -243,7 +243,7 @@ class AdminPostController
 
             // Kiểm tra duplicate với school_id
             if ($school_id) {
-                $checkStmt = $db->prepare("SELECT id FROM posts WHERE category_id = ? AND school_id = ? LIMIT 1");
+                $checkStmt = $db->prepare("SELECT id FROM posts WHERE category_id = ? AND school_id = ? AND is_delete = 0 LIMIT 1");
                 $checkStmt->execute([$category_id, $school_id]);
                 if ($checkStmt->fetch()) {
                     Response::json(['error' => 'Đã tồn tại bài viết với cùng danh mục và trường học này. Vui lòng ẩn hoặc xóa bài viết cũ trước khi tạo mới.'], 400);
@@ -381,7 +381,7 @@ class AdminPostController
         if ($category_id) {
             // Kiểm tra duplicate với country_id
             if ($country_id) {
-                $checkStmt = $db->prepare("SELECT id FROM posts WHERE category_id = ? AND country_id = ? AND id != ? LIMIT 1");
+                $checkStmt = $db->prepare("SELECT id FROM posts WHERE category_id = ? AND country_id = ? AND id != ? AND is_delete = 0 LIMIT 1");
                 $checkStmt->execute([$category_id, $country_id, $id]);
                 if ($checkStmt->fetch()) {
                     Response::json(['error' => 'Đã tồn tại bài viết khác với cùng danh mục và quốc gia này. Vui lòng ẩn hoặc xóa bài viết cũ trước khi cập nhật.'], 400);
@@ -391,7 +391,7 @@ class AdminPostController
 
             // Kiểm tra duplicate với school_id
             if ($school_id) {
-                $checkStmt = $db->prepare("SELECT id FROM posts WHERE category_id = ? AND school_id = ? AND id != ? LIMIT 1");
+                $checkStmt = $db->prepare("SELECT id FROM posts WHERE category_id = ? AND school_id = ? AND id != ? AND is_delete = 0 LIMIT 1");
                 $checkStmt->execute([$category_id, $school_id, $id]);
                 if ($checkStmt->fetch()) {
                     Response::json(['error' => 'Đã tồn tại bài viết khác với cùng danh mục và trường học này. Vui lòng ẩn hoặc xóa bài viết cũ trước khi cập nhật.'], 400);

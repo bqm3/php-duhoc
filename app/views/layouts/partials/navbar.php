@@ -741,7 +741,7 @@ $megaMenuSlugs = [
 
       let html = '';
       const isMobile = window.innerWidth <= 991;
-      const colClass = isMobile ? 'col-12 mb-0' : 'col-md-4 mb-3';
+      const colClass = isMobile ? 'col-12 mb-0' : 'col mb-3';
       res.items.forEach(ct => {
         html += `
         <div class="${colClass}">
